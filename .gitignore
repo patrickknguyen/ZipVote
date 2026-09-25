@@ -1,0 +1,20 @@
+# Dependencies and build output (recreated by npm install / npm run build)
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Secrets: never commit API keys
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Local Python environment and run logs
+.venv/
+*.log
