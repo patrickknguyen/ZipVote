@@ -1,5 +1,8 @@
 // Race ids must match RACES in agents/config.py
-export type Race = "senate" | "governor";
+export type Race = "senate" | "governor" | "ca_governor";
+
+// States with generated ballots. Each has its own question set.
+export type StateCode = "MA" | "CA";
 
 export type Party = "Democrat" | "Republican" | "Independent";
 
@@ -8,6 +11,7 @@ export interface Candidate {
     name: string;
     party: Party;
     race: Race;
+    state: StateCode;
     // Factual role only (e.g. "U.S. Senator since 2013"). Positions come from
     // the sourced pipeline output, never from hand-written copy here.
     bio: string;

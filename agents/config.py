@@ -35,8 +35,8 @@ Candidate options:
     Wikipedia and still needs checking against the official list from the
     Massachusetts Secretary of the Commonwealth.
 
-Races below are the November 3, 2026 general election for zip 02144
-(Somerville, MA), checked against the Secretary of the Commonwealth's
+Each race has a "state"; each state gets its own ballot and question set.
+Massachusetts races below are the November 3, 2026 general election checked against the Secretary of the Commonwealth's
 official candidate list on Sep 25, 2026:
   - U.S. Senate and Governor are contested and included.
   - U.S. House MA-7 is left out: Ayanna Pressley is unopposed, so there is
@@ -46,13 +46,23 @@ official candidate list on Sep 25, 2026:
 RACES = [
     {
         "id": "senate",
+        "state": "MA",
         "title": "U.S. Senate — Massachusetts, Nov 3 2026",
         "candidates": ["markey", "deaton"],
     },
     {
         "id": "governor",
+        "state": "MA",
         "title": "Governor — Massachusetts, Nov 3 2026",
         "candidates": ["healey", "minogue", "james"],
+    },
+    # California has no U.S. Senate race in 2026. Governor is a top-two
+    # general: Becerra and Hilton advanced from the June 2 primary.
+    {
+        "id": "ca_governor",
+        "state": "CA",
+        "title": "Governor — California, Nov 3 2026",
+        "candidates": ["becerra", "hilton"],
     },
 ]
 
@@ -136,5 +146,37 @@ CANDIDATES = {
             "https://www.ajforma.com/no-war-no-genocide",
             "https://www.ajforma.com/justice-and-freedom",
         ],
+    },
+    # ── California governor ──────────────────────────────────────────────
+    "becerra": {
+        "id": "becerra",
+        "name": "Xavier Becerra",
+        "party": "Democrat",
+        "race": "ca_governor",
+        "state": "CA",
+        "campaign_urls": [
+            "https://www.xavierbecerra2026.com/priorities/health-care/",
+            "https://www.xavierbecerra2026.com/priorities/housing/",
+            "https://www.xavierbecerra2026.com/priorities/economy-and-affordability/",
+            "https://www.xavierbecerra2026.com/priorities/energy-utilities/",
+            "https://www.xavierbecerra2026.com/priorities/california-disaster-preparedness-resilience/",
+            "https://www.xavierbecerra2026.com/priorities/ai/",
+            "https://www.xavierbecerra2026.com/priorities/homelessness/",
+            "https://www.xavierbecerra2026.com/priorities/filmindustry/",
+            "https://www.xavierbecerra2026.com/priorities/power-hour/",
+            "https://www.xavierbecerra2026.com/priorities/protecting-our-families-communities-from-the-next-wildfire-disaster/",
+            "https://www.xavierbecerra2026.com/priorities/fighting-donald-trump/",
+        ],
+    },
+    "hilton": {
+        "id": "hilton",
+        "name": "Steve Hilton",
+        "party": "Republican",
+        "race": "ca_governor",
+        "state": "CA",
+        # This page loads with JavaScript; if the scraper gets almost no
+        # text, paste it into data/raw/hilton_manual.txt under
+        # "## Campaign site: https://stevehiltonforgovernor.com/policies"
+        "campaign_urls": ["https://stevehiltonforgovernor.com/policies"],
     },
 }

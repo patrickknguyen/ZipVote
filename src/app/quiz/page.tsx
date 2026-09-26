@@ -2,7 +2,8 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
-import { statements } from "@/data/statements";
+import { getStatements } from "@/data/statements";
+import { zipToState } from "@/lib/coverage";
 import { UserResponse } from "@/types";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/Button";
@@ -11,6 +12,8 @@ function QuizContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const zip = searchParams.get("zip") ?? "02144";
+    const statements = getStatements(zipToState(zip));
+    const cd = searchParams.get("cd"); // U.S. House district, if known
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [selected, setSelected] = useState<number | null>(null);
@@ -35,7 +38,7 @@ function QuizContent() {
             setShowLearnMore(false);
         } else {
             const encoded = encodeURIComponent(JSON.stringify(updated));
-            router.push(`/results?zip=${zip}&answers=${encoded}`);
+            router.push(`/results?zip=${zip}${cd ? `&cd=${cd}` : ""}&answers=${encoded}`);
         }
     }
 

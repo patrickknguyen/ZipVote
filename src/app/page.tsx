@@ -5,25 +5,37 @@ import { useRouter } from "next/navigation";
 import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/Button";
 import { text } from "@/lib/styles";
-
-const SUPPORTED_ZIPS = ["02144"];
+import { zipToState, zipToDistricts } from "@/lib/coverage";
+import { HOUSE_DISTRICTS, DISTRICT_LOOKUP_URL } from "@/data/house";
 
 export default function HomePage() {
   const [zip, setZip] = useState("");
   const [error, setError] = useState("");
+  // Set when a zip crosses congressional district lines: ask which one
+  const [districtChoices, setDistrictChoices] = useState<string[]>([]);
   const router = useRouter();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = zip.trim();
 
-    if (!SUPPORTED_ZIPS.includes(trimmed)) {
+    if (trimmed.length !== 5) {
+      setError("Enter a 5-digit zip code.");
+      return;
+    }
+    if (!zipToState(trimmed)) {
       setError(
-        `We don't have data for ${trimmed} yet. Try 02144 for the prototype.`
+        "ZipVote is starting with statewide races in Massachusetts and California, and your area isn't covered yet. Try a zip like 02144 or 94110 to see how it works."
       );
       return;
     }
-    router.push(`/quiz?zip=${trimmed}`);
+    const districts = zipToDistricts(trimmed);
+    if (districts.length > 1) {
+      setDistrictChoices(districts);
+      return;
+    }
+    const cd = districts.length === 1 ? `&cd=${districts[0]}` : "";
+    router.push(`/quiz?zip=${trimmed}${cd}`);
   }
 
   return (
@@ -62,6 +74,7 @@ export default function HomePage() {
               const val = e.target.value.replace(/\D/g, "");
               setZip(val);
               setError("");
+              setDistrictChoices([]);
             }}
             placeholder="Enter zipcode"
             className="w-40 rounded-full border-2 border-slate-200 bg-white px-4 py-2 text-center text-lg font-medium tracking-widest text-slate-900 tabular-nums shadow-sm transition placeholder:text-base placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-400 focus:border-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-400/20"
@@ -75,8 +88,47 @@ export default function HomePage() {
             Start
           </Button>
         </form>
+        {districtChoices.length > 1 && (
+          <div className="mt-6 w-full max-w-md rounded-2xl border border-slate-200 bg-white/85 p-5 text-left backdrop-blur-sm">
+            <p className="text-base font-semibold text-slate-900">
+              {zip} crosses {districtChoices.length} congressional districts. Which one is yours?
+            </p>
+            <div className="mt-3 space-y-2">
+              {districtChoices.map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => router.push(`/quiz?zip=${zip}&cd=${d}`)}
+                  className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-left transition hover:border-violet-300 hover:bg-violet-50"
+                >
+                  <span className="font-semibold text-slate-900">{d}</span>
+                  {HOUSE_DISTRICTS[d] && (
+                    <span className="text-sm text-slate-500">
+                      Represented now by {HOUSE_DISTRICTS[d].representative}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            {DISTRICT_LOOKUP_URL[zipToState(zip) ?? ""] && (
+              <a
+                href={DISTRICT_LOOKUP_URL[zipToState(zip) ?? ""]}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block text-sm text-slate-500 underline hover:text-slate-700"
+              >
+                Not sure? Your voter registration lists your district ↗
+              </a>
+            )}
+          </div>
+        )}
         {error && (
-          <p className="mt-3 text-sm text-red-500">{error}</p>
+          <p
+            role="status"
+            className="mt-4 max-w-md rounded-xl border border-slate-200 bg-white/80 px-4 py-3 text-sm leading-relaxed text-slate-600 backdrop-blur-sm"
+          >
+            {error}
+          </p>
         )}
       </div>
     </PageShell>

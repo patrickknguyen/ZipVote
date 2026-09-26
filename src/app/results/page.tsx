@@ -3,9 +3,11 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState } from "react";
 import Image from "next/image";
-import { candidates } from "@/data/candidates";
+import { candidates as allCandidates } from "@/data/candidates";
+import { zipToState } from "@/lib/coverage";
+import { HOUSE_DISTRICTS } from "@/data/house";
 import { races } from "@/data/races";
-import { statements, bios } from "@/data/statements";
+import { getStatements, bios } from "@/data/statements";
 import { computeMatches, computeTopicResults, matchPercent } from "@/lib/matching";
 import { UserResponse, CandidateMatch, TopicResult, Statement, Party } from "@/types";
 
@@ -23,6 +25,44 @@ const partyStyles: Record<Party, { dot: string; bar: string; badge: string }> = 
     Republican: { dot: "bg-red-400", bar: "bg-red-400", badge: badge.republican },
     Independent: { dot: "bg-slate-400", bar: "bg-slate-400", badge: badge.independent },
 };
+
+/** "Your district" card: the U.S. House race for the user's district. */
+function DistrictCard({ district }: { district: (typeof HOUSE_DISTRICTS)[string] }) {
+    const n = district.candidates.length;
+    return (
+        <div className="mb-8">
+            <p className={`${ds.label} mb-3 pl-0.5`}>U.S. House · {district.id} · your district</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm leading-relaxed text-slate-600">
+                {n === 0 && (
+                    <p>
+                        Represented now by <span className="font-semibold text-slate-800">{district.representative}</span>.
+                        Questions for this race are coming soon.
+                    </p>
+                )}
+                {n === 1 && (
+                    <p>
+                        <span className="font-semibold text-slate-800">{district.candidates[0].name}</span> (
+                        {district.candidates[0].party}) is running unopposed, so there&apos;s no choice to compare here.
+                    </p>
+                )}
+                {n > 1 && (
+                    <>
+                        <p className="mb-2">On your ballot:</p>
+                        <ul className="space-y-1">
+                            {district.candidates.map((c) => (
+                                <li key={c.name}>
+                                    <span className="font-semibold text-slate-800">{c.name}</span> · {c.party}
+                                    {c.incumbent && <span className="text-slate-400"> · incumbent</span>}
+                                </li>
+                            ))}
+                        </ul>
+                        <p className="mt-2 text-slate-500">Questions for this race are coming soon.</p>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}
 
 /** Sourced background with its source links; falls back to the one-line role. */
 function CandidateBackground({ candidate }: { candidate: CandidateMatch["candidate"] }) {
@@ -90,6 +130,10 @@ function ResultsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const zip = searchParams.get("zip") ?? "02144";
+    const state = zipToState(zip);
+    const cd = searchParams.get("cd"); // U.S. House district, e.g. "MA-7"
+    const statements = getStatements(state);
+    const candidates = allCandidates.filter((c) => c.state === state);
     const answersParam = searchParams.get("answers");
 
     let responses: UserResponse[] = [];
@@ -104,7 +148,7 @@ function ResultsContent() {
 
     // One alignment section per race that has statements
     const raceSections = races
-        .filter((r) => candidates.some((c) => c.race === r.id))
+        .filter((r) => r.state === state && candidates.some((c) => c.race === r.id))
         .map((r) => ({
             ...r,
             matches: matches
@@ -122,7 +166,7 @@ function ResultsContent() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8 pb-6 border-b border-slate-100">
                     <div>
                         <span className="mb-24 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100/50 px-5 py-2 text-sm font-medium text-slate-600 backdrop-blur-sm">
-                            📍 {zip} · 2026 Elections
+                            📍 {zip}{cd ? ` · ${cd}` : ""} · 2026 Elections
                         </span>
                         <h1 className={`${ds.pageTitle} text-4xl sm:text-5xl`}>
                             What matters to you
@@ -132,7 +176,7 @@ function ResultsContent() {
                         </p>
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
-                        <Button variant="secondary" onClick={() => router.push(`/quiz?zip=${zip}`)}>
+                        <Button variant="secondary" onClick={() => router.push(`/quiz?zip=${zip}${cd ? `&cd=${cd}` : ""}`)}>
                             ← Retake
                         </Button>
                         <Button variant="primary" onClick={() => router.push("/")}>
@@ -165,6 +209,7 @@ function ResultsContent() {
                             Based only on positions each candidate has stated publicly.
                             Topics a candidate hasn&apos;t addressed don&apos;t count for or against them.
                         </p>
+                        {cd && HOUSE_DISTRICTS[cd] && <DistrictCard district={HOUSE_DISTRICTS[cd]} />}
                         {raceSections.map((r) => (
                             <AlignmentSection key={r.id} title={r.title} matches={r.matches} />
                         ))}
@@ -187,7 +232,7 @@ function WedgeCard({ result }: { result: TopicResult }) {
     const soloStance = result.candidateAlignments.length === 1;
     // Opponents of the candidates shown who haven't stated a position here
     const topicRaces = new Set(result.candidateAlignments.map((a) => a.candidate.race));
-    const silent = candidates.filter(
+    const silent = allCandidates.filter(
         (c) => topicRaces.has(c.race) && !result.candidateAlignments.some((a) => a.candidate.id === c.id)
     );
 

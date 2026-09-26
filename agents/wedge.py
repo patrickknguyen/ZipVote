@@ -26,8 +26,8 @@ Then:
 
 Anything flagged or dropped is listed under "flags" in the output file.
 
-Outputs JSON to data/processed/statements_ballot.json (one question set for
-the whole ballot, so shared topics are asked once across offices).
+Outputs JSON to data/processed/statements_ballot_<STATE>.json: one question
+set per state's ballot, so shared topics are asked once across offices.
 
 Usage:
     export ANTHROPIC_API_KEY=...   # or OPENAI_API_KEY / GEMINI_API_KEY
@@ -50,6 +50,28 @@ from agents.config import RACES, CANDIDATES
 
 RAW_DIR = Path(__file__).parent.parent / "data" / "raw"
 RACE_TITLES = {r["id"]: r["title"] for r in RACES}
+CACHE_DIR = Path(__file__).parent.parent / "data" / "cache"
+
+
+def cache_key(*parts: str) -> str:
+    """Fingerprint of everything that affects a result: source text, prompt, model."""
+    import hashlib
+    return hashlib.sha256("\x00".join(parts).encode("utf-8")).hexdigest()[:16]
+
+
+def cache_get(name: str, key: str):
+    path = CACHE_DIR / f"{name}.json"
+    if path.exists():
+        saved = json.loads(path.read_text(encoding="utf-8"))
+        if saved.get("key") == key:
+            return saved["value"]
+    return None
+
+
+def cache_put(name: str, key: str, value) -> None:
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    (CACHE_DIR / f"{name}.json").write_text(
+        json.dumps({"key": key, "value": value}, indent=2, ensure_ascii=False), encoding="utf-8")
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
 
 EXCERPT_BUDGET_CHARS = 12_000   # per candidate, roughly 3k tokens
@@ -67,21 +89,30 @@ SYSTEM_PROMPT = (
 # LLM client — picks a provider from whichever API key is set
 # ---------------------------------------------------------------------------
 
-def active_model() -> str:
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        return os.environ.get("ZIPVOTE_MODEL", "claude-sonnet-4-5")
-    if os.environ.get("OPENAI_API_KEY"):
-        return os.environ.get("ZIPVOTE_MODEL", "gpt-4o")
-    if os.environ.get("GEMINI_API_KEY"):
-        return os.environ.get("ZIPVOTE_MODEL", "gemini-2.5-pro")
+# Two tiers: a strong model for judgment (writing statements, checking them)
+# and a fast, cheaper model for extraction (listing positions, filling gaps,
+# bios), where code already verifies every quote word for word.
+DEFAULT_MODELS = {
+    "ANTHROPIC_API_KEY": ("claude-sonnet-4-5", "claude-haiku-4-5"),
+    "OPENAI_API_KEY": ("gpt-4o", "gpt-4o-mini"),
+    "GEMINI_API_KEY": ("gemini-2.5-pro", "gemini-2.5-flash"),
+}
+
+
+def active_model(fast: bool = False) -> str:
+    for key, (strong, cheap) in DEFAULT_MODELS.items():
+        if os.environ.get(key):
+            if fast:
+                return os.environ.get("ZIPVOTE_MODEL_FAST", cheap)
+            return os.environ.get("ZIPVOTE_MODEL", strong)
     raise EnvironmentError(
         "No LLM API key found. Set ANTHROPIC_API_KEY, OPENAI_API_KEY or GEMINI_API_KEY."
     )
 
 
-def call_llm(prompt: str) -> str:
+def call_llm(prompt: str, fast: bool = False) -> str:
     """Send a prompt to the available LLM and return the text response."""
-    model = active_model()
+    model = active_model(fast)
     if os.environ.get("ANTHROPIC_API_KEY"):
         return _call_anthropic(prompt, model)
     if os.environ.get("OPENAI_API_KEY"):
@@ -140,7 +171,7 @@ def parse_json(raw: str) -> dict:
         return json.loads(text[start:end + 1])
 
 
-def call_json(prompt: str, retries: int = 2) -> dict:
+def call_json(prompt: str, retries: int = 2, fast: bool = False) -> dict:
     """Call the model and parse JSON, asking again if the reply isn't valid JSON."""
     last_error = None
     for attempt in range(retries + 1):
@@ -150,7 +181,7 @@ def call_json(prompt: str, retries: int = 2) -> dict:
             "quotes inside strings as \\\"."
         )
         try:
-            return parse_json(call_llm(ask))
+            return parse_json(call_llm(ask, fast=fast))
         except json.JSONDecodeError as e:
             last_error = e
             if attempt < retries:
@@ -387,7 +418,7 @@ statement and give a score, or give null:
 - **candidatePositions**: one plain sentence per scored candidate restating
   only their cited position. Add nothing that is not in it.
 - **raceInsight**: 1–2 sentences on why this issue matters to voters in
-  Massachusetts. Talk about the issue only: never describe or compare the
+  {state_name}. Talk about the issue only: never describe or compare the
   candidates, and never mention how much information exists about them.
 - **policyBackground**: 2–3 neutral sentences explaining the policy in the
   statement. Only explain terms that appear in the statement itself; do
@@ -477,7 +508,7 @@ Respond with this exact JSON structure:
   "statements": [
     {{"topic": "...", "text": "...", "position_id": "{cid}.3", "score": 5,
       "summary": "One sentence restating only the cited position.",
-      "raceInsight": "1-2 sentences on why this issue matters to Massachusetts voters, about the issue only.",
+      "raceInsight": "1-2 sentences on why this issue matters to {state_name} voters, about the issue only.",
       "policyBackground": "2-3 neutral sentences explaining only the terms in the statement."}}
   ]
 }}
@@ -738,9 +769,16 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
             name=info["name"], party=info["party"], race_title=RACE_TITLES[info["race"]],
             excerpt=select_excerpt(sources[cid]), max_positions=MAX_POSITIONS,
         )
+        # Sources, prompt and model unchanged since last run → reuse, no call
+        key = cache_key(prompt, active_model(fast=True))
+        cached = cache_get(f"positions_{cid}", key)
+        if cached is not None:
+            positions[cid] = cached
+            print(f"   {info['name']}: sources unchanged, reusing {len(cached)} positions")
+            continue
         print(f"   Listing {info['name']}'s positions...")
         try:
-            found = call_json(prompt).get("positions", [])
+            found = call_json(prompt, fast=True).get("positions", [])
         except Exception as e:
             flags.append(f"{cid}: position listing failed ({e})")
             continue
@@ -758,6 +796,7 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
                 "source": source,
             })
         print(f"     {len(positions[cid])} positions kept, {missed} dropped (quote not in source)")
+        cache_put(f"positions_{cid}", key, positions[cid])
         if missed:
             flags.append(f"{cid}: {missed} listed position(s) dropped, quote not found in sources")
     return positions
@@ -778,6 +817,7 @@ def build_statement_prompt(race: dict, positions: dict) -> str:
         position_blocks="\n\n".join(blocks),
         max_statements=MAX_STATEMENTS,
         per_candidate=PER_CANDIDATE,
+        state_name=race["state_name"],
         candidate_ids=", ".join(race["candidates"]),
     )
 
@@ -824,7 +864,7 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
         return
     print(f"   Checking {len(items)} blank score(s) against each candidate's positions...")
     try:
-        result = call_json(FILL_PROMPT_TEMPLATE.format(items="\n\n".join(items)))
+        result = call_json(FILL_PROMPT_TEMPLATE.format(items="\n\n".join(items)), fast=True)
     except Exception as e:
         flags.append(f"gap-filling call failed ({e})")
         return
@@ -872,7 +912,7 @@ def top_up(data: dict, race: dict, positions: dict, flags: list) -> list:
         info = CANDIDATES[cid]
         prompt = TOPUP_PROMPT_TEMPLATE.format(
             name=info["name"], party=info["party"], office=RACE_TITLES[info["race"]].split(" — ")[0],
-            have=have, need=need, cid=cid,
+            have=have, need=need, cid=cid, state_name=race["state_name"],
             positions="\n".join(f"- [{p['id']}] {p['issue']}: {p['stance']}" for p in positions[cid]),
             used="\n".join(f"- {s['topic']}: {s['text']}" for s in data["statements"]) or "- (none)",
         )
@@ -976,12 +1016,19 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
         if not excerpt:
             flags.append(f"{cid}: no Wikipedia or About page, no bio")
             continue
+        prompt = BIO_PROMPT_TEMPLATE.format(
+            name=info["name"], party=info["party"],
+            office=RACE_TITLES[info["race"]].split(" — ")[0], excerpt=excerpt,
+        )
+        key = cache_key(prompt, active_model(fast=True))
+        cached = cache_get(f"bio_{cid}", key)
+        if cached is not None:
+            bios[cid] = cached
+            print(f"   {info['name']}: bio sources unchanged, reusing bio")
+            continue
         print(f"   Writing {info['name']}'s bio from {kind}...")
         try:
-            found = call_json(BIO_PROMPT_TEMPLATE.format(
-                name=info["name"], party=info["party"],
-                office=RACE_TITLES[info["race"]].split(" — ")[0], excerpt=excerpt,
-            )).get("sentences", [])
+            found = call_json(prompt, fast=True).get("sentences", [])
         except Exception as e:
             flags.append(f"{cid}: bio failed ({e})")
             continue
@@ -995,6 +1042,7 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
             flags.append(f"{cid}: {dropped} bio sentence(s) dropped, quote not found in sources")
         # "self-described" when the only source is the candidate's own About page
         bios[cid] = {"sentences": sentences, "selfDescribed": kind == "bio page"}
+        cache_put(f"bio_{cid}", key, bios[cid])
     return bios
 
 
@@ -1049,6 +1097,7 @@ def process_race(race: dict, verify: bool = True):
         "race_title": race["title"],
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "model": active_model(),
+        "fast_model": active_model(fast=True),
         "verified": verify,
         "statements": data["statements"],
         "flags": flags,
@@ -1075,17 +1124,43 @@ def process_race(race: dict, verify: bool = True):
 def main():
     parser = argparse.ArgumentParser(description="ZipVote Wedge Agent")
     parser.add_argument("--no-verify", action="store_true", help="Skip the second-pass LLM check")
+    parser.add_argument("--state", help="Only generate one state's ballot (e.g. CA)", default=None)
     args = parser.parse_args()
 
-    # One question set for the whole ballot, so a topic several candidates
-    # share (health care, energy...) is asked once, across offices.
-    ballot = {
-        "id": "ballot",
-        "title": "Massachusetts ballot, Nov 3 2026: " + ", ".join(r["title"].split(" — ")[0] for r in RACES),
-        "candidates": [c for r in RACES for c in r["candidates"]],
-    }
-    print(f"🗳️  ZipVote Wedge Agent — {len(ballot['candidates'])} candidates across {len(RACES)} races")
-    process_race(ballot, verify=not args.no_verify)
+    STATE_NAMES = {"MA": "Massachusetts", "CA": "California"}
+    only = args.state.upper() if args.state else None
+
+    for state in dict.fromkeys(r["state"] for r in RACES):
+        if only and state != only:
+            continue
+        # Cost cuts before any model call:
+        #  - candidates with no scraped sources are skipped (nothing to quote)
+        #  - races with fewer than 2 remaining candidates are skipped
+        #    (uncontested, or only one side has sources: nothing to compare)
+        included = []
+        for r in (r for r in RACES if r["state"] == state):
+            with_sources = [c for c in r["candidates"] if (RAW_DIR / f"{c}.txt").exists()]
+            for c in set(r["candidates"]) - set(with_sources):
+                print(f"   – {CANDIDATES[c]['name']}: no sources, skipped")
+            if len(with_sources) < 2:
+                print(f"   – {r['title']}: fewer than 2 candidates with sources, race skipped")
+                continue
+            included.append({**r, "candidates": with_sources})
+        if not included:
+            continue
+
+        # One question set per state's ballot, so a topic several candidates
+        # share (health care, energy...) is asked once, across offices.
+        ballot = {
+            "id": f"ballot_{state}",
+            "state_name": STATE_NAMES.get(state, state),
+            "title": f"{STATE_NAMES.get(state, state)} ballot, Nov 3 2026: "
+                     + ", ".join(r["title"].split(" — ")[0] for r in included),
+            "candidates": [c for r in included for c in r["candidates"]],
+        }
+        print(f"\n🗳️  {ballot['title']} — {len(ballot['candidates'])} candidates")
+        print(f"   Models: {active_model()} (writing, checking), {active_model(fast=True)} (extraction)")
+        process_race(ballot, verify=not args.no_verify)
     print("\n✅ Done. Read every flag in data/processed/ before wiring into the app.")
 
 
