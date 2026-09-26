@@ -8,8 +8,8 @@ import { Candidate } from "@/types";
  * positions belongs in the sourced pipeline output (data/processed/), where
  * every claim has a quote and a link.
  *
- * Independents marked "confirm" came from Ballotpedia/Wikipedia and still
- * need checking against the Secretary of the Commonwealth's official list.
+ * Checked against the Secretary of the Commonwealth's official candidate
+ * list on Sep 25, 2026. U.S. House MA-7 is left out: Pressley is unopposed.
  */
 export const candidates: Candidate[] = [
     // ── U.S. Senate ─────────────────────────────────────────────────────────
@@ -35,28 +35,6 @@ export const candidates: Candidate[] = [
         ballotpedia: "https://ballotpedia.org/John_Deaton_(Massachusetts)",
         color: "bg-red-500",
     },
-    // ── U.S. House, MA-7 ────────────────────────────────────────────────────
-    {
-        id: "pressley",
-        name: "Ayanna Pressley",
-        party: "Democrat",
-        race: "house_ma7",
-        bio: "U.S. Representative for Massachusetts's 7th District since 2019. Previously served on the Boston City Council.",
-        imageInitials: "AP",
-        imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Rep._Ayanna_Pressley%2C_117th_Congress.jpg/330px-Rep._Ayanna_Pressley%2C_117th_Congress.jpg",
-        wikipedia: "https://en.wikipedia.org/wiki/Ayanna_Pressley",
-        ballotpedia: "https://ballotpedia.org/Ayanna_Pressley",
-        color: "bg-indigo-500",
-    },
-    {
-        id: "linardon", // confirm
-        name: "Kelechi Linardon",
-        party: "Independent",
-        race: "house_ma7",
-        bio: "Independent candidate for U.S. House, Massachusetts 7th District.",
-        imageInitials: "KL",
-        color: "bg-slate-500",
-    },
     // ── Governor ────────────────────────────────────────────────────────────
     {
         id: "healey",
@@ -79,21 +57,12 @@ export const candidates: Candidate[] = [
         color: "bg-red-500",
     },
     {
-        id: "james", // confirm
+        id: "james",
         name: "Andrea James",
         party: "Independent",
         race: "governor",
         bio: "Independent candidate for Governor of Massachusetts.",
         imageInitials: "AJ",
-        color: "bg-slate-500",
-    },
-    {
-        id: "kokonezis_hanino", // confirm
-        name: "Muhammed Kokonezis-Hanino",
-        party: "Independent",
-        race: "governor",
-        bio: "Independent candidate for Governor of Massachusetts.",
-        imageInitials: "MK",
         color: "bg-slate-500",
     },
 ];

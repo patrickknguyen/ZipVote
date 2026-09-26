@@ -1,0 +1,1015 @@
+{
+  "race_id": "ballot",
+  "race_title": "Massachusetts ballot, Nov 3 2026: U.S. Senate, Governor",
+  "generated_at": "2026-09-26T01:09:03+00:00",
+  "model": "claude-sonnet-4-5",
+  "verified": true,
+  "statements": [
+    {
+      "topic": "Single-Payer Health Care",
+      "text": "Health insurance should be provided through private market competition.",
+      "candidateAgreement": {
+        "markey": 1,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Markey is the lead sponsor of the State-Based Universal Health Care Act of 2025 and original co-sponsor of Medicare for All Act.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Health care costs remain a top concern for Massachusetts voters, who face some of the highest insurance premiums and out-of-pocket expenses in the nation despite the state's high rate of coverage.",
+      "policyBackground": "Private health insurance is coverage purchased from commercial insurance companies rather than government programs. Market competition refers to multiple insurers offering different plans, with consumers choosing based on price, coverage, and other factors. Supporters argue this approach encourages innovation and efficiency through competition.",
+      "evidence": {
+        "markey": {
+          "quote": "Lead Sponsor: State-Based Universal Health Care Act of 2025 (S.2286) Original Co-Sponsor: Medicare for All Act (S.1506)",
+          "source": "https://www.edmarkey.com/issues-priorities/affordable-care-for-all/"
+        },
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "id": "ballot_s1",
+      "race": "ballot"
+    },
+    {
+      "topic": "Green New Deal",
+      "text": "The United States should transition to 100% renewable, zero-emission energy sources.",
+      "candidateAgreement": {
+        "markey": 5,
+        "deaton": 1,
+        "healey": null,
+        "minogue": 1,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Markey is the Senate author of the Green New Deal, which calls for transitioning the United States to 100% renewable, zero-emission energy sources, zero-emission vehicles, and high-speed rail systems.",
+        "deaton": "Deaton opposes the Green New Deal.",
+        "healey": "Not enough public information.",
+        "minogue": "Mike Minogue plans to cancel the Net Zero mandate, which he says would cost taxpayers over $300 billion.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Energy policy affects Massachusetts residents through electricity bills, gas prices, and climate impacts including coastal flooding and extreme weather events. The state has set ambitious climate goals while residents face rising energy costs.",
+      "policyBackground": "Transitioning to 100% renewable energy would mean generating all electricity from sources like solar, wind, and hydropower instead of fossil fuels like coal, oil, and natural gas. This would require building new infrastructure, retiring existing power plants, and potentially changing how energy is stored and distributed. Such a transition aims to eliminate greenhouse gas emissions from the energy sector to address climate change.",
+      "evidence": {
+        "markey": {
+          "quote": "Markey is the Senate author of the Green New Deal. In February 2019, Markey and Representative Alexandria Ocasio-Cortez released a 14-page summary of their Green New Deal plan to address climate change. It calls for implementing the \" social cost of carbon \" that was part of the Obama administration's plans to address climate change and transitioning the United States to 100% renewable, zero-emission energy sources, zero-emission vehicles, and high-speed rail systems.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        "deaton": {
+          "quote": "As an independent voice, I will oppose extreme policies like the Green New Deal and support balanced solutions that lower energy costs, protect jobs, and move us toward cleaner, affordable American energy.",
+          "source": "https://www.johndeatonforsenate.com/issues"
+        },
+        "healey": null,
+        "minogue": {
+          "quote": "Cancel the unfunded, unachievable Net Zero mandate, which would cost taxpayers over $300 billion.",
+          "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+        },
+        "james": null
+      },
+      "id": "ballot_s2",
+      "race": "ballot",
+      "evidenceDirect": {
+        "deaton": false,
+        "minogue": false
+      }
+    },
+    {
+      "topic": "Abortion Access",
+      "text": "Abortion should be restricted beyond current law.",
+      "candidateAgreement": {
+        "markey": 1,
+        "deaton": 1,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Markey opposes restrictions on abortion and wore a pin with the word ABORTION to the 2023 State of the Union Address.",
+        "deaton": "Deaton has consistently supported codifying Roe protections into federal law and would switch parties to vote against a federal abortion ban.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Abortion rights are a decisive issue for many Massachusetts voters, particularly following the Supreme Court's Dobbs decision, even though state law currently protects abortion access more broadly than many other states.",
+      "policyBackground": "Abortion restrictions can include limits based on gestational age, waiting periods, parental consent requirements, or other regulations that make the procedure harder to access. Current Massachusetts law permits abortion throughout pregnancy, with some provisions around viability. Federal law no longer guarantees abortion rights nationwide after the Supreme Court overturned Roe v. Wade in 2022.",
+      "evidence": {
+        "markey": {
+          "quote": "Since then, he has opposed restrictions on abortion. Markey wore a pin to the 2023 State of the Union Address with the word ABORTION with a heart in place of the central portion of the letter O.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        "deaton": {
+          "quote": "Since the fall of Roe in 2022, I've consistently supported codifying the protections of Roe into federal law, and I strongly disagree with the Supreme Court's decision in Dobbs. As I said in my last campaign, if national Republicans try to bring a federal abortion ban to the floor (as Attorney General Todd Blanche has promised) I will switch parties and vote with Democrats to stop it.",
+          "source": "https://www.johndeatonforsenate.com/issues"
+        },
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "id": "ballot_s3",
+      "race": "ballot",
+      "evidenceDirect": {
+        "deaton": false
+      }
+    },
+    {
+      "topic": "Voter Identification",
+      "text": "Voters should be required to show identification before casting a ballot.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": 5,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "deaton": "Deaton will fight to protect election integrity through common-sense measures such as free voter identification.",
+        "markey": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Election security and voter access are debated nationwide, though Massachusetts has not experienced significant documented voter fraud and currently does not require photo ID at polling places.",
+      "policyBackground": "Voter identification laws require voters to present some form of ID before voting, with requirements varying from strict photo ID to more flexible options like utility bills or signed affidavits. Supporters argue these laws prevent fraud and increase confidence in elections. Opponents contend that fraud is extremely rare and that ID requirements can create barriers for eligible voters who lack required documents, particularly elderly, minority, and low-income citizens.",
+      "evidence": {
+        "markey": null,
+        "deaton": {
+          "quote": "I will fight to protect the integrity of our elections through common-sense measures such as free voter identification and transparent processes.",
+          "source": "https://www.johndeatonforsenate.com/issues"
+        },
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "id": "ballot_s4",
+      "race": "ballot"
+    },
+    {
+      "topic": "Free Community College",
+      "text": "Community college should be tuition-free for residents.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": 4,
+        "minogue": null,
+        "james": 5
+      },
+      "candidatePositions": {
+        "healey": "Healey announced a $20 million appropriation to create a free community college program, MassReconnect, for Massachusetts residents 25 or older with a secondary school degree or post-secondary course credits.",
+        "james": "James plans to make college education at state schools free.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "minogue": "Not enough public information."
+      },
+      "raceInsight": "College affordability affects thousands of Massachusetts families, with student debt burdens impacting young adults' ability to buy homes and build financial security in one of the nation's most expensive states.",
+      "policyBackground": "Free community college programs eliminate tuition and mandatory fees at public two-year colleges, though students may still pay for books, supplies, and living expenses. These programs aim to increase educational attainment, workforce development, and economic mobility. Funding typically comes from state budgets, and programs may have eligibility requirements based on age, residency, income, or enrollment status.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": {
+          "quote": "Healey announced a $20 million appropriation to her 2024 fiscal year state budget proposal to create a free community college program, \"MassReconnect\", for Massachusetts residents 25 or older with a secondary school degree or post-secondary course credits, to address the skills gap in the state workforce.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        "minogue": null,
+        "james": {
+          "quote": "As Governor, I will expand K-12 community schools that provide comprehensive educational opportunities for all students with on-campus services focused on helping those families who need it, with the resources to be healthy and thriving as their children receive truly the best education in the country, that's not just a deceptive slogan. I will invest in trade schools and high school work study opportunities for students who must work during their high school years, and make college education at state schools free.",
+          "source": "https://www.ajforma.com/education"
+        }
+      },
+      "id": "ballot_s5",
+      "race": "ballot",
+      "evidenceDirect": {
+        "healey": false,
+        "james": false
+      }
+    },
+    {
+      "topic": "Housing Construction Mandates",
+      "text": "Local communities should have full control over housing development without state mandates.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": 5,
+        "james": null
+      },
+      "candidatePositions": {
+        "minogue": "Minogue plans to eliminate enforcement of the MBTA Communities Act and provide legal support to cities and towns that do not accept its terms.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Housing affordability is the top economic concern for many Massachusetts residents, with median home prices and rents far exceeding national averages. The tension between local zoning control and regional housing needs affects communities statewide.",
+      "policyBackground": "State housing mandates can require municipalities to allow certain types of development, such as multi-family housing near transit stations or affordable units in new projects. These mandates aim to address housing shortages and affordability by overriding local zoning that may restrict construction. Critics argue they undermine local control and community character, while supporters say regional coordination is necessary to solve housing crises that cross municipal boundaries.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": {
+          "quote": "Eliminate the enforcement of the MBTA Communities Act and provide legal support to cities and towns that do not accept the terms because of their limitations with water, sewer, infrastructure, and school resources.",
+          "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+        },
+        "james": null
+      },
+      "id": "ballot_s6",
+      "race": "ballot"
+    },
+    {
+      "topic": "Charter School Expansion",
+      "text": "The state should expand publicly funded charter schools.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": 5,
+        "james": null
+      },
+      "candidatePositions": {
+        "minogue": "Minogue plans to expand charter, tech, and vocational schools across the Commonwealth.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Education quality and school choice remain contentious issues in Massachusetts, where charter schools have strong supporters and opponents, and where test scores show persistent achievement gaps between districts.",
+      "policyBackground": "Charter schools are publicly funded but operate independently of traditional school districts, often with different curricula, longer school days, or specialized focuses. They are established through state-approved charters and typically have more flexibility in hiring and operations than traditional public schools. Supporters argue they provide innovation and choice, while critics contend they drain resources from traditional public schools and serve fewer students with special needs.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": {
+          "quote": "Expand charter, tech, vocational schools across the Commonwealth.",
+          "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+        },
+        "james": null
+      },
+      "id": "ballot_s7",
+      "race": "ballot"
+    },
+    {
+      "topic": "Sanctuary Policies",
+      "text": "State and local law enforcement should decline to assist federal immigration enforcement.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": 1,
+        "james": null
+      },
+      "candidatePositions": {
+        "minogue": "Minogue plans to prioritize removing violent criminals and drug dealers and end sanctuary state policies.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Immigration policy affects Massachusetts communities with large immigrant populations, raising questions about public safety, civil liberties, and the relationship between state and federal law enforcement.",
+      "policyBackground": "Sanctuary policies limit cooperation between local or state police and federal immigration authorities, such as by not honoring requests to detain individuals solely for immigration violations or not asking about immigration status during routine interactions. Supporters argue these policies build trust between immigrant communities and police, making everyone safer. Opponents contend they shield dangerous individuals from deportation and undermine federal immigration enforcement.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": {
+          "quote": "At the same time, Mike will prioritize removing violent criminals and drug dealers and end sanctuary state policies.",
+          "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+        },
+        "james": null
+      },
+      "id": "ballot_s8",
+      "race": "ballot"
+    },
+    {
+      "topic": "Rent Stabilization",
+      "text": "Government should regulate how much landlords can increase rent.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": 5
+      },
+      "candidatePositions": {
+        "james": "James plans to support rent stabilization policies.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information."
+      },
+      "raceInsight": "Rising rents force many Massachusetts residents to spend more than half their income on housing, with particularly acute impacts in Boston and surrounding communities where displacement of long-time residents is increasing.",
+      "policyBackground": "Rent stabilization or rent control policies limit how much and how often landlords can raise rents on existing tenants, typically capping annual increases at a fixed percentage or inflation rate. Massachusetts voters banned rent control statewide in 1994, though some advocates seek to restore it. Proponents argue such policies prevent displacement and keep housing affordable, while opponents say they discourage new construction, reduce property maintenance, and create housing shortages.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": {
+          "quote": "As Governor, I will declare a statewide housing emergency, create a Social Housing Authority to build permanently affordable housing, use state-owned land to build tens of thousands of homes, support rent stabilization policies, tie state housing funding to tenant protections, and tax luxury real estate speculation and large corporate landlords.",
+          "source": "https://www.ajforma.com/housing-affordability"
+        }
+      },
+      "id": "ballot_s9",
+      "race": "ballot"
+    },
+    {
+      "topic": "Gender-Affirming Healthcare",
+      "text": "Parental consent should be required for minors to receive gender-related medical treatments.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": 1
+      },
+      "candidatePositions": {
+        "james": "James will codify protections for gender-affirming healthcare and strengthen anti-discrimination protections in housing, healthcare, employment, and education.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information."
+      },
+      "raceInsight": "LGBTQ rights, particularly for transgender individuals, have become increasingly prominent political issues in Massachusetts and nationwide, affecting healthcare access, school policies, and civil rights protections.",
+      "policyBackground": "Parental consent laws require that a parent or guardian approve medical care before it is provided to a minor. Gender-related medical treatments may include puberty blockers, hormone therapy, or surgical procedures. Supporters argue parents have the right and responsibility to make major medical decisions for their children.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": {
+          "quote": "As governor, I will codify protections for gender-affirming healthcare and strengthen anti-discrimination protections. I will strengthen and enforce nondiscrimination protections in housing, healthcare, employment, and education, and ensure that state agencies are accountable when those protections are violated.",
+          "source": "https://www.ajforma.com/lgbtq-protections"
+        }
+      },
+      "id": "ballot_s10",
+      "race": "ballot",
+      "evidenceDirect": {
+        "james": false
+      }
+    },
+    {
+      "topic": "Israel Military Aid",
+      "text": "Military aid to foreign countries should be conditioned on compliance with human rights standards.",
+      "candidateAgreement": {
+        "markey": 5,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Markey voted for resolutions to apply human rights provisions to U.S. aid to Israel and to cancel the Trump administration's sales of bombs and munitions to Israel.",
+        "deaton": "Not enough public information.",
+        "james": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information."
+      },
+      "raceInsight": "U.S. foreign policy in the Middle East matters to Massachusetts voters across diverse communities, including those with connections to Israel and Palestine, and those concerned about how tax dollars are spent abroad.",
+      "policyBackground": "The United States provides billions in military aid annually to other countries, with Israel historically receiving the largest share. Human rights conditions would make this aid contingent on the recipient country's treatment of civilians, compliance with international law, or other standards. Existing law includes some human rights provisions, but enforcement varies. Supporters argue conditions promote accountability and align aid with American values, while opponents say they undermine strategic alliances and national security interests.",
+      "evidence": {
+        "markey": {
+          "quote": "In January 2024, Markey voted for a resolution proposed by Senator Bernie Sanders to apply the human rights provisions of the Foreign Assistance Act to U.S. aid to Israel's military. The proposal was defeated, 72 to 11. In April 2025, Markey voted for a pair of resolutions Sanders proposed to cancel the Trump administration's sales of $8.8 billion in bombs and other munitions to Israel.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": null
+      },
+      "id": "ballot_s11",
+      "race": "ballot"
+    },
+    {
+      "topic": "Prison Construction",
+      "text": "The state should invest in building new prison facilities.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": 1
+      },
+      "candidatePositions": {
+        "james": "James plans to pause the process of designing and building a $360M women's prison and focus on reducing incarceration and implementing alternatives.",
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Not enough public information.",
+        "minogue": "Not enough public information."
+      },
+      "raceInsight": "Criminal justice reform and incarceration rates affect public safety, state budgets, and racial equity in Massachusetts, where advocates have pushed for alternatives to imprisonment while others emphasize law and order concerns.",
+      "policyBackground": "Prison construction involves building new correctional facilities or expanding existing ones to house incarcerated individuals. Decisions about prison construction relate to debates over appropriate incarceration levels, conditions of confinement, and whether to invest in jails versus alternatives like diversion programs, mental health treatment, or probation. New facilities require significant capital investment and ongoing operational costs, while proponents argue they may be necessary to address overcrowding or replace outdated infrastructure.",
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": null,
+        "minogue": null,
+        "james": {
+          "quote": "Pause the process of designing and building a $360M women's prison and make time to focus on further reducing the number of people in jail and prison, and implement alternatives before building anything new.",
+          "source": "https://www.ajforma.com/invest-in-communities-not-prisons"
+        }
+      },
+      "id": "ballot_s12",
+      "race": "ballot"
+    },
+    {
+      "id": "ballot_s13",
+      "race": "ballot",
+      "topic": "Assault Weapon Bans",
+      "text": "The state should ban the manufacturing of assault rifles.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": 5,
+        "minogue": null,
+        "james": null
+      },
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": {
+          "quote": "On July 20, 2016, Healey announced her intention to ban the manufacturing of most assault rifles in Massachusetts.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Healey announced her intention to ban the manufacturing of most assault rifles in Massachusetts.",
+        "minogue": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Gun policy remains a significant issue in Massachusetts, where voters and policymakers debate how to balance public safety concerns with Second Amendment rights. The state already has some of the nation's strictest gun laws.",
+      "policyBackground": "Assault rifles, or assault weapons, are typically semi-automatic firearms with certain military-style features, though definitions vary by jurisdiction. Manufacturing bans prohibit companies from producing these weapons within a state's borders. Such bans are distinct from sales bans, possession bans, or federal regulations."
+    },
+    {
+      "id": "ballot_s14",
+      "race": "ballot",
+      "topic": "Mandatory Minimum Drug Sentences",
+      "text": "Mandatory minimum sentences for drug offenses should be maintained or strengthened.",
+      "candidateAgreement": {
+        "markey": null,
+        "deaton": null,
+        "healey": 1,
+        "minogue": null,
+        "james": null
+      },
+      "evidence": {
+        "markey": null,
+        "deaton": null,
+        "healey": {
+          "quote": "Healey's plan for criminal justice reform includes ending mandatory sentences for nonviolent drug offenders and focusing on treatment rather than incarceration.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        "minogue": null,
+        "james": null
+      },
+      "candidatePositions": {
+        "markey": "Not enough public information.",
+        "deaton": "Not enough public information.",
+        "healey": "Healey's criminal justice reform plan includes ending mandatory sentences for nonviolent drug offenders and focusing on treatment rather than incarceration.",
+        "minogue": "Not enough public information.",
+        "james": "Not enough public information."
+      },
+      "raceInsight": "Criminal justice reform has gained attention in Massachusetts as policymakers consider alternatives to incarceration and address concerns about racial disparities in sentencing. The opioid crisis has particularly influenced debates about drug-related penalties.",
+      "policyBackground": "Mandatory minimum sentences require judges to impose a minimum prison term for certain drug offenses, regardless of individual circumstances. These sentencing laws remove judicial discretion in determining punishment. Supporters argue they provide consistency, deter crime, and ensure serious consequences for drug trafficking."
+    }
+  ],
+  "flags": [
+    "minogue: 1 listed position(s) dropped, quote not found in sources",
+    "james: 1 listed position(s) dropped, quote not found in sources",
+    "deaton: 3 bio sentence(s) dropped, quote not found in sources",
+    "healey: 1 bio sentence(s) dropped, quote not found in sources",
+    "gap-filling added 1 score(s) the first pass missed (checked below)",
+    "healey: topped up with 2 question(s) from their own positions",
+    "ballot_s1: rephrased as opposing policy (\"Everyone should have health coverage through a sin\" → \"Health insurance should be provided through privat\")",
+    "ballot_s14: rephrased as opposing policy (\"Mandatory minimum sentences for nonviolent drug of\" → \"Mandatory minimum sentences for drug offenses shou\")",
+    "ballot_s10: rephrased as opposing policy (\"Legal protections for access to gender-affirming h\" → \"Parental consent should be required for minors to \")",
+    "ballot_s5 / healey: score adjusted 5 → 4 (Created free community college but only for residents 25+, not all residents, so partial support)",
+    "ballot_s11 / james: quote doesn't show a side (Quote discusses opposition to genocide and Israeli companies, but doesn't mention conditioning military aid on human rights standards), set to unknown"
+  ],
+  "positions": {
+    "markey": [
+      {
+        "id": "markey.1",
+        "issue": "Minimum Wage",
+        "stance": "Supports raising wages, advancing pay equity, protecting workers' benefits, supporting a higher minimum wage, and eliminating subminimum wages.",
+        "quote": "Raising wages, advancing pay equity, and protecting workers' benefits by supporting a higher minimum wage, eliminating subminimum wages, cracking down on pay discrimination, and ensuring workers don't lose health coverage during labor disputes, while also strengthening Social Security benefits for when they retire.",
+        "source": "https://www.edmarkey.com/issues-priorities/pathways-to-opportunity/"
+      },
+      {
+        "id": "markey.2",
+        "issue": "Health Care",
+        "stance": "Lead sponsor of the State-Based Universal Health Care Act of 2025 and original co-sponsor of Medicare for All Act.",
+        "quote": "Lead Sponsor: State-Based Universal Health Care Act of 2025 (S.2286) Original Co-Sponsor: Medicare for All Act (S.1506)",
+        "source": "https://www.edmarkey.com/issues-priorities/affordable-care-for-all/"
+      },
+      {
+        "id": "markey.3",
+        "issue": "Climate Change",
+        "stance": "Supports holding polluters accountable and ending fossil fuel subsidies by closing tax loopholes and making fossil fuel companies pay their fair share.",
+        "quote": "Holding polluters accountable and ending fossil fuel subsidies by closing tax loopholes and making fossil fuel companies pay their fair share, so that corporations, not taxpayers, pay for climate damage while federal policy supports a transition to clean energy.",
+        "source": "https://www.edmarkey.com/issues-priorities/building-a-resilient-future/"
+      },
+      {
+        "id": "markey.4",
+        "issue": "Gun Violence",
+        "stance": "Lead sponsor of Resources for Victims of Gun Violence Act of 2025 and original co-sponsor of Equal Access to Justice for Victims of Gun Violence Act.",
+        "quote": "Lead Sponsor: Resources for Victims of Gun Violence Act of 2025 (S.1466) Lead Sponsor: National Survivors of Homicide Victims Awareness Month Resolution (S.Res.504) Original Co-Sponsor: Equal Access to Justice for Victims of Gun Violence Act (S.1955)",
+        "source": "https://www.edmarkey.com/issues-priorities/justice-safety-for-all/"
+      },
+      {
+        "id": "markey.5",
+        "issue": "Child Tax Credit",
+        "stance": "Supports expanding the Child Tax Credit to provide consistent support for parents and reduce child poverty.",
+        "quote": "Lowering costs and strengthening financial support for working families by allowing deductions for union dues and job-related expenses so people aren't taxed on the costs of doing their jobs, and expanding the Child Tax Credit to provide consistent support for parents and reduce child poverty.",
+        "source": "https://www.edmarkey.com/issues-priorities/pathways-to-opportunity/"
+      },
+      {
+        "id": "markey.6",
+        "issue": "Public Education",
+        "stance": "Supports ensuring stable federal funding for schools and investing in modern, safe facilities.",
+        "quote": "Protecting and strengthening public education by ensuring stable federal funding for schools and investing in modern, safe facilities so every student can learn in a healthy, supportive environment, regardless of background or income.",
+        "source": "https://www.edmarkey.com/issues-priorities/pathways-to-opportunity/"
+      },
+      {
+        "id": "markey.7",
+        "issue": "Abortion",
+        "stance": "Opposes restrictions on abortion and wore a pin with the word ABORTION to the 2023 State of the Union Address.",
+        "quote": "Since then, he has opposed restrictions on abortion. Markey wore a pin to the 2023 State of the Union Address with the word ABORTION with a heart in place of the central portion of the letter O.",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      },
+      {
+        "id": "markey.8",
+        "issue": "Gun Control",
+        "stance": "Supports gun control, including improved background checks, ending illegal gun trafficking, and closing loopholes on gun purchases.",
+        "quote": "Markey supports gun control, including improved background checks, ending illegal gun trafficking, and closing loopholes on gun purchases.",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      },
+      {
+        "id": "markey.9",
+        "issue": "Israel Aid",
+        "stance": "Voted for resolutions to apply human rights provisions to U.S. aid to Israel and to cancel the Trump administration's sales of bombs and munitions to Israel.",
+        "quote": "In January 2024, Markey voted for a resolution proposed by Senator Bernie Sanders to apply the human rights provisions of the Foreign Assistance Act to U.S. aid to Israel's military. The proposal was defeated, 72 to 11. In April 2025, Markey voted for a pair of resolutions Sanders proposed to cancel the Trump administration's sales of $8.8 billion in bombs and other munitions to Israel.",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      },
+      {
+        "id": "markey.10",
+        "issue": "Green New Deal",
+        "stance": "Is the Senate author of the Green New Deal, which calls for transitioning the United States to 100% renewable, zero-emission energy sources, zero-emission vehicles, and high-speed rail systems.",
+        "quote": "Markey is the Senate author of the Green New Deal. In February 2019, Markey and Representative Alexandria Ocasio-Cortez released a 14-page summary of their Green New Deal plan to address climate change. It calls for implementing the \" social cost of carbon \" that was part of the Obama administration's plans to address climate change and transitioning the United States to 100% renewable, zero-emission energy sources, zero-emission vehicles, and high-speed rail systems.",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      },
+      {
+        "id": "markey.11",
+        "issue": "Child Care",
+        "stance": "Introduced the Child Care for Working Families Act to create child care jobs and ensure families making less than 75% of state median income would not pay for child care.",
+        "quote": "In 2019, Markey and 34 other senators introduced the Child Care for Working Families Act, a bill that they claim would create 770,000 new child care jobs and ensure that families making less than 75% of the state median income would not pay for child care, with higher-earning families having to pay \"their fair share for care on a sliding scale, regardless of the number of children they have.\"",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      },
+      {
+        "id": "markey.12",
+        "issue": "Net Neutrality",
+        "stance": "Sponsored the Internet Freedom Preservation Act to enact principles of net neutrality.",
+        "quote": "In 2009, Markey sponsored the Internet Freedom Preservation Act to enact principles of net neutrality.",
+        "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+      }
+    ],
+    "deaton": [
+      {
+        "id": "deaton.1",
+        "issue": "Health Care Monopolies",
+        "stance": "He will fight to break up vertically integrated insurance conglomerates and pharmacy benefit manager monopolies.",
+        "quote": "I will fight to break up these vertically integrated insurers and break up the PBM monopoly so patients, doctors, and pharmacists — not middlemen — decide what care looks like.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.2",
+        "issue": "Housing Permitting",
+        "stance": "He supports permitting reform with real deadlines and opposes green-energy mandates that increase housing costs.",
+        "quote": "I support permitting reform that sets real deadlines for local and state approval, and I oppose green-energy mandates that force builders to absorb costs that get passed straight on to buyers and renters in the form of higher prices.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.3",
+        "issue": "Green New Deal",
+        "stance": "He opposes the Green New Deal.",
+        "quote": "As an independent voice, I will oppose extreme policies like the Green New Deal and support balanced solutions that lower energy costs, protect jobs, and move us toward cleaner, affordable American energy.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.4",
+        "issue": "Nuclear Power",
+        "stance": "He supports a serious recommitment to nuclear power including small modular reactors.",
+        "quote": "I support building out solar, wind, geothermal, and hydro alongside a serious recommitment to nuclear power — including small modular reactors (SMRs), like the ones I've proposed for Brayton Point, paired with data center growth and backed by real ratepayer protections and community benefit agreements so host communities share in the upside.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.5",
+        "issue": "Voter ID",
+        "stance": "He will fight to protect election integrity through common-sense measures such as free voter identification.",
+        "quote": "I will fight to protect the integrity of our elections through common-sense measures such as free voter identification and transparent processes.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.6",
+        "issue": "Border Security",
+        "stance": "He will fight to secure the border, end catch-and-release, and reform the asylum process while expanding legal immigration.",
+        "quote": "I will fight to secure the border, end catch-and-release, and reform the asylum process while expanding legal immigration.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.7",
+        "issue": "DACA",
+        "stance": "He supports a targeted, earned pathway to legal status and citizenship for DACA recipients who meet rigorous standards.",
+        "quote": "I support a targeted, earned pathway to legal status and ultimately citizenship for DACA recipients and similarly situated Dreamers who meet rigorous standards — while simultaneously securing the border, ending catch-and-release, reforming asylum abuse, and expanding legal immigration so that future arrivals come through the front door.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.8",
+        "issue": "Student Loan Interest",
+        "stance": "He believes in eliminating compound interest on student loans.",
+        "quote": "I believe in offering real solutions to reduce that burden, such as eliminating usury in the form of compound interest.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.9",
+        "issue": "Foreign Aid",
+        "stance": "He will not vote for another dollar to any foreign country unless convinced it is in America's interest.",
+        "quote": "I will not vote for another single dollar to go to any foreign country unless I am convinced it is in the interest of America and the people of Massachusetts.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.10",
+        "issue": "Abortion",
+        "stance": "He has consistently supported codifying Roe protections into federal law and would switch parties to vote against a federal abortion ban.",
+        "quote": "Since the fall of Roe in 2022, I've consistently supported codifying the protections of Roe into federal law, and I strongly disagree with the Supreme Court's decision in Dobbs. As I said in my last campaign, if national Republicans try to bring a federal abortion ban to the floor (as Attorney General Todd Blanche has promised) I will switch parties and vote with Democrats to stop it.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.11",
+        "issue": "Social Security Taxes",
+        "stance": "He believes Social Security benefits should not be taxed.",
+        "quote": "I also believe Social Security benefits should not be taxed. Seniors already paid into this system with after-tax dollars; taxing their benefits a second time is unjust.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      },
+      {
+        "id": "deaton.12",
+        "issue": "Congressional Term Limits",
+        "stance": "He will push for a constitutional amendment limiting service to 3 House terms and 2 Senate terms.",
+        "quote": "Congressional Term Limits — Push for a constitutional amendment limiting service to 3 House terms and 2 Senate terms.",
+        "source": "https://www.johndeatonforsenate.com/issues"
+      }
+    ],
+    "healey": [
+      {
+        "id": "healey.1",
+        "issue": "Housing",
+        "stance": "She eliminated renters' fees and is building 100,000 new homes to lower the cost of housing.",
+        "quote": "She eliminated renters' fees and is building 100,000 new homes to lower the cost of housing",
+        "source": "https://maurahealey.com/accomplishments/"
+      },
+      {
+        "id": "healey.2",
+        "issue": "Health Care",
+        "stance": "She is the first Governor to cap health care deductibles and co-pays.",
+        "quote": "She is the first Governor to cap health care deductibles and co-pays",
+        "source": "https://maurahealey.com/accomplishments/"
+      },
+      {
+        "id": "healey.3",
+        "issue": "Energy Costs",
+        "stance": "She opposed utility rate increases and launched an Energy Affordability Agenda that will take $13 billion off energy bills.",
+        "quote": "Opposed utility rate increases and launched an Energy Affordability Agenda that will take $13 billion off your energy bills",
+        "source": "https://maurahealey.com/accomplishments/"
+      },
+      {
+        "id": "healey.4",
+        "issue": "Education Funding",
+        "stance": "She doubled funding for schools, made meals free, and made community college cost-free for everyone.",
+        "quote": "Doubled funding for our schools, made meals free, and made community college cost-free for everyone",
+        "source": "https://maurahealey.com/accomplishments/"
+      },
+      {
+        "id": "healey.5",
+        "issue": "Taxes",
+        "stance": "She cut taxes for the first time in more than 20 years, providing savings for families, seniors, and small businesses.",
+        "quote": "Cut taxes for the first time in more than 20 years, providing savings for families, seniors, and small businesses",
+        "source": "https://maurahealey.com/accomplishments/"
+      },
+      {
+        "id": "healey.6",
+        "issue": "Climate",
+        "stance": "Healey established the Office of Climate Innovation and Resilience and created a cabinet-level position of Climate Chief to help the Commonwealth reach its climate goals.",
+        "quote": "The day after being sworn in, Healey signed an Executive Order establishing the Office of Climate Innovation and Resilience and creating a cabinet-level position of Climate Chief to head the office.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.7",
+        "issue": "Gun Violence",
+        "stance": "Her plan to reduce gun violence includes enhancing the background check system to include information regarding recent restraining orders, pending indictments, and domestic violence, parole, and probation information.",
+        "quote": "The program includes enhancing the background check system to include information regarding recent restraining orders, pending indictments, and any relations to domestic violence, parole, and probation information.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.8",
+        "issue": "Assault Rifles",
+        "stance": "Healey announced her intention to ban the manufacturing of most assault rifles in Massachusetts.",
+        "quote": "On July 20, 2016, Healey announced her intention to ban the manufacturing of most assault rifles in Massachusetts.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.9",
+        "issue": "Drug Sentencing",
+        "stance": "Her plan for criminal justice reform includes ending mandatory sentences for nonviolent drug offenders and focusing on treatment rather than incarceration.",
+        "quote": "Healey's plan for criminal justice reform includes ending mandatory sentences for nonviolent drug offenders and focusing on treatment rather than incarceration.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.10",
+        "issue": "Immigration",
+        "stance": "Healey set a limit of 7,500 on the number of families that could be housed in the state's emergency shelter system and signed a bill that limited how long families can stay in the shelter system to nine months.",
+        "quote": "Healey set a limit of 7,500 on the number of families that could be housed in the state's emergency shelter system.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.11",
+        "issue": "Community College",
+        "stance": "Healey announced a $20 million appropriation to create a free community college program, MassReconnect, for Massachusetts residents 25 or older with a secondary school degree or post-secondary course credits.",
+        "quote": "Healey announced a $20 million appropriation to her 2024 fiscal year state budget proposal to create a free community college program, \"MassReconnect\", for Massachusetts residents 25 or older with a secondary school degree or post-secondary course credits, to address the skills gap in the state workforce.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      },
+      {
+        "id": "healey.12",
+        "issue": "Estate Tax",
+        "stance": "The estate tax was eliminated for all estates under $2 million, which Healey signed into law.",
+        "quote": "The estate tax was eliminated for all estates under $2 million. Healey signed these changes into law on October 4, 2023.",
+        "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+      }
+    ],
+    "minogue": [
+      {
+        "id": "minogue.1",
+        "issue": "State Budget Audit",
+        "stance": "Mike Minogue plans to audit the state legislature and entire state budget with an outside auditor.",
+        "quote": "Audit the state legislature and the entire state budget with an outside auditor",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.2",
+        "issue": "Healthcare Reform",
+        "stance": "Mike Minogue plans to implement a 'Patients First' healthcare plan that pushes healthcare back into communities, supports primary care physicians, moves procedures to outpatient clinics, mandates generic drugs through pharmacy benefit managers, and moves mental health care from emergency rooms to communities.",
+        "quote": "Implement Mike's 'Patients First' healthcare plan that will provide access to affordable, quality care. Healthcare will be pushed back into the communities and out of the emergency rooms in Boston hospitals.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.3",
+        "issue": "Gas Tax",
+        "stance": "Mike Minogue plans to enact a gas tax holiday when gas prices reach over four dollars per gallon and work towards long-term elimination of state gas tax.",
+        "quote": "Enact a gas tax holiday when gas prices reach over four dollars per gallon to provide people with relief during national spikes and work towards the long-term elimination of state gas tax.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.4",
+        "issue": "Net Zero Mandate",
+        "stance": "Mike Minogue plans to cancel the Net Zero mandate, which he says would cost taxpayers over $300 billion.",
+        "quote": "Cancel the unfunded, unachievable Net Zero mandate, which would cost taxpayers over $300 billion.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.5",
+        "issue": "MBTA Communities Act",
+        "stance": "Mike Minogue plans to eliminate enforcement of the MBTA Communities Act and provide legal support to cities and towns that do not accept its terms.",
+        "quote": "Eliminate the enforcement of the MBTA Communities Act and provide legal support to cities and towns that do not accept the terms because of their limitations with water, sewer, infrastructure, and school resources.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.6",
+        "issue": "Housing Permits",
+        "stance": "Mike Minogue plans to provide communities more tax dollars back if they eliminate building stretch codes and reduce permitting times for single-family homes to 45 days or less.",
+        "quote": "Provide communities more of their tax dollars back, up to 35-40%, compared to the 26% they retain today, provided the towns and cities eliminate the building stretch codes and reduce permitting times for single-family homes to 45 days or less, compared to 1.5 years today.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.7",
+        "issue": "Education Funding",
+        "stance": "Mike Minogue plans to opt into the Federal Scholarship Tax Credit to create $1.7 billion in funding for Scholarship Granting Organization scholarships.",
+        "quote": "Invest in education by opting into the Federal Scholarship Tax Credit and recruit over one million taxpayers, creating $1.7B in funding, to participate in Scholarship Granting Organization (SGO) scholarships.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.8",
+        "issue": "Charter Schools",
+        "stance": "Mike Minogue plans to expand charter, tech, and vocational schools across the Commonwealth.",
+        "quote": "Expand charter, tech, vocational schools across the Commonwealth.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.9",
+        "issue": "Veterans Employment",
+        "stance": "Mike Minogue plans to launch the BEACON plan for military veterans, including hiring 25,000 veterans by the end of his first term.",
+        "quote": "Launch the BEACON plan for our military veterans, including hiring 25,000 veterans by the end of Mike's first term.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.10",
+        "issue": "Immigration",
+        "stance": "Mike Minogue plans to prioritize removing violent criminals and drug dealers and end sanctuary state policies.",
+        "quote": "At the same time, Mike will prioritize removing violent criminals and drug dealers and end sanctuary state policies.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      },
+      {
+        "id": "minogue.11",
+        "issue": "Cashless Bail",
+        "stance": "Mike Minogue plans to appoint a parole board that eliminates cashless bail.",
+        "quote": "Appoint a strong parole board that prioritizes and protects the safety of our people and eliminates cashless bail.",
+        "source": "https://minogueforma.com/blueprint-for-a-better-future/"
+      }
+    ],
+    "james": [
+      {
+        "id": "james.1",
+        "issue": "Housing",
+        "stance": "James plans to declare a statewide housing emergency, create a Social Housing Authority to build permanently affordable housing, and support rent stabilization policies.",
+        "quote": "As Governor, I will declare a statewide housing emergency, create a Social Housing Authority to build permanently affordable housing, use state-owned land to build tens of thousands of homes, support rent stabilization policies, tie state housing funding to tenant protections, and tax luxury real estate speculation and large corporate landlords.",
+        "source": "https://www.ajforma.com/housing-affordability"
+      },
+      {
+        "id": "james.2",
+        "issue": "Childcare",
+        "stance": "James will expand publicly funded childcare centers, grow the childcare workforce, and raise wages for childcare workers.",
+        "quote": "As Governor, I will expand publicly funded childcare centers, grow the childcare workforce, and raise wages for childcare workers.",
+        "source": "https://www.ajforma.com/universal-childcare"
+      },
+      {
+        "id": "james.3",
+        "issue": "Education",
+        "stance": "James plans to expand K-12 community schools with on-campus services, invest in trade schools and high school work study opportunities, and make college education at state schools free.",
+        "quote": "As Governor, I will expand K-12 community schools that provide comprehensive educational opportunities for all students with on-campus services focused on helping those families who need it, with the resources to be healthy and thriving as their children receive truly the best education in the country, that's not just a deceptive slogan. I will invest in trade schools and high school work study opportunities for students who must work during their high school years, and make college education at state schools free.",
+        "source": "https://www.ajforma.com/education"
+      },
+      {
+        "id": "james.4",
+        "issue": "Labor Rights",
+        "stance": "James will raise the minimum wage, ban captive-audience union-busting, and require labor peace agreements for state contractors.",
+        "quote": "As Governor, I will raise the minimum wage, ban captive-audience union-busting, require labor peace agreements for state contractors, and support worker organizing.",
+        "source": "https://www.ajforma.com/labor-rights"
+      },
+      {
+        "id": "james.5",
+        "issue": "LGBTQ Rights",
+        "stance": "James will codify protections for gender-affirming healthcare and strengthen anti-discrimination protections in housing, healthcare, employment, and education.",
+        "quote": "As governor, I will codify protections for gender-affirming healthcare and strengthen anti-discrimination protections. I will strengthen and enforce nondiscrimination protections in housing, healthcare, employment, and education, and ensure that state agencies are accountable when those protections are violated.",
+        "source": "https://www.ajforma.com/lgbtq-protections"
+      },
+      {
+        "id": "james.6",
+        "issue": "AI Contracts",
+        "stance": "James opposes lack of transparency in government AI contracts and believes contracts with companies like OpenAI must be transparent about deployment and consider state employee input.",
+        "quote": "Government contracts with companies like OpenAI must be transparent about how AI is being deployed and consider input from state employees.",
+        "source": "https://www.ajforma.com/ai-and-data-centers"
+      },
+      {
+        "id": "james.7",
+        "issue": "Data Centers",
+        "stance": "James supports a moratorium on building future data centers and will rescind the current administration's sales and use tax exemption for data centers.",
+        "quote": "I support a moratorium on building future data centers, listening to the concerns of residents and advocates citing utility bill increases, environmental strain from fossil fuel use, and other environmental and climate threats, and state and federal regulatory lags. As Governor of Massachusetts, I will study the impacts of infrastructure and how to redesign utility rate structures to protect everyday consumers. I will rescind the current administration's sales and use tax exemption for data centers.",
+        "source": "https://www.ajforma.com/ai-and-data-centers"
+      },
+      {
+        "id": "james.8",
+        "issue": "Prison Construction",
+        "stance": "James plans to pause the process of designing and building a $360M women's prison and focus on reducing incarceration and implementing alternatives.",
+        "quote": "Pause the process of designing and building a $360M women's prison and make time to focus on further reducing the number of people in jail and prison, and implement alternatives before building anything new.",
+        "source": "https://www.ajforma.com/invest-in-communities-not-prisons"
+      },
+      {
+        "id": "james.9",
+        "issue": "Israel-Palestine",
+        "stance": "James opposes what she describes as genocide inflicted upon the Palestinian people by the State of Israel and opposes welcoming Israeli companies that have funded Israel to do business in Massachusetts.",
+        "quote": "Our campaign stands in opposition to the genocide at the hands of the State of Israel and inflicted upon the Palestinian people. Our campaign stands in opposition to welcoming companies from Israel that have funded the State of Israel to carry out the genocide of the Palestinian people, to do business in Massachusetts.",
+        "source": "https://www.ajforma.com/no-war-no-genocide"
+      },
+      {
+        "id": "james.10",
+        "issue": "BDS Movement",
+        "stance": "James supports and defends protests concerning Israel/Palestine and joins BDS campaigns to put pressure on Israel.",
+        "quote": "We support and defend protests in the streets and on campuses, and we join BDS campaigns to put pressure on Israel.",
+        "source": "https://www.ajforma.com/no-war-no-genocide"
+      },
+      {
+        "id": "james.11",
+        "issue": "Real Estate Taxation",
+        "stance": "James will tax luxury real estate speculation and large corporate landlords to help finance housing construction.",
+        "quote": "Housing construction will be financed through public capital bonding, progressive real estate taxation on luxury speculation and corporate landlords, and the use of state-owned land to reduce development costs.",
+        "source": "https://www.ajforma.com/housing-affordability"
+      }
+    ]
+  },
+  "bios": {
+    "markey": {
+      "sentences": [
+        {
+          "text": "Edward John Markey was born on July 11, 1946, in Malden, Massachusetts, the son of a milkman.",
+          "quote": "Markey was born on July 11, 1946, in Malden, Massachusetts, the son of Christina M. (née Courtney) and John E. Markey, a milkman.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        {
+          "text": "He graduated from Boston College in 1968 with a Bachelor of Arts and from Boston College Law School in 1972 with a Juris Doctor.",
+          "quote": "Markey graduated from Boston College in 1968 with a Bachelor of Arts and from Boston College Law School in 1972 with a Juris Doctor.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        {
+          "text": "After graduating, Markey worked as a lawyer in private practice and served in the United States Army Reserve from 1968 to 1973, attaining the rank of Specialist 4.",
+          "quote": "After graduating, Markey worked as a lawyer in private practice. He served in the United States Army Reserve from 1968 to 1973, attaining the rank of Specialist 4.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        {
+          "text": "He served in the Massachusetts House of Representatives from 1973 to 1976, then as U.S. representative for Massachusetts's 7th congressional district from 1976 to 2013.",
+          "quote": "A member of the Democratic Party, he served 20 terms (18 full, two partial) as the U.S. representative for Massachusetts's 7th congressional district from 1976 to 2013. Before that, he was a member of the Massachusetts House of Representatives from 1973 to 1976.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        },
+        {
+          "text": "In 2013, after John Kerry was appointed United States Secretary of State, Markey was elected to serve out the remainder of Kerry's Senate term in a special election and has served as junior United States senator from Massachusetts since 2013.",
+          "quote": "In 2013, after John Kerry was appointed United States Secretary of State, Markey was elected to serve out the remainder of Kerry's Senate term in a 2013 special election.",
+          "source": "https://en.wikipedia.org/wiki/Ed_Markey"
+        }
+      ],
+      "selfDescribed": false
+    },
+    "deaton": {
+      "sentences": [
+        {
+          "text": "For over twenty years, he has practiced law in Massachusetts and surrounding states, representing mesothelioma and cancer victims against Fortune 100 companies, and in 2006 he founded his own small law practice.",
+          "quote": "For over twenty years, John has been practicing law in the Commonwealth of Massachusetts and surrounding states, representing mesothelioma and cancer victims against Fortune 100 companies. In 2006, with small children and massive student loan debt, John decided to take a chance and founded his own small law practice",
+          "source": "https://www.johndeatonforsenate.com/meet-john"
+        }
+      ],
+      "selfDescribed": true
+    },
+    "healey": {
+      "sentences": [
+        {
+          "text": "Maura Tracy Healey was born on February 8, 1971, at Walter Reed Hospital, in Bethesda, Maryland, and was raised in Hampton Falls, New Hampshire.",
+          "quote": "Healey was born on February 8, 1971, at Walter Reed Hospital, in Bethesda, Maryland. When she was nine months old, her family moved to Hampton Falls, New Hampshire, where she was raised.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        {
+          "text": "After clerking for a federal judge, Healey spent more than seven years at the law firm Wilmer Cutler Pickering Hale and Dorr LLP, where she worked as an associate and then junior partner.",
+          "quote": "Healey subsequently spent more than seven years at the law firm Wilmer Cutler Pickering Hale and Dorr LLP, where she worked as an associate and then junior partner and focused on commercial and securities litigation.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        {
+          "text": "Hired by Massachusetts Attorney General Martha Coakley in 2007, Healey served as chief of the Civil Rights Division, then chief of the Public Protection and Advocacy Bureau, and then chief of the Business and Labor Bureau before resigning in 2013 to run for attorney general.",
+          "quote": "Hired by Massachusetts Attorney General Martha Coakley in 2007, Healey served as chief of the Civil Rights Division, where she led the state's challenge to the federal Defense of Marriage Act. She was then appointed chief of the Public Protection and Advocacy Bureau and then chief of the Business and Labor Bureau, before resigning in 2013 to run for attorney general in 2014.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        },
+        {
+          "text": "She served as Massachusetts Attorney General from 2015 to 2023 and has been serving as the 73rd governor of Massachusetts since 2023.",
+          "quote": "Maura Tracy Healey (born February 8, 1971) is an American lawyer and politician serving as the 73rd governor of Massachusetts since 2023. A member of the Democratic Party, she served as Massachusetts Attorney General from 2015 to 2023 and was elected governor in 2022.",
+          "source": "https://en.wikipedia.org/wiki/Maura_Healey"
+        }
+      ],
+      "selfDescribed": false
+    },
+    "minogue": {
+      "sentences": [],
+      "selfDescribed": true
+    },
+    "james": {
+      "sentences": [
+        {
+          "text": "Andrea C. James was born and raised in Boston, Massachusetts.",
+          "quote": "James was born and raised in Boston, Massachusetts.",
+          "source": "https://en.wikipedia.org/wiki/Andrea_C._James"
+        },
+        {
+          "text": "She graduated with a bachelor's from University of Massachusetts, Boston and a Juris Doctor degree from Northeastern University, returning to Boston to work as a criminal defence and real estate conveyance attorney in Roxbury.",
+          "quote": "She graduated with a bachelor's from University of Massachusetts, Boston and a Juris Doctor degree from Northeastern University, returning to Boston to work as a criminal defence and real estate conveyance attorney in Roxbury.",
+          "source": "https://en.wikipedia.org/wiki/Andrea_C._James"
+        },
+        {
+          "text": "In 2009, she was sentenced to 24 months in federal prison on charges of wire fraud, and in 2010, James was formally disbarred by the Supreme Court of Suffolk County.",
+          "quote": "In 2009, she was sentenced to 24 months in federal prison on charges of wire fraud. In 2010, James was formally disbarred by the Supreme Court of Suffolk County.",
+          "source": "https://en.wikipedia.org/wiki/Andrea_C._James"
+        },
+        {
+          "text": "Following her release, James founded and served as the executive director of Families for Justice as Healing (FJAH), a non-governmental organisation that advocated for criminal justice reform.",
+          "quote": "Following her release, James founded and served as the executive director of Families for Justice as Healing (FJAH), a non-governmental organisation that advocated for criminal justice reform through prioritising community wellness alternatives over incarceration.",
+          "source": "https://en.wikipedia.org/wiki/Andrea_C._James"
+        },
+        {
+          "text": "In May 2025, James filed paperwork to run in 2026 as governor of Massachusetts as a Democrat.",
+          "quote": "In May 2025, James filed paperwork to run in 2026 as governor of Massachusetts as a Democrat, stating to the Boston Globe she was \"exploring\" a run.",
+          "source": "https://en.wikipedia.org/wiki/Andrea_C._James"
+        }
+      ],
+      "selfDescribed": false
+    }
+  }
+}

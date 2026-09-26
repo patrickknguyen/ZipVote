@@ -109,8 +109,12 @@ def url_exists(url: str) -> bool:
     return resp.status_code == 200
 
 
-def scrape_url(url: str) -> str:
-    """Fetch a URL and return cleaned plain text."""
+def scrape_url(url: str, whole_page: bool = False) -> str:
+    """
+    Fetch a URL and return cleaned plain text.
+    whole_page=True reads the full <body> instead of guessing the main
+    content area (campaign sites use many different page builders).
+    """
     try:
         resp = requests.get(url, headers=HEADERS, timeout=15)
         resp.raise_for_status()
@@ -125,7 +129,7 @@ def scrape_url(url: str) -> str:
         tag.decompose()
 
     # Prefer <main> / <article> / role="main" / .content class / full body
-    main = (
+    main = soup.body if whole_page else (
         soup.find("main")
         or soup.find("article")
         or soup.find(attrs={"role": "main"})
@@ -190,6 +194,31 @@ def scout_candidate(candidate_id: str) -> None:
         print(f"   ✗ Page never mentions {state_full} — likely a different person, skipped")
         return False
 
+    # ── 0. Campaign site (candidate's own current positions) ─────────────────
+    # URLs are hand-checked in config, so no identity check is needed.
+    for url in info.get("campaign_urls", []):
+        text = scrape_url(url, whole_page=True)
+        if len(text) < 300:
+            print(f"   ⚠ Campaign page returned almost no text: {url}")
+            print(f"     It may need JavaScript or block scrapers. Paste it into")
+            print(f"     data/raw/{candidate_id}_manual.txt under '## Campaign site: {url}'")
+        else:
+            print(f"   ✓ Campaign site: {url} ({len(text.split()):,} words)")
+            all_text.append(f"\n## Campaign site: {url}\n\n{text}")
+            found_any = True
+        time.sleep(RATE_LIMIT_SECONDS)
+
+    # ── 0b. About page, for the bio when there's no Wikipedia page ──────────
+    for url in info.get("bio_urls", []):
+        text = scrape_url(url, whole_page=True)
+        if len(text) < 200:
+            print(f"   ⚠ About page returned almost no text: {url}")
+        else:
+            print(f"   ✓ About page: {url} ({len(text.split()):,} words)")
+            all_text.append(f"\n## Bio page: {url}\n\n{text}")
+            found_any = True
+        time.sleep(RATE_LIMIT_SECONDS)
+
     # ── 1. Ballotpedia (positions / campaign themes / key votes) ──────────────
     bp_urls = ballotpedia_candidates(
         name=info["name"],
@@ -208,6 +237,8 @@ def scout_candidate(candidate_id: str) -> None:
     wp_url = None
     if info.get("skip_wikipedia"):
         print("   – Wikipedia skipped (skip_wikipedia in config)")
+    elif info.get("wikipedia_slug"):
+        wp_url = resolve_url([f"https://en.wikipedia.org/wiki/{info['wikipedia_slug']}"], "Wikipedia")
     else:
         wp_url = resolve_url(wikipedia_candidates(info["name"]), "Wikipedia")
     if wp_url:
@@ -236,7 +267,7 @@ def scout_candidate(candidate_id: str) -> None:
     out_path.write_text(combined, encoding="utf-8")
 
     word_count = len(combined.split())
-    print(f"   ✓ Saved {word_count:,} words → {out_path.relative_to(Path.cwd())}")
+    print(f"   ✓ Saved {word_count:,} words → data/raw/{out_path.name}")
 
 
 def main():

@@ -14,9 +14,8 @@ ZipVote is an agent-driven platform designed to solve "ballot paralysis" for fir
 - **Data Engine:** Python-based sub-agents (Scout & Wedge)
 
 ## 📍 Local Prototype (02144)
-Current focus is the November 3, 2026 general election in Somerville, MA:
+Current focus is the November 3, 2026 general election in Somerville, MA, checked against the Secretary of the Commonwealth's official candidate list:
 - **U.S. Senate:** Ed Markey (D) vs. John Deaton (R)
-- **U.S. House (MA-7):** Ayanna Pressley (D) vs. Kelechi Linardon (I)
-- **Governor:** Maura Healey (D) vs. Mike Minogue (R), plus independents Andrea James and Muhammed Kokonezis-Hanino
+- **Governor:** Maura Healey (D) vs. Mike Minogue (R) vs. Andrea James (I)
 
-Independent candidates still need to be confirmed against the Secretary of the Commonwealth's official ballot list.
+U.S. House MA-7 is left out because Ayanna Pressley is unopposed.

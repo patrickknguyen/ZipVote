@@ -9,23 +9,21 @@
  *   python -m agents.wedge
  */
 
-import { Statement } from "@/types";
+import { Statement, CandidateBio } from "@/types";
 
 const loaded: Statement[] = [];
+let loadedBios: Record<string, CandidateBio> = {};
 
-// Static requires so the bundler can include each file at build time.
-// A missing file just means that race hasn't been generated yet.
+// One question set for the whole ballot. Static require so the bundler can
+// include it at build time; a missing file means it hasn't been generated.
 try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    loaded.push(...require("../../data/processed/statements_senate.json").statements);
-} catch {}
-try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    loaded.push(...require("../../data/processed/statements_house_ma7.json").statements);
-} catch {}
-try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    loaded.push(...require("../../data/processed/statements_governor.json").statements);
+    const ballot = require("../../data/processed/statements_ballot.json");
+    loaded.push(...ballot.statements);
+    loadedBios = ballot.bios ?? {};
 } catch {}
 
 export const statements: Statement[] = loaded;
+
+/** Sourced candidate backgrounds, keyed by candidate id. */
+export const bios: Record<string, CandidateBio> = loadedBios;

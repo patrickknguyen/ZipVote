@@ -20,6 +20,27 @@ export function PageShell({ children, centered = false, className = "" }: PageSh
         >
             <VennBackground variant={centered ? "light" : undefined} />
             {children}
+            <Disclosure />
         </main>
+    );
+}
+
+/** Shown on every page: what this is, how it was made, where to get the real ballot. */
+function Disclosure() {
+    return (
+        <p className="relative z-10 mx-auto mt-12 max-w-2xl px-4 pb-6 text-center text-xs leading-relaxed text-slate-500">
+            Prototype. Questions and position summaries are written by a language model from each
+            candidate&apos;s campaign website and Wikipedia, checked automatically against quoted
+            sources, and spot-checked by hand. Not an official voter guide. See your official ballot at{" "}
+            <a
+                href="https://www.sec.state.ma.us/divisions/elections/elections-and-voting.htm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-slate-700"
+            >
+                sec.state.ma.us
+            </a>
+            .
+        </p>
     );
 }

@@ -3,19 +3,18 @@ import {
     CandidateMatch,
     Candidate,
     TopicResult,
+    MatchDetail,
     CandidateTopicAlignment,
     Statement,
 } from "@/types";
 
 /**
- * Likert alignment scoring:
- * For each statement the user responded to, we compute the distance between
- * the user's rating (1-5) and each candidate's agreement (1-5).
- * Distance 0 = perfect match → contribution of 1.0
- * Distance 4 = total opposite → contribution of 0.0
- *
- * Alignment score = average contribution across all statements relevant to
- * the candidate's race, expressed as 0-100.
+ * Agreement scoring:
+ * Only statements where the candidate has a stated position count. For each,
+ * closeness = 1 - |user - candidate| / 4, so matching intensity matters:
+ * "Agree" vs. a candidate's "Strongly agree" is 75%, not 100%.
+ * Score = average closeness, 0-100. Separately, answers within 1 point are
+ * counted as "same side" for the label.
  */
 export function computeMatches(
     candidates: Candidate[],
@@ -25,32 +24,43 @@ export function computeMatches(
     return candidates.map((candidate) => {
         let totalAlignment = 0;
         let count = 0;
+        let agree = 0;
+        const details: MatchDetail[] = [];
 
         for (const response of responses) {
             const statement = allStatements.find((s) => s.id === response.statementId);
             if (!statement) continue;
-            if (statement.race !== candidate.race) continue;
 
             const candidateAgreement = statement.candidateAgreement[candidate.id];
-            // Unknown positions (null) are skipped, not treated as neutral
+            // Only the candidate's stated positions count. Silence (null) is
+            // skipped: it neither raises nor lowers their score.
             if (candidateAgreement == null) continue;
 
-            // Distance 0-4, translated to alignment 0-1
+            // Distance 0-4 on the Likert scale → closeness 1.0-0.0, so
+            // "Agree" vs. a candidate's "Strongly agree" is a partial match
             const distance = Math.abs(response.value - candidateAgreement);
-            const alignment = 1 - distance / 4;
-            totalAlignment += alignment;
+            totalAlignment += 1 - distance / 4;
+            if (distance <= 1) agree++; // same side, for the "same side on X of Y" label
+            details.push({
+                statement,
+                candidateValue: candidateAgreement,
+                userValue: response.value,
+                agrees: distance <= 1,
+            });
             count++;
         }
 
-        const score = count > 0 ? Math.round((totalAlignment / count) * 100) : 0;
-        return { candidate, score, maxScore: 100 };
+        // Average closeness on this candidate's stated positions.
+        // Fewer than 2 → no score ("not enough info", never 0%).
+        const score = count >= 2 ? Math.round((totalAlignment / count) * 100) : null;
+        return { candidate, score, basedOn: count, agreeCount: agree, details, maxScore: 100 };
     });
 }
 
 /**
  * Returns a percentage (0-100) for a match result.
  */
-export function matchPercent(match: CandidateMatch): number {
+export function matchPercent(match: CandidateMatch): number | null {
     return match.score;
 }
 
@@ -113,28 +123,30 @@ export function computeTopicResults(
         const avgIntensity = data.totalIntensity / data.count;
 
         // ── Per-candidate alignment on this topic ──────────────────────────
-        // Only include candidates whose race covers at least one statement in this topic
-        const relevantRaces = new Set(data.statements.map((s) => s.race));
-        const relevantCandidates = candidates.filter((c) => relevantRaces.has(c.race));
+        // Candidates with a stated position on any of this topic's statements
+        const relevantCandidates = candidates.filter((c) =>
+            data.statements.some((s) => s.candidateAgreement[c.id] != null)
+        );
 
         const candidateAlignments: CandidateTopicAlignment[] = relevantCandidates
             .map((candidate) => {
                 let totalAlign = 0;
                 let n = 0;
                 for (const statement of data.statements) {
-                    if (statement.race !== candidate.race) continue;
                     const userVal = data.responseMap.get(statement.id);
                     const candAgreement = statement.candidateAgreement[candidate.id];
                     if (userVal === undefined || candAgreement == null) continue;
                     const distance = Math.abs(userVal - candAgreement);
-                    totalAlign += 1 - distance / 4;
+                    totalAlign += 1 - distance / 4; // same closeness rule as the overall score
                     n++;
                 }
                 return {
                     candidate,
-                    alignmentScore: n > 0 ? Math.round((totalAlign / n) * 100) : 50,
+                    alignmentScore: n > 0 ? Math.round((totalAlign / n) * 100) : null,
                 };
             })
+            // Candidates with no known position on this topic aren't ranked on it
+            .filter((a): a is CandidateTopicAlignment => a.alignmentScore !== null)
             .sort((a, b) => b.alignmentScore - a.alignmentScore);
 
         // ── Biggest wedge: anchored on the user's closest candidate ─────────
@@ -146,7 +158,7 @@ export function computeTopicResults(
         if (relevantCandidates.length >= 2) {
             const avgAgreements = relevantCandidates.map((c) => {
                 const vals = data.statements
-                    .filter((s) => s.race === c.race && s.candidateAgreement[c.id] != null)
+                    .filter((s) => s.candidateAgreement[c.id] != null)
                     .map((s) => s.candidateAgreement[c.id] as number);
                 const avg = vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
                 return { candidate: c, avg };
@@ -174,6 +186,8 @@ export function computeTopicResults(
             for (const other of avgAgreements) {
                 if (!anchor) break;
                 if (other.candidate.id === anchor.candidate.id) continue;
+                // Only contrast candidates running against each other
+                if (other.candidate.race !== anchor.candidate.race) continue;
                 const gap = Math.abs(anchor.avg - other.avg);
                 if (gap < 1) continue; // not meaningfully different
 

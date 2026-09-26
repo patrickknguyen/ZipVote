@@ -1,5 +1,5 @@
 // Race ids must match RACES in agents/config.py
-export type Race = "senate" | "house_ma7" | "governor";
+export type Race = "senate" | "governor";
 
 export type Party = "Democrat" | "Republican" | "Independent";
 
@@ -25,13 +25,18 @@ export interface Candidate {
  */
 export interface Statement {
     id: string;
-    race: Race;
+    // "ballot": one question set for the whole ballot. Any candidate with a
+    // score in candidateAgreement is rated on it, whatever office they seek.
+    race: string;
     topic: string;
     text: string; // Declarative sentence, e.g. "The federal government should…"
     // 1=strongly disagree … 5=strongly agree; null = not enough public information
     candidateAgreement: Record<string, number | null>;
     // Verbatim quote and source URL behind each score (null when unknown)
     evidence?: Record<string, { quote: string; source: string } | null>;
+    // false when a candidate's quote shows their side indirectly (a related
+    // action or statement) rather than stating this exact policy
+    evidenceDirect?: Record<string, boolean>;
     raceInsight?: string;
     // "Learn more" background shown in quiz dropdown
     policyBackground?: string;
@@ -39,6 +44,20 @@ export interface Statement {
     policySource?: string;
     // One-sentence position per candidate, shown on results screen
     candidatePositions?: Record<string, string>;
+}
+
+/** Short background generated from sources; every sentence has a quote. */
+export interface CandidateBio {
+    sentences: { text: string; quote: string; source: string }[];
+    selfDescribed: boolean; // true when the only source is the campaign's own About page
+}
+
+/** One question behind a candidate's score: what they said vs. what the user said. */
+export interface MatchDetail {
+    statement: Statement;
+    candidateValue: number; // candidate's 1-5 position
+    userValue: number;      // user's 1-5 answer
+    agrees: boolean;        // within 1 point
 }
 
 export interface UserResponse {
@@ -51,7 +70,10 @@ export type UserAnswer = UserResponse;
 
 export interface CandidateMatch {
     candidate: Candidate;
-    score: number;    // 0-100 alignment percentage
+    score: number | null; // 0-100 alignment; null = no known positions to compare
+    basedOn: number;      // how many of this candidate's stated positions the user rated
+    agreeCount: number;   // of those, how many the user agreed with (within 1 point)
+    details: MatchDetail[]; // each question behind the score, for the results dropdown
     maxScore: number; // always 100 conceptually, kept for API compat
 }
 

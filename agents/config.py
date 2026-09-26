@@ -20,14 +20,27 @@ Source strategy (enforced by the scout, not here):
 Candidate options:
   - ballotpedia_slug: exact Ballotpedia page name when the plain name is
     ambiguous (non-incumbents usually need a state suffix).
-  - skip_wikipedia: True when the candidate's name matches a different,
-    better-known person on Wikipedia.
+  - campaign_urls: the candidate's own issue or platform pages. Read first
+    and ranked highest, since they state current positions in their words.
+  - skip_wikipedia: True when the candidate has no Wikipedia page and their
+    name matches a different person's.
+  - wikipedia_slug: exact Wikipedia page name when the plain name belongs to
+    someone else.
+  - bio_urls: an About page, used for the bio only when the candidate has no
+    Wikipedia page. The app labels bios from these as self-described.
+  - exclude_lines: text snippets; any source line containing one is dropped
+    before generation. Use when a spot-check finds a source is wrong, and
+    note why and the correcting source next to it.
   - confirm_on_ballot: True when ballot status came from Ballotpedia or
     Wikipedia and still needs checking against the official list from the
     Massachusetts Secretary of the Commonwealth.
 
 Races below are the November 3, 2026 general election for zip 02144
-(Somerville, MA): U.S. Senate, U.S. House MA-7, and Governor.
+(Somerville, MA), checked against the Secretary of the Commonwealth's
+official candidate list on Sep 25, 2026:
+  - U.S. Senate and Governor are contested and included.
+  - U.S. House MA-7 is left out: Ayanna Pressley is unopposed, so there is
+    nothing to compare.
 """
 
 RACES = [
@@ -37,14 +50,9 @@ RACES = [
         "candidates": ["markey", "deaton"],
     },
     {
-        "id": "house_ma7",
-        "title": "U.S. House — Massachusetts 7th District, Nov 3 2026",
-        "candidates": ["pressley", "linardon"],
-    },
-    {
         "id": "governor",
         "title": "Governor — Massachusetts, Nov 3 2026",
-        "candidates": ["healey", "minogue", "james", "kokonezis_hanino"],
+        "candidates": ["healey", "minogue", "james"],
     },
 ]
 
@@ -56,6 +64,13 @@ CANDIDATES = {
         "party": "Democrat",
         "race": "senate",
         "state": "MA",
+        "campaign_urls": [
+            "https://www.edmarkey.com/issues-priorities/pathways-to-opportunity/",
+            "https://www.edmarkey.com/issues-priorities/affordable-care-for-all/",
+            "https://www.edmarkey.com/issues-priorities/building-a-resilient-future/",
+            "https://www.edmarkey.com/issues-priorities/freedom-equality-opportunity/",
+            "https://www.edmarkey.com/issues-priorities/justice-safety-for-all/",
+        ],
     },
     "deaton": {
         "id": "deaton",
@@ -64,24 +79,10 @@ CANDIDATES = {
         "race": "senate",
         "state": "MA",
         "ballotpedia_slug": "John_Deaton_(Massachusetts)",
+        "campaign_urls": ["https://www.johndeatonforsenate.com/issues"],
+        # No Wikipedia page, so the bio comes from his campaign's About page
+        "bio_urls": ["https://www.johndeatonforsenate.com/meet-john"],
         "skip_wikipedia": True,
-    },
-    # ── U.S. House, MA-7 ─────────────────────────────────────────────────────
-    "pressley": {
-        "id": "pressley",
-        "name": "Ayanna Pressley",
-        "party": "Democrat",
-        "race": "house_ma7",
-        "state": "MA",
-    },
-    "linardon": {
-        "id": "linardon",
-        "name": "Kelechi Linardon",
-        "party": "Independent",
-        "race": "house_ma7",
-        "state": "MA",
-        "skip_wikipedia": True,
-        "confirm_on_ballot": True,
     },
     # ── Governor ─────────────────────────────────────────────────────────────
     "healey": {
@@ -90,6 +91,13 @@ CANDIDATES = {
         "party": "Democrat",
         "race": "governor",
         "state": "MA",
+        # No issues page on the campaign site; this is her stated record
+        "campaign_urls": ["https://maurahealey.com/accomplishments/"],
+        # Human corrections: source lines that are wrong, removed before generation.
+        # Wikipedia said the 2026 law removed "all restrictions"; the cited NBC
+        # Boston article says it changed the rules for abortions at 24+ weeks.
+        # https://www.nbcboston.com/news/local/massachusets-new-abortion-law-signed/3995004/
+        "exclude_lines": ["removing all restrictions on abortion"],
     },
     "minogue": {
         "id": "minogue",
@@ -97,7 +105,10 @@ CANDIDATES = {
         "party": "Republican",
         "race": "governor",
         "state": "MA",
-        "ballotpedia_slug": "Mike_Minogue",
+        "ballotpedia_slug": "Michael_Minogue",
+        "campaign_urls": ["https://minogueforma.com/blueprint-for-a-better-future/"],
+        # No Wikipedia page, so the bio comes from his campaign's About page
+        "bio_urls": ["https://minogueforma.com/meet-mike/"],
     },
     "james": {
         "id": "james",
@@ -105,17 +116,25 @@ CANDIDATES = {
         "party": "Independent",
         "race": "governor",
         "state": "MA",
-        "ballotpedia_slug": "Andrea_James_(Massachusetts)",
-        "skip_wikipedia": True,  # a different Andrea James has a Wikipedia page
-        "confirm_on_ballot": True,
-    },
-    "kokonezis_hanino": {
-        "id": "kokonezis_hanino",
-        "name": "Muhammed Kokonezis-Hanino",
-        "party": "Independent",
-        "race": "governor",
-        "state": "MA",
-        "skip_wikipedia": True,
-        "confirm_on_ballot": True,
+        "ballotpedia_slug": "Andrea_James",
+        # "Andrea_James" on Wikipedia is a different person; hers is this one
+        "wikipedia_slug": "Andrea_C._James",
+        # The 13 issue pages linked from https://www.ajforma.com/platform
+        # (the platform page itself only shows headings)
+        "campaign_urls": [
+            "https://www.ajforma.com/housing-affordability",
+            "https://www.ajforma.com/universal-healthcare",
+            "https://www.ajforma.com/universal-childcare",
+            "https://www.ajforma.com/education",
+            "https://www.ajforma.com/immigration-protection",
+            "https://www.ajforma.com/lowering-utility-costs",
+            "https://www.ajforma.com/labor-rights",
+            "https://www.ajforma.com/lgbtq-protections",
+            "https://www.ajforma.com/climate-and-clean-energy",
+            "https://www.ajforma.com/ai-and-data-centers",
+            "https://www.ajforma.com/invest-in-communities-not-prisons",
+            "https://www.ajforma.com/no-war-no-genocide",
+            "https://www.ajforma.com/justice-and-freedom",
+        ],
     },
 }
