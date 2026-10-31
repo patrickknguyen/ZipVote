@@ -1,27 +1,30 @@
 """
 Agent configuration: candidates and race definitions for the ZipVote pipeline.
 
-This file intentionally contains NO hardcoded URLs. The Scout agent
-auto-constructs and validates Ballotpedia + Wikipedia URLs from candidate
-names at runtime, making this configuration scale to any race in any state
-without manual URL curation.
+Scout finds each candidate's sources from public records (state voter
+guide, FEC filings, Wikipedia) and follows them to the candidate's own site,
+so most candidates need only a name, party, race and state.
 
 To add a new race:
   1. Add an entry to RACES with a unique id, title, and list of candidate ids.
   2. Add each candidate to CANDIDATES with id, name, party, race, and state.
   3. Run `python -m agents.scout` — URLs are discovered automatically.
 
-Source strategy (enforced by the scout, not here):
-  1. Ballotpedia  — primary source for issue positions and campaign themes.
-  2. Wikipedia    — primary source for biography and legislative history.
-  Both are third-party curated with visible citations, minimising hallucination
-  risk on politically sensitive content.
+Source strategy is described in agents/scout.py. Every source is a public
+page; nothing is typed in by hand.
+
+Race options:
+  - voter_guide: {"live": url, "archive": url} for the state's official
+    candidate statement page. As-of runs read the archive.
+  - fec_office: "S" or "H" for federal races, so Scout can find the
+    campaign's website on its FEC filing. House races also need "district".
+  - identity_terms: words a third-party page must mention to count as this
+    race's candidate, when the defaults (office name) aren't enough.
 
 Candidate options:
-  - ballotpedia_slug: exact Ballotpedia page name when the plain name is
-    ambiguous (non-incumbents usually need a state suffix).
-  - campaign_urls: the candidate's own issue or platform pages. Read first
-    and ranked highest, since they state current positions in their words.
+  - campaign_urls: the candidate's own issue pages, when Scout can't find
+    them from public records. Read as listed, with no link following.
+  - fec_candidate_id: the FEC id when the name search finds more than one.
   - skip_wikipedia: True when the candidate has no Wikipedia page and their
     name matches a different person's.
   - wikipedia_slug: exact Wikipedia page name when the plain name belongs to
@@ -47,6 +50,7 @@ RACES = [
     {
         "id": "senate",
         "state": "MA",
+        "fec_office": "S",
         "title": "U.S. Senate — Massachusetts, Nov 3 2026",
         "candidates": ["markey", "deaton"],
     },
@@ -61,6 +65,12 @@ RACES = [
     {
         "id": "ca_governor",
         "state": "CA",
+        # Statements candidates wrote for the official guide. The live page
+        # moves on to the next election; the archive keeps June 2, 2026.
+        "voter_guide": {
+            "live": "https://voterguide.sos.ca.gov/candidates/governor-candidate-statements.htm",
+            "archive": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+        },
         "title": "Governor — California, Nov 3 2026",
         "candidates": ["becerra", "hilton"],
     },
@@ -88,7 +98,6 @@ CANDIDATES = {
         "party": "Republican",
         "race": "senate",
         "state": "MA",
-        "ballotpedia_slug": "John_Deaton_(Massachusetts)",
         "campaign_urls": ["https://www.johndeatonforsenate.com/issues"],
         # No Wikipedia page, so the bio comes from his campaign's About page
         "bio_urls": ["https://www.johndeatonforsenate.com/meet-john"],
@@ -115,7 +124,6 @@ CANDIDATES = {
         "party": "Republican",
         "race": "governor",
         "state": "MA",
-        "ballotpedia_slug": "Michael_Minogue",
         "campaign_urls": ["https://minogueforma.com/blueprint-for-a-better-future/"],
         # No Wikipedia page, so the bio comes from his campaign's About page
         "bio_urls": ["https://minogueforma.com/meet-mike/"],
@@ -126,7 +134,6 @@ CANDIDATES = {
         "party": "Independent",
         "race": "governor",
         "state": "MA",
-        "ballotpedia_slug": "Andrea_James",
         # "Andrea_James" on Wikipedia is a different person; hers is this one
         "wikipedia_slug": "Andrea_C._James",
         # The 13 issue pages linked from https://www.ajforma.com/platform
@@ -175,8 +182,7 @@ CANDIDATES = {
         "race": "ca_governor",
         "state": "CA",
         # This page loads with JavaScript; if the scraper gets almost no
-        # text, paste it into data/raw/hilton_manual.txt under
-        # "## Campaign site: https://stevehiltonforgovernor.com/policies"
+        # text it is skipped, never filled in by hand
         "campaign_urls": ["https://stevehiltonforgovernor.com/policies"],
     },
 }

@@ -197,9 +197,8 @@ def call_json(prompt: str, retries: int = 2, fast: bool = False) -> dict:
 # ---------------------------------------------------------------------------
 
 SOURCE_HEADER = re.compile(
-    r"^#{1,3}\s*(Source|Ballotpedia|Wikipedia|Campaign site|Bio page)\s*:\s*(https?://\S+)", re.I
+    r"^#{1,3}\s*(Source|Voter guide|Wikipedia|Campaign site|Bio page)\s*:\s*(https?://\S+)", re.I
 )
-MANUAL_HEADER = re.compile(r"^#{1,3}\s*Manual notes", re.I)
 
 POSITION_WORDS = re.compile(
     r"\b(support\w*|oppos\w*|vot(?:e|ed|es|ing)|sponsor\w*|cosponsor\w*|co-sponsor\w*|"
@@ -220,34 +219,33 @@ ISSUE_WORDS = re.compile(
 
 @dataclass
 class Segment:
-    source: str                     # URL, or "manual notes"
+    source: str                     # URL of a public page
     lines: list = field(default_factory=list)
-    kind: str = "source"            # "campaign site", "wikipedia", ...
+    kind: str = "source"            # "voter guide", "campaign site", "wikipedia", ...
 
-    @property
-    def is_manual(self) -> bool:
-        return not self.source.startswith("http")
 
 
 def parse_sources(text: str) -> list:
-    """Split a raw candidate file into segments, one per source header."""
+    """
+    Split a raw candidate file into segments, one per source header. Text
+    that isn't under a source URL is ignored: every quote must come from a
+    public page anyone can check, so there are no hand-written notes.
+    """
     segments = []
-    current = Segment("manual notes")
+    current = None
     for line in text.splitlines():
         stripped = line.strip()
         url_match = SOURCE_HEADER.match(stripped)
-        if url_match or MANUAL_HEADER.match(stripped):
-            if current.lines:
+        if url_match:
+            if current and current.lines:
                 segments.append(current)
-            current = (Segment(url_match.group(2), kind=url_match.group(1).lower())
-                       if url_match else Segment("manual notes"))
+            current = Segment(url_match.group(2), kind=url_match.group(1).lower())
             continue
-        if stripped:
+        if stripped and current is not None:
             current.lines.append(stripped)
-    if current.lines:
+    if current and current.lines:
         segments.append(current)
-    # Drop a leading segment that is only the file's title line
-    return [s for s in segments if any(not l.startswith("# ") for l in s.lines)]
+    return segments
 
 
 def line_score(line: str) -> int:
@@ -256,26 +254,19 @@ def line_score(line: str) -> int:
 
 def select_excerpt(segments: list, budget: int = EXCERPT_BUDGET_CHARS) -> str:
     """
-    Keep manual notes in full, then fill the rest of the budget with the
-    highest-scoring lines from scraped sources. Lines stay in their original
-    order under their source header so the model can cite them.
+    Fill the budget with the highest-scoring lines from the sources. Lines
+    stay in their original order under their source header so the model can
+    cite them.
     """
     keep = set()   # (segment index, line index)
     used = 0
 
-    for si, seg in enumerate(segments):
-        if seg.is_manual:
-            for li, line in enumerate(seg.lines):
-                if used + len(line) > budget:
-                    break
-                keep.add((si, li))
-                used += len(line) + 1
-
-    # Campaign sites state current positions in the candidate's own words, so
-    # their lines outrank Wikipedia's (which skews toward older, notable moments).
+    # Campaign sites and voter guide statements state current positions in the
+    # candidate's own words, so their lines outrank Wikipedia's (which skews
+    # toward older, notable moments).
     ranked = [
-        (line_score(line) + (3 if seg.kind == "campaign site" else 0), si, li)
-        for si, seg in enumerate(segments) if not seg.is_manual
+        (line_score(line) + (3 if seg.kind in ("campaign site", "voter guide") else 0), si, li)
+        for si, seg in enumerate(segments)
         for li, line in enumerate(seg.lines)
     ]
     ranked = [r for r in ranked if r[0] > 0]
@@ -339,14 +330,19 @@ List up to {max_positions} policy positions this text states explicitly for
 - Cover as many **different issue areas** as the text addresses (for example
   abortion, health care, climate and energy, guns, immigration, economy,
   housing, education) before listing a second position on any one area.
-- When both a campaign page and older history cover an issue, quote the
-  campaign page: it is the candidate's current position in their own words.
+- When both the candidate's own words (a campaign page or voter guide
+  statement) and older history cover an issue, quote the candidate's own
+  words: they are the current position.
 
 For each position give:
 - "issue": a 1–3 word label (e.g. "Drug Prices", "Nuclear Power")
 - "stance": one plain sentence restating only what the quote says
 - "quote": one or two consecutive sentences copied **word for word** from
   the excerpt, at least 25 characters, no edits, no ellipses
+
+Only list positions that belong to {name}: their own words, or their own
+votes, bills, and plans. Skip quotes from other people, positions of
+opponents or critics, and descriptions of what others say {name} believes.
 
 Skip biography, endorsements, fundraising, and vague slogans with no policy.
 
@@ -551,6 +547,10 @@ their position. Decide:
     the candidate's side through a closely related action or statement.
   - summary_faithful: does the summary say only what the quote says? Mark it
     false if it adds any claim, detail, or comparison not in the quote.
+  - own_position: true if the quote is the candidate's own words, or describes
+    the candidate's own vote, bill, or plan. False if it is someone else
+    speaking (an opponent, critic, or journalist characterizing them) or
+    describes another person's position.
 
 Also review each statement's wording. Mark it loaded if it uses emotional or
 one-sided language, makes one answer sound obviously correct, combines more
@@ -567,7 +567,7 @@ weakened" or "loopholes should remain open"). Loaded statements are removed.
 Respond with this exact JSON structure:
 {{
   "scores": [
-    {{"statement_id": "s1", "candidate_id": "x", "supported": true, "best_score": 5, "direct": false, "summary_faithful": true, "note": "short reason"}}
+    {{"statement_id": "s1", "candidate_id": "x", "supported": true, "best_score": 5, "direct": false, "summary_faithful": true, "own_position": true, "note": "short reason"}}
   ],
   "wording": [
     {{"statement_id": "s1", "loaded": false, "note": "short reason"}}
@@ -618,7 +618,7 @@ HEURISTICS = {
     1: "Say only what you can point to",
     2: "Don't fill the silence",
     3: "Don't outrun the evidence",
-    4: "Let people speak for themselves",
+    4: "Let people speak for themselves",   # speaker check in verify_with_llm
     5: "Ask without leaning",
     6: "Give everyone equal footing",
 }
@@ -671,7 +671,17 @@ def run_record(race: dict) -> dict:
         "fast_model": active_model(fast=True),
         "prompts": {k: fp(v) for k, v in sorted(prompts.items())},
         "sources": sources,
+        # How Scout read each candidate's sources: live or as of a date
+        "scout": {cid: scout_mode(cid) for cid in race["candidates"]},
     }
+
+
+def scout_mode(cid: str):
+    path = RAW_DIR / f"{cid}.sources.json"
+    if not path.exists():
+        return None
+    rec = json.loads(path.read_text(encoding="utf-8"))
+    return {k: rec.get(k) for k in ("mode", "as_of", "retrieved_at")}
 
 
 def flag_text(f: dict) -> str:
@@ -748,6 +758,11 @@ def verify_with_llm(data: dict, flags: list) -> None:
             continue
         current = s["candidateAgreement"][cid]
         if current is None:
+            continue
+        if item.get("own_position") is False:
+            flag(flags, 4, f"quote isn't the candidate's own position ({item.get('note', '')}), set to unknown",
+                 s["id"], cid, item=score_snapshot(s, cid))
+            set_unknown(s, cid)
             continue
         if item.get("supported") is False:
             flag(flags, 3, f"quote doesn't show a side ({item.get('note', '')}), set to unknown", s["id"], cid,
@@ -1189,8 +1204,17 @@ def process_race(race: dict, verify: bool = True):
     equalize_coverage(data, race, positions, flags)
     check_structure(data, race, flags)
 
+    # How many distinct public sources each candidate's scores rest on, so the
+    # app can say "based on 1 source" when a profile is thin
+    sources_used = {
+        cid: sorted({s["evidence"][cid]["source"] for s in data["statements"]
+                     if (s.get("evidence") or {}).get(cid)})
+        for cid in race["candidates"]
+    }
+
     output = {
         "run": run_record(race),
+        "sourcesUsed": sources_used,
         "race_id": race["id"],
         "race_title": race["title"],
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
