@@ -607,6 +607,37 @@ def load_sources(race: dict) -> dict:
 # Checks
 # ---------------------------------------------------------------------------
 
+# Every flag names the heuristic in HEURISTICS.md that raised it, so the
+# glass box can say which rule shaped a question and the scorecard can count
+# how often each rule fired. A failed model call is not a rule firing: it is
+# tagged "system" so pipeline breakdowns are counted separately.
+HEURISTICS = {
+    1: "Say only what you can point to",
+    2: "Don't fill the silence",
+    3: "Don't outrun the evidence",
+    4: "Let people speak for themselves",
+    5: "Ask without leaning",
+    6: "Give everyone equal footing",
+}
+
+
+def flag(flags: list, heuristic, detail: str, statement: str = None, candidate: str = None) -> None:
+    """Record a flag. heuristic is a number from HEURISTICS, or None for a system failure."""
+    flags.append({
+        "heuristic": heuristic,
+        "name": HEURISTICS.get(heuristic, "System"),
+        "statement": statement,
+        "candidate": candidate,
+        "detail": detail,
+    })
+
+
+def flag_text(f: dict) -> str:
+    where = " / ".join(x for x in (f["statement"], f["candidate"]) if x)
+    tag = f"H{f['heuristic']}" if f["heuristic"] else "SYSTEM"
+    return f"[{tag}] {where + ': ' if where else ''}{f['detail']}"
+
+
 def set_unknown(statement: dict, cid: str) -> None:
     statement["candidateAgreement"][cid] = None
     statement.setdefault("evidence", {})[cid] = None
@@ -654,7 +685,7 @@ def verify_with_llm(data: dict, flags: list) -> None:
     try:
         result = call_json(prompt)
     except Exception as e:  # a failed check must never silently pass
-        flags.append(f"verification call failed ({e}); scores are unchecked")
+        flag(flags, None, f"verification call failed ({e}); scores are unchecked")
         return
 
     by_id = {s["id"]: s for s in data["statements"]}
@@ -667,7 +698,7 @@ def verify_with_llm(data: dict, flags: list) -> None:
         if current is None:
             continue
         if item.get("supported") is False:
-            flags.append(f"{s['id']} / {cid}: quote doesn't show a side ({item.get('note', '')}), set to unknown")
+            flag(flags, 3, f"quote doesn't show a side ({item.get('note', '')}), set to unknown", s["id"], cid)
             set_unknown(s, cid)
             continue
         best = item.get("best_score")
@@ -677,21 +708,21 @@ def verify_with_llm(data: dict, flags: list) -> None:
             # support the original reading, so that becomes unknown instead.
             if (best >= 3) == (current >= 3) or best == 3 or current == 3:
                 s["candidateAgreement"][cid] = best
-                flags.append(f"{s['id']} / {cid}: score adjusted {current} → {best} ({item.get('note', '')})")
+                flag(flags, 3, f"score adjusted {current} → {best} ({item.get('note', '')})", s["id"], cid)
             else:
-                flags.append(f"{s['id']} / {cid}: quote points the other way ({current} vs {best}), set to unknown")
+                flag(flags, 3, f"quote points the other way ({current} vs {best}), set to unknown", s["id"], cid)
                 set_unknown(s, cid)
                 continue
         # Record how directly the quote states the policy (shown in the app)
         if item.get("direct") is False:
             s.setdefault("evidenceDirect", {})[cid] = False
         if item.get("summary_faithful") is False:
-            flags.append(f"{s['id']} / {cid}: summary adds claims not in the quote ({item.get('note', '')}), rewrite it")
+            flag(flags, 3, f"summary adds claims not in the quote ({item.get('note', '')}), rewrite it", s["id"], cid)
     loaded = set()
     for item in result.get("wording", []):
         if item.get("loaded"):
             loaded.add(item.get("statement_id"))
-            flags.append(f"dropped (wording): {item.get('statement_id')} ({item.get('note', '')})")
+            flag(flags, 5, f"dropped for loaded wording ({item.get('note', '')})", item.get("statement_id"))
     data["statements"] = [s for s in data["statements"] if s["id"] not in loaded]
 
 
@@ -720,14 +751,14 @@ def equalize_coverage(data: dict, race: dict, positions: dict, flags: list) -> N
             break
         drop = solo[-1]
         data["statements"].remove(drop)
-        flags.append(f"dropped (coverage): \"{drop['text'][:70]}\" so {cid} doesn't outnumber others")
+        flag(flags, 6, f"dropped \"{drop['text'][:70]}\" so this candidate doesn't outnumber others", drop["id"], cid)
 
 
 def check_structure(data: dict, race: dict, flags: list) -> None:
     """Direction balance and thin-data checks on the statements that survived."""
     statements = data["statements"]
     if len(statements) < 3:
-        flags.append(f"only {len(statements)} usable statement(s)")
+        flag(flags, 3, f"only {len(statements)} usable statement(s)")
 
     # Direction: if a candidate agrees (4-5) with every one of their scored
     # statements, "agree" always means siding with them.
@@ -735,9 +766,9 @@ def check_structure(data: dict, race: dict, flags: list) -> None:
         vals = [s["candidateAgreement"][cid] for s in statements
                 if s["candidateAgreement"].get(cid) is not None]
         if len(vals) >= 3 and all(v >= 4 for v in vals):
-            flags.append(f"{cid}: agrees with all {len(vals)} statements, phrase some the other way")
+            flag(flags, 5, f"agrees with all {len(vals)} statements, phrase some the other way", candidate=cid)
         if len(vals) < 2:
-            flags.append(f"{cid}: scored on only {len(vals)} statement(s), too few to show a score")
+            flag(flags, 3, f"scored on only {len(vals)} statement(s), too few to show a score", candidate=cid)
 
 
 def drop_unscorable(data: dict, flags: list, stage: str) -> None:
@@ -748,7 +779,7 @@ def drop_unscorable(data: dict, flags: list, stage: str) -> None:
         if len(known) >= MIN_SCORED:
             kept.append(s)
         else:
-            flags.append(f"dropped ({stage}): \"{s['text'][:70]}\" had {len(known)} scored candidate(s)")
+            flag(flags, 2, f"dropped ({stage}): \"{s['text'][:70]}\" had {len(known)} scored candidate(s)", s["id"])
     data["statements"] = kept
 
 
@@ -763,7 +794,7 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
         info = CANDIDATES[cid]
         positions[cid] = []
         if not sources.get(cid):
-            flags.append(f"{cid}: no sources, no positions")
+            flag(flags, 1, "no sources, no positions", candidate=cid)
             continue
         prompt = EXTRACT_PROMPT_TEMPLATE.format(
             name=info["name"], party=info["party"], race_title=RACE_TITLES[info["race"]],
@@ -780,7 +811,7 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
         try:
             found = call_json(prompt, fast=True).get("positions", [])
         except Exception as e:
-            flags.append(f"{cid}: position listing failed ({e})")
+            flag(flags, None, f"position listing failed ({e})", candidate=cid)
             continue
         missed = 0
         for p in found:
@@ -798,7 +829,7 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
         print(f"     {len(positions[cid])} positions kept, {missed} dropped (quote not in source)")
         cache_put(f"positions_{cid}", key, positions[cid])
         if missed:
-            flags.append(f"{cid}: {missed} listed position(s) dropped, quote not found in sources")
+            flag(flags, 1, f"{missed} listed position(s) dropped, quote not found in sources", candidate=cid)
     return positions
 
 
@@ -838,7 +869,7 @@ def attach_evidence(data: dict, race: dict, positions: dict, flags: list) -> Non
             if score is None:
                 set_unknown(s, cid)
             elif not valid_score or pos is None or not pos["id"].startswith(f"{cid}."):
-                flags.append(f"{s['id']} / {cid}: score {score!r} without a valid cited position, set to unknown")
+                flag(flags, 1, f"score {score!r} without a valid cited position, set to unknown", s["id"], cid)
                 set_unknown(s, cid)
             else:
                 s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"]}
@@ -866,7 +897,7 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
     try:
         result = call_json(FILL_PROMPT_TEMPLATE.format(items="\n\n".join(items)), fast=True)
     except Exception as e:
-        flags.append(f"gap-filling call failed ({e})")
+        flag(flags, None, f"gap-filling call failed ({e})")
         return
 
     stmts = {s["id"]: s for s in data["statements"]}
@@ -884,7 +915,7 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
         filled += 1
     print(f"     filled {filled}")
     if filled:
-        flags.append(f"gap-filling added {filled} score(s) the first pass missed (checked below)")
+        flag(flags, 2, f"gap-filling added {filled} score(s) the first pass missed (checked below)")
 
 
 def scored_counts(data: dict, race: dict) -> dict:
@@ -920,7 +951,7 @@ def top_up(data: dict, race: dict, positions: dict, flags: list) -> list:
         try:
             new = call_json(prompt).get("statements", [])
         except Exception as e:
-            flags.append(f"{cid}: top-up failed ({e})")
+            flag(flags, None, f"top-up failed ({e})", candidate=cid)
             continue
         added = 0
         for n in new[:need]:
@@ -942,7 +973,7 @@ def top_up(data: dict, race: dict, positions: dict, flags: list) -> list:
             data["statements"].append(st)
             new_statements.append(st)
             added += 1
-        flags.append(f"{cid}: topped up with {added} question(s) from their own positions")
+        flag(flags, 6, f"topped up with {added} question(s) from their own positions", candidate=cid)
     return new_statements
 
 
@@ -977,7 +1008,7 @@ def balance_direction(data: dict, race: dict, flags: list) -> None:
     try:
         result = call_json(FLIP_PROMPT_TEMPLATE.format(items=items))
     except Exception as e:
-        flags.append(f"direction balancing failed ({e})")
+        flag(flags, None, f"direction balancing failed ({e})")
         return
     by_id = {s["id"]: s for s in to_flip}
     for r in result.get("rewrites", []):
@@ -990,7 +1021,8 @@ def balance_direction(data: dict, race: dict, flags: list) -> None:
         for c, v in st["candidateAgreement"].items():
             if v is not None:
                 st["candidateAgreement"][c] = 6 - v
-        flags.append(f"{st['id']}: rephrased as opposing policy (\"{old[:50]}\" → \"{st['text'][:50]}\")")
+        st["draft"] = old  # kept so the glass box can show the first draft
+        flag(flags, 5, f"rephrased as opposing policy (\"{old[:50]}\" → \"{st['text'][:50]}\")", st["id"])
 
 
 def bio_excerpt(segments: list, lines_per_source: int = 30) -> tuple:
@@ -1014,7 +1046,7 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
         info = CANDIDATES[cid]
         excerpt, kind = bio_excerpt(sources.get(cid, []))
         if not excerpt:
-            flags.append(f"{cid}: no Wikipedia or About page, no bio")
+            flag(flags, 1, "no Wikipedia or About page, no bio", candidate=cid)
             continue
         prompt = BIO_PROMPT_TEMPLATE.format(
             name=info["name"], party=info["party"],
@@ -1030,7 +1062,7 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
         try:
             found = call_json(prompt, fast=True).get("sentences", [])
         except Exception as e:
-            flags.append(f"{cid}: bio failed ({e})")
+            flag(flags, None, f"bio failed ({e})", candidate=cid)
             continue
         sentences = []
         for snt in found:
@@ -1039,7 +1071,7 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
                 sentences.append({"text": snt["text"], "quote": snt["quote"].strip(), "source": source})
         dropped = len(found) - len(sentences)
         if dropped:
-            flags.append(f"{cid}: {dropped} bio sentence(s) dropped, quote not found in sources")
+            flag(flags, 1, f"{dropped} bio sentence(s) dropped, quote not found in sources", candidate=cid)
         # "self-described" when the only source is the candidate's own About page
         bios[cid] = {"sentences": sentences, "selfDescribed": kind == "bio page"}
         cache_put(f"bio_{cid}", key, bios[cid])
@@ -1101,6 +1133,11 @@ def process_race(race: dict, verify: bool = True):
         "verified": verify,
         "statements": data["statements"],
         "flags": flags,
+        # How often each heuristic fired, for the rules scorecard
+        "flag_counts": {
+            (f"H{h}" if h else "system"): sum(1 for f in flags if f["heuristic"] == h)
+            for h in dict.fromkeys(f["heuristic"] for f in flags)
+        },
         # Step 1 output, kept for review (not used by the app)
         "positions": positions,
         # Sourced backgrounds, shown in the results dropdown
@@ -1115,7 +1152,7 @@ def process_race(race: dict, verify: bool = True):
     if flags:
         print(f"   🚩 {len(flags)} flag(s) to review:")
         for f in flags:
-            print(f"      - {f}")
+            print(f"      - {flag_text(f)}")
     else:
         print("   ✓ No flags")
     return output
