@@ -38,7 +38,10 @@ Usage:
 """
 
 import argparse
+import copy
+import hashlib
 import json
+import subprocess
 import os
 import re
 import unicodedata
@@ -621,21 +624,70 @@ HEURISTICS = {
 }
 
 
-def flag(flags: list, heuristic, detail: str, statement: str = None, candidate: str = None) -> None:
-    """Record a flag. heuristic is a number from HEURISTICS, or None for a system failure."""
+def flag(flags: list, heuristic, detail: str, statement: str = None, candidate: str = None,
+         item=None) -> None:
+    """
+    Record a flag. heuristic is a number from HEURISTICS, or None for a system
+    failure. item keeps a copy of whatever was dropped or changed, as it was
+    before the change, so the evaluation can check whether each rule fired
+    correctly and the glass box can show what the rule removed.
+    """
     flags.append({
         "heuristic": heuristic,
         "name": HEURISTICS.get(heuristic, "System"),
         "statement": statement,
         "candidate": candidate,
         "detail": detail,
+        "item": copy.deepcopy(item),
     })
+
+
+def run_record(race: dict) -> dict:
+    """
+    Everything needed to reproduce or explain this run: the code version,
+    models, a fingerprint of every prompt, and of every candidate's sources.
+    """
+    def git(*args):
+        try:
+            return subprocess.run(["git", *args], capture_output=True, text=True,
+                                  cwd=Path(__file__).parent.parent).stdout.strip()
+        except OSError:
+            return ""
+
+    def fp(text: str) -> str:
+        return hashlib.sha256(text.encode("utf-8")).hexdigest()[:12]
+
+    prompts = {"SYSTEM_PROMPT": SYSTEM_PROMPT}
+    prompts.update({k: v for k, v in globals().items() if k.endswith("_PROMPT_TEMPLATE")})
+    sources = {}
+    for cid in race["candidates"]:
+        path = RAW_DIR / f"{cid}.txt"
+        sources[cid] = fp(path.read_text(encoding="utf-8")) if path.exists() else None
+    return {
+        "git_commit": git("rev-parse", "--short", "HEAD"),
+        # Uncommitted changes mean the commit alone doesn't reproduce this run
+        "uncommitted_changes": bool(git("status", "--porcelain", "agents")),
+        "model": active_model(),
+        "fast_model": active_model(fast=True),
+        "prompts": {k: fp(v) for k, v in sorted(prompts.items())},
+        "sources": sources,
+    }
 
 
 def flag_text(f: dict) -> str:
     where = " / ".join(x for x in (f["statement"], f["candidate"]) if x)
     tag = f"H{f['heuristic']}" if f["heuristic"] else "SYSTEM"
     return f"[{tag}] {where + ': ' if where else ''}{f['detail']}"
+
+
+def score_snapshot(statement: dict, cid: str) -> dict:
+    """One candidate's score on a statement, as it stood before a check changed it."""
+    return {
+        "text": statement.get("text"),
+        "score": statement["candidateAgreement"].get(cid),
+        "evidence": (statement.get("evidence") or {}).get(cid),
+        "summary": (statement.get("candidatePositions") or {}).get(cid),
+    }
 
 
 def set_unknown(statement: dict, cid: str) -> None:
@@ -698,7 +750,8 @@ def verify_with_llm(data: dict, flags: list) -> None:
         if current is None:
             continue
         if item.get("supported") is False:
-            flag(flags, 3, f"quote doesn't show a side ({item.get('note', '')}), set to unknown", s["id"], cid)
+            flag(flags, 3, f"quote doesn't show a side ({item.get('note', '')}), set to unknown", s["id"], cid,
+                 item=score_snapshot(s, cid))
             set_unknown(s, cid)
             continue
         best = item.get("best_score")
@@ -707,22 +760,26 @@ def verify_with_llm(data: dict, flags: list) -> None:
             # A change that flips sides (e.g. 5 → 2) means the quote doesn't
             # support the original reading, so that becomes unknown instead.
             if (best >= 3) == (current >= 3) or best == 3 or current == 3:
+                flag(flags, 3, f"score adjusted {current} → {best} ({item.get('note', '')})", s["id"], cid,
+                     item=score_snapshot(s, cid))
                 s["candidateAgreement"][cid] = best
-                flag(flags, 3, f"score adjusted {current} → {best} ({item.get('note', '')})", s["id"], cid)
             else:
-                flag(flags, 3, f"quote points the other way ({current} vs {best}), set to unknown", s["id"], cid)
+                flag(flags, 3, f"quote points the other way ({current} vs {best}), set to unknown", s["id"], cid,
+                     item=score_snapshot(s, cid))
                 set_unknown(s, cid)
                 continue
         # Record how directly the quote states the policy (shown in the app)
         if item.get("direct") is False:
             s.setdefault("evidenceDirect", {})[cid] = False
         if item.get("summary_faithful") is False:
-            flag(flags, 3, f"summary adds claims not in the quote ({item.get('note', '')}), rewrite it", s["id"], cid)
+            flag(flags, 3, f"summary adds claims not in the quote ({item.get('note', '')}), rewrite it", s["id"], cid,
+                 item=score_snapshot(s, cid))
     loaded = set()
     for item in result.get("wording", []):
         if item.get("loaded"):
             loaded.add(item.get("statement_id"))
-            flag(flags, 5, f"dropped for loaded wording ({item.get('note', '')})", item.get("statement_id"))
+            flag(flags, 5, f"dropped for loaded wording ({item.get('note', '')})", item.get("statement_id"),
+                 item=by_id.get(item.get("statement_id")))
     data["statements"] = [s for s in data["statements"] if s["id"] not in loaded]
 
 
@@ -751,7 +808,8 @@ def equalize_coverage(data: dict, race: dict, positions: dict, flags: list) -> N
             break
         drop = solo[-1]
         data["statements"].remove(drop)
-        flag(flags, 6, f"dropped \"{drop['text'][:70]}\" so this candidate doesn't outnumber others", drop["id"], cid)
+        flag(flags, 6, f"dropped \"{drop['text'][:70]}\" so this candidate doesn't outnumber others", drop["id"], cid,
+             item=drop)
 
 
 def check_structure(data: dict, race: dict, flags: list) -> None:
@@ -779,7 +837,7 @@ def drop_unscorable(data: dict, flags: list, stage: str) -> None:
         if len(known) >= MIN_SCORED:
             kept.append(s)
         else:
-            flag(flags, 2, f"dropped ({stage}): \"{s['text'][:70]}\" had {len(known)} scored candidate(s)", s["id"])
+            flag(flags, 2, f"dropped ({stage}): \"{s['text'][:70]}\" had {len(known)} scored candidate(s)", s["id"], item=s)
     data["statements"] = kept
 
 
@@ -813,11 +871,11 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
         except Exception as e:
             flag(flags, None, f"position listing failed ({e})", candidate=cid)
             continue
-        missed = 0
+        missed = []
         for p in found:
             source = locate_quote(p.get("quote", ""), sources[cid])
             if source is None:
-                missed += 1
+                missed.append(p)
                 continue
             positions[cid].append({
                 "id": f"{cid}.{len(positions[cid]) + 1}",
@@ -826,10 +884,11 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
                 "quote": p["quote"].strip(),
                 "source": source,
             })
-        print(f"     {len(positions[cid])} positions kept, {missed} dropped (quote not in source)")
+        print(f"     {len(positions[cid])} positions kept, {len(missed)} dropped (quote not in source)")
         cache_put(f"positions_{cid}", key, positions[cid])
         if missed:
-            flag(flags, 1, f"{missed} listed position(s) dropped, quote not found in sources", candidate=cid)
+            flag(flags, 1, f"{len(missed)} listed position(s) dropped, quote not found in sources",
+                 candidate=cid, item=missed)
     return positions
 
 
@@ -869,7 +928,9 @@ def attach_evidence(data: dict, race: dict, positions: dict, flags: list) -> Non
             if score is None:
                 set_unknown(s, cid)
             elif not valid_score or pos is None or not pos["id"].startswith(f"{cid}."):
-                flag(flags, 1, f"score {score!r} without a valid cited position, set to unknown", s["id"], cid)
+                flag(flags, 1, f"score {score!r} without a valid cited position, set to unknown", s["id"], cid,
+                     item={"score": score, "cited": basis.get(cid),
+                           "summary": s["candidatePositions"].get(cid)})
                 set_unknown(s, cid)
             else:
                 s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"]}
@@ -901,7 +962,7 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
         return
 
     stmts = {s["id"]: s for s in data["statements"]}
-    filled = 0
+    filled = []
     for f in result.get("fills", []):
         s, cid = stmts.get(f.get("statement_id")), f.get("candidate_id")
         pos, score = by_id.get(f.get("position_id") or ""), f.get("score")
@@ -912,10 +973,11 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
         s["candidateAgreement"][cid] = score
         s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"]}
         s["candidatePositions"][cid] = f.get("summary") or pos["stance"]
-        filled += 1
-    print(f"     filled {filled}")
+        filled.append({"statement": s["id"], "candidate": cid, "position": pos["id"], "score": score})
+    print(f"     filled {len(filled)}")
     if filled:
-        flag(flags, 2, f"gap-filling added {filled} score(s) the first pass missed (checked below)")
+        flag(flags, 2, f"gap-filling added {len(filled)} score(s) the first pass missed (checked below)",
+             item=filled)
 
 
 def scored_counts(data: dict, race: dict) -> dict:
@@ -973,7 +1035,8 @@ def top_up(data: dict, race: dict, positions: dict, flags: list) -> list:
             data["statements"].append(st)
             new_statements.append(st)
             added += 1
-        flag(flags, 6, f"topped up with {added} question(s) from their own positions", candidate=cid)
+        flag(flags, 6, f"topped up with {added} question(s) from their own positions", candidate=cid,
+             item=[st["id"] for st in new_statements[len(new_statements) - added:]])
     return new_statements
 
 
@@ -1064,14 +1127,16 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
         except Exception as e:
             flag(flags, None, f"bio failed ({e})", candidate=cid)
             continue
-        sentences = []
+        sentences, dropped = [], []
         for snt in found:
             source = locate_quote(snt.get("quote", ""), sources[cid])
             if source and snt.get("text"):
                 sentences.append({"text": snt["text"], "quote": snt["quote"].strip(), "source": source})
-        dropped = len(found) - len(sentences)
+            else:
+                dropped.append(snt)
         if dropped:
-            flag(flags, 1, f"{dropped} bio sentence(s) dropped, quote not found in sources", candidate=cid)
+            flag(flags, 1, f"{len(dropped)} bio sentence(s) dropped, quote not found in sources",
+                 candidate=cid, item=dropped)
         # "self-described" when the only source is the candidate's own About page
         bios[cid] = {"sentences": sentences, "selfDescribed": kind == "bio page"}
         cache_put(f"bio_{cid}", key, bios[cid])
@@ -1125,6 +1190,7 @@ def process_race(race: dict, verify: bool = True):
     check_structure(data, race, flags)
 
     output = {
+        "run": run_record(race),
         "race_id": race["id"],
         "race_title": race["title"],
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
