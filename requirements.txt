@@ -1,6 +1,9 @@
 # ZipVote Python dependencies
 requests>=2.31.0
 beautifulsoup4>=4.12.0
+# Internet Archive copies are sometimes still compressed the way the site sent them
+zstandard>=0.22.0
+brotli>=1.1.0
 
 # LLM — install the one matching your API key:
 anthropic>=0.40.0       # for ANTHROPIC_API_KEY

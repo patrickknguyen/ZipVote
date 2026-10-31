@@ -50,10 +50,12 @@ HOUSING = """<html><body><main><p>Katie will end exclusionary zoning near transi
 
 
 class Resp:
-    def __init__(self, body, status=200):
+    def __init__(self, body, status=200, content=None):
         self.status_code = status
         self.text = body if isinstance(body, str) else json.dumps(body)
         self._body = body
+        self.content = content if content is not None else self.text.encode("utf-8")
+        self.encoding = "utf-8"
 
     def json(self):
         return self._body if not isinstance(self._body, str) else json.loads(self._body)
@@ -181,6 +183,39 @@ def test_fec_match():
         return Resp("", 404)
     scout.http_get = get
     assert scout.fec_website(CANDIDATES["markey"]) == "https://www.edmarkey.com", "Ed matches EDWARD; wrong party doesn't"
+
+
+def test_text_in_plain_divs():
+    html = """<html><body><nav><div>Home About Issues Donate Volunteer and other links</div></nav>
+    <div class="elementor"><div class="widget"><div class="text">Xavier will expand Medi-Cal to cover every
+    Californian who cannot afford private insurance, starting with children.</div></div>
+    <div class="widget"><p>He supports a public option for health insurance sold on Covered California.</p></div></div>
+    </body></html>"""
+    lines = scout.html_to_lines(html, whole_page=True)
+    assert any("Medi-Cal" in l for l in lines), lines
+    assert any("public option" in l for l in lines), lines
+    assert not any("Donate" in l for l in lines), "navigation is never read"
+    assert len(lines) == 2, f"nothing read twice: {lines}"
+
+
+def test_archive_failure_is_not_absence():
+    get, _ = fake_web(as_of_copies={SITE: "20260420120000"})
+
+    def flaky(url, params=None, retries=2):
+        return None if url == scout.CDX_API else get(url, params)
+    scout.http_get = flaky
+    pages, skipped = scout.campaign_pages(CANDIDATES["porter_t"], [SITE], as_of="2026-05-03")
+    assert not pages and skipped and "lookup failed" in skipped[0][1], skipped
+
+
+def test_compressed_archive_copies():
+    import brotli
+    import zstandard
+    html = "<html><body><main><p>Xavier will lower prescription drug prices for every family in California.</p></main></body></html>"
+    for packed in (zstandard.ZstdCompressor().compress(html.encode()), brotli.compress(html.encode())):
+        text = scout.page_text(Resp("noise", content=packed))
+        assert "prescription drug prices" in text, text[:80]
+    assert "drug" in scout.page_text(Resp(html)), "plain pages pass through unchanged"
 
 
 def test_no_sources_removes_old_file():

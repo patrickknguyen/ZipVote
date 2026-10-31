@@ -60,7 +60,10 @@ HEADERS = {"User-Agent": "ZipVote-Scout/2.0 (civic research; https://patrickkngu
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 FEC_API = "https://api.open.fec.gov/v1"
 CDX_API = "https://web.archive.org/cdx/search/cdx"
-DELAY = {"en.wikipedia.org": 0.5, "web.archive.org": 1.5, "api.open.fec.gov": 0.5}
+# Seconds between requests to each site. The Internet Archive refuses
+# connections from clients that go much faster than one request every few
+# seconds, so it gets the longest wait.
+DELAY = {"en.wikipedia.org": 0.5, "web.archive.org": 4.0, "api.open.fec.gov": 0.5}
 DEFAULT_DELAY = 1.5
 MAX_CAMPAIGN_PAGES = 15
 
@@ -110,9 +113,14 @@ def http_get(url: str, params: dict = None, retries: int = 2):
     for attempt in range(retries + 1):
         _last_call[host] = time.time()
         try:
-            resp = requests.get(url, params=params, headers=HEADERS, timeout=20)
+            resp = requests.get(url, params=params, headers=HEADERS, timeout=30)
         except requests.RequestException as e:
-            print(f"      (request failed: {e.__class__.__name__})")
+            # The Internet Archive drops connections when it's busy or thinks
+            # we're going too fast; wait longer each time and try again
+            if attempt < retries:
+                time.sleep(15 * (attempt + 1))
+                continue
+            print(f"      (request failed after {retries + 1} tries: {e.__class__.__name__}: {url})")
             return None
         if resp.status_code in (429, 500, 502, 503, 504) and attempt < retries:
             time.sleep(5 * (attempt + 1))
@@ -156,9 +164,17 @@ def html_to_lines(html: str, whole_page: bool = False) -> list:
     )
     root = main or soup
     lines, seen = [], set()
-    for block in root.find_all(["h2", "h3", "h4", "p", "li", "dd", "blockquote"]):
+    # Campaign sites often put text straight into <div>s with no paragraphs.
+    # On whole pages, also read the innermost divs: ones that hold text but
+    # no other blocks, so nothing is read twice.
+    names = ["h2", "h3", "h4", "p", "li", "dd", "blockquote"] + (["div", "section"] if whole_page else [])
+    inner = ["p", "li", "dd", "blockquote", "div", "section", "ul", "ol", "h1", "h2", "h3", "h4", "table"]
+    for block in root.find_all(names):
         if block.name in ("p", "li") and block.find_parent(["li", "blockquote"]):
             continue  # nested inside a block already read
+        if block.name in ("div", "section"):
+            if block.find(inner) or block.find_parent(["p", "li", "h2", "h3", "h4", "blockquote", "dd"]):
+                continue
         text = re.sub(r"\[\s*(?:\d+|[a-z]|citation needed|note \d+)\s*\]", "", block.get_text(" ", strip=True))
         text = re.sub(r"\s+", " ", text).strip()
         text = re.sub(r"\s+([.,;:])", r"\1", text)
@@ -169,6 +185,36 @@ def html_to_lines(html: str, whole_page: bool = False) -> list:
             seen.add(text)
             lines.append(text)
     return lines
+
+
+ZSTD_MAGIC = b"\x28\xb5\x2f\xfd"
+
+
+def page_text(resp) -> str:
+    """
+    The text of a response. The Internet Archive stores pages exactly as the
+    site sent them, sometimes still compressed with zstd or brotli, which
+    requests doesn't undo on its own. Decompress those before decoding,
+    or the page reads as noise.
+    """
+    data = resp.content
+    if data[:4] == ZSTD_MAGIC:
+        import zstandard
+        data = zstandard.ZstdDecompressor().decompressobj().decompress(data)
+    else:
+        try:
+            data.decode("utf-8")
+        except UnicodeDecodeError:
+            try:
+                import brotli
+                data = brotli.decompress(data)
+            except Exception:
+                pass   # not brotli either: decode as is below
+    return data.decode(resp.encoding or "utf-8", errors="replace")
+
+
+class LookupFailed(Exception):
+    """A source couldn't be reached. Not the same as the source not existing."""
 
 
 def ymd(as_of: str) -> str:
@@ -183,13 +229,15 @@ def fetch_page(url: str, as_of: str = None):
     """
     if not as_of:
         resp = http_get(url)
-        return (resp.text, url, None) if resp is not None else None
+        return (page_text(resp), url, None) if resp is not None else None
     rows = http_json(CDX_API, {
         "url": url, "to": ymd(as_of), "output": "json", "fl": "timestamp,original",
         "filter": "statuscode:200", "limit": "-1",
     })
+    if rows is None:
+        raise LookupFailed("Internet Archive lookup failed; run again")
     # The first row is the column names; the next is the last copy before the date
-    if not rows or len(rows) < 2:
+    if len(rows) < 2:
         print(f"      (no Internet Archive copy on or before {as_of}: {url})")
         return None
     ts, original = rows[-1][0], rows[-1][1]
@@ -197,8 +245,8 @@ def fetch_page(url: str, as_of: str = None):
         return None
     resp = http_get(f"https://web.archive.org/web/{ts}id_/{original}")
     if resp is None:
-        return None
-    return resp.text, f"https://web.archive.org/web/{ts}/{original}", ts
+        raise LookupFailed("Internet Archive copy exists but couldn't be downloaded; run again")
+    return page_text(resp), f"https://web.archive.org/web/{ts}/{original}", ts
 
 
 # ── Who is this? ─────────────────────────────────────────────────────────────
@@ -505,7 +553,11 @@ def campaign_pages(info: dict, start_urls: list, as_of: str = None, crawl: bool 
         seen.add(url)
         if depth == 0 and crawl and any(same_site(url, s) for s in sites_read):
             continue   # another address for a site already read
-        page = fetch_page(url, as_of)
+        try:
+            page = fetch_page(url, as_of)
+        except LookupFailed as e:
+            skipped.append((url, str(e)))
+            continue
         if page is None:
             skipped.append((url, "could not read" if not as_of else f"no copy on or before {as_of}"))
             continue
@@ -601,7 +653,10 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
 
     # 5. About page, for the bio when there's no Wikipedia page
     for url in info.get("bio_urls", []):
-        page = fetch_page(url, as_of)
+        try:
+            page = fetch_page(url, as_of)
+        except LookupFailed:
+            page = None
         lines = html_to_lines(page[0], whole_page=True) if page else []
         if sum(len(l) for l in lines) >= 200:
             text.append(f"\n## Bio page: {page[1]}\n\n" + "\n".join(lines))
