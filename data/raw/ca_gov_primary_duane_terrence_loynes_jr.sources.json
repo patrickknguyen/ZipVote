@@ -1,0 +1,39 @@
+{
+  "candidate": "ca_gov_primary_duane_terrence_loynes_jr",
+  "name": "Duane Terrence Loynes Jr.",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:25:03+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 120
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260519031435/https://ca.solidarity-party.org/learn_more/register-to-vote/",
+      "snapshot": "20260519031435",
+      "words": 246
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531044919/https://ca.solidarity-party.org/stances-on-ca-issues/",
+      "snapshot": "20260531044919",
+      "words": 277
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260414032629/https://ca.solidarity-party.org/learn_more/platform/",
+      "snapshot": "20260414032629",
+      "words": 6116
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531045106/https://ca.solidarity-party.org/learn_more/campaigns/no-on-proposition-1/",
+      "snapshot": "20260531045106",
+      "words": 87
+    }
+  ],
+  "skipped": []
+}

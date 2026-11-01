@@ -1,0 +1,24 @@
+{
+  "candidate": "ca_gov_primary_don_j_grundmann",
+  "name": "Don J. Grundmann",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:22:57+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 218
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://DestroyTheZOG.org",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://web.archive.org/web/20250421015148/http://cnparty.org/",
+      "reason": "site never names Don J. Grundmann"
+    }
+  ]
+}

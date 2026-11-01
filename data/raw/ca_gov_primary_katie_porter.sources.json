@@ -1,0 +1,117 @@
+{
+  "candidate": "ca_gov_primary_katie_porter",
+  "name": "Katie Porter",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:01:49+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 244
+    },
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Katie_Porter&oldid=1356920056",
+      "revision": 1356920056,
+      "revision_time": "2026-05-30T17:23:54Z",
+      "words": 7421
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260601192953/https://katieporter.com/",
+      "snapshot": "20260601192953",
+      "words": 276
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260513010648/https://katieporter.com/priorities/",
+      "snapshot": "20260513010648",
+      "words": 150
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/lowering-housing-costs/",
+      "snapshot": "20260531132631",
+      "words": 291
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/abolish-ice/",
+      "snapshot": "20260531132631",
+      "words": 133
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/protecting-healthcare/",
+      "snapshot": "20260531132631",
+      "words": 280
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/ending-homelessness/",
+      "snapshot": "20260531132631",
+      "words": 185
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/free-child-care-for-all/",
+      "snapshot": "20260531132631",
+      "words": 260
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/fighting-income-inequality/",
+      "snapshot": "20260531132631",
+      "words": 383
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/a-tuition-free-college-degree/",
+      "snapshot": "20260531132631",
+      "words": 140
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260513000608/https://katieporter.com/priority/protecting-our-planet/",
+      "snapshot": "20260513000608",
+      "words": 204
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/standing-up-for-workers/",
+      "snapshot": "20260531132631",
+      "words": 139
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/lgbtq-protections/",
+      "snapshot": "20260531132631",
+      "words": 169
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/wildfires-climate-resilience/",
+      "snapshot": "20260531132631",
+      "words": 114
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/single-payer-health-care/",
+      "snapshot": "20260531132631",
+      "words": 145
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/protecting-californians-with-disabilities/",
+      "snapshot": "20260531132631",
+      "words": 285
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://katieporter.com/priority/artificial-intelligence",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

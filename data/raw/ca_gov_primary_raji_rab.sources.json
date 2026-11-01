@@ -1,0 +1,33 @@
+{
+  "candidate": "ca_gov_primary_raji_rab",
+  "name": "Raji Rab",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:07:57+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 74
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531202113/https://rajirabforgovernor.com/",
+      "snapshot": "20260531202113",
+      "words": 434
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/",
+      "snapshot": "20260531201953",
+      "words": 2435
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531202113/https://rajirabforgovernor.com/page/",
+      "snapshot": "20260531202113",
+      "words": 640
+    }
+  ],
+  "skipped": []
+}

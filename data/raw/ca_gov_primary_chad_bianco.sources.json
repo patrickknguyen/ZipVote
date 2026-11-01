@@ -1,0 +1,28 @@
+{
+  "candidate": "ca_gov_primary_chad_bianco",
+  "name": "Chad Bianco",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:15:26+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 255
+    },
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Chad_Bianco&oldid=1356917556",
+      "revision": 1356917556,
+      "revision_time": "2026-05-30T17:04:17Z",
+      "words": 1897
+    },
+    {
+      "kind": "office site",
+      "url": "https://web.archive.org/web/20260429014155/https://www.riversidesheriff.org/689/Sheriff-Chad-Bianco",
+      "snapshot": "20260429014155",
+      "words": 202
+    }
+  ],
+  "skipped": []
+}

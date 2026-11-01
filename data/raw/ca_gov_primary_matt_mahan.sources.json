@@ -1,0 +1,23 @@
+{
+  "candidate": "ca_gov_primary_matt_mahan",
+  "name": "Matt Mahan",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:01:36+00:00",
+  "sources": [
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Matt_Mahan&oldid=1355892586",
+      "revision": 1355892586,
+      "revision_time": "2026-05-24T14:38:07Z",
+      "words": 2502
+    },
+    {
+      "kind": "office site",
+      "url": "https://web.archive.org/web/20260511185544/https://www.mahanforcalifornia.com/",
+      "snapshot": "20260511185544",
+      "words": 430
+    }
+  ],
+  "skipped": []
+}

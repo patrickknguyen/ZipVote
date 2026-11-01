@@ -1,0 +1,24 @@
+{
+  "candidate": "ca_gov_primary_scott_p_shields",
+  "name": "Scott P Shields",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:11:15+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 1
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://ShieldsForGovernor.com",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://shieldsforgovernor.com",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

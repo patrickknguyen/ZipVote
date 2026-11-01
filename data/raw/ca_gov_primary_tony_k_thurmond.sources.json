@@ -1,0 +1,34 @@
+{
+  "candidate": "ca_gov_primary_tony_k_thurmond",
+  "name": "Tony K. Thurmond",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:11:50+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 249
+    },
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Tony_Thurmond&oldid=1352874174",
+      "revision": 1352874174,
+      "revision_time": "2026-05-06T19:24:30Z",
+      "words": 1505
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260514092143/https://www.tonythurmond.com/",
+      "snapshot": "20260514092143",
+      "words": 62
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities",
+      "snapshot": "20260511082947",
+      "words": 252
+    }
+  ],
+  "skipped": []
+}

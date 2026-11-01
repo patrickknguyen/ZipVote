@@ -1,0 +1,32 @@
+{
+  "candidate": "ca_gov_primary_margaret_trowe",
+  "name": "Margaret Trowe",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:26:39+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 129
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://themilitant.com/issues/vol-90-no-20/?audio-archive=1&lang=en",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://themilitant.com/2026/05/15/cubas-people-stand-against-escalating-new-us-sanctions",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://themilitant.com/2026/05/15/west-virginia-chemical-plant-explosion-kills-2-injures-dozens",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://web.archive.org/web/20260520190721/https://themilitant.com/",
+      "reason": "site never names Margaret Trowe"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "candidate": "ca_gov_primary_antonio_villaraigosa",
+  "name": "Antonio Villaraigosa",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:12:12+00:00",
+  "sources": [
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Antonio_Villaraigosa&oldid=1356910120",
+      "revision": 1356910120,
+      "revision_time": "2026-05-30T15:56:55Z",
+      "words": 3988
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260507050743/https://www.antonio2026.com/results",
+      "snapshot": "20260507050743",
+      "words": 858
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260507050743/https://www.antonio2026.com/issues",
+      "snapshot": "20260507050743",
+      "words": 891
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260507050743/https://www.antonio2026.com/ice",
+      "snapshot": "20260507050743",
+      "words": 3298
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan",
+      "snapshot": "20260428172915",
+      "words": 10937
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260519213742/https://www.antonio2026.com/gas",
+      "snapshot": "20260519213742",
+      "words": 5302
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://www.antonio2026.com/policy",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

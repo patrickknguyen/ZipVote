@@ -1,0 +1,15 @@
+{
+  "candidate": "ca_gov_primary_gretha_solorzano",
+  "name": "Gretha Solórzano",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:15:43+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 135
+    }
+  ],
+  "skipped": []
+}

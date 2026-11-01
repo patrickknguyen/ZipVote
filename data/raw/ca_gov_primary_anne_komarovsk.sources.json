@@ -1,0 +1,20 @@
+{
+  "candidate": "ca_gov_primary_anne_komarovsk",
+  "name": "Anne Komarovsk",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:23:13+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 6
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://Please-Help-Make-CaliforniA-Great-Again-Thank-You-NPP26.com",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

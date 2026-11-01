@@ -1,0 +1,22 @@
+{
+  "candidate": "hilton",
+  "name": "Steve Hilton",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-10-31T19:41:03+00:00",
+  "sources": [
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536",
+      "revision": 1356519536,
+      "revision_time": "2026-05-28T07:05:43Z",
+      "words": 2764
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://stevehiltonforgovernor.com/policies",
+      "reason": "almost no text; may need JavaScript"
+    }
+  ]
+}

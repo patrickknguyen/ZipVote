@@ -1,0 +1,28 @@
+{
+  "candidate": "ca_gov_primary_betty_t_yee",
+  "name": "Betty T. Yee",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:15:12+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 243
+    },
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Betty_Yee&oldid=1350486331",
+      "revision": 1350486331,
+      "revision_time": "2026-04-22T05:20:16Z",
+      "words": 884
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260518100740/https://bettyyee.com/",
+      "snapshot": "20260518100740",
+      "words": 217
+    }
+  ],
+  "skipped": []
+}

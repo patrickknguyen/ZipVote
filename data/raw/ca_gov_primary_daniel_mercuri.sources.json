@@ -1,0 +1,27 @@
+{
+  "candidate": "ca_gov_primary_daniel_mercuri",
+  "name": "Daniel Mercuri",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:25:56+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 139
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260414032323/https://www.danielforcalgovernor.com/",
+      "snapshot": "20260414032323",
+      "words": 562
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies",
+      "snapshot": "20260531050754",
+      "words": 3958
+    }
+  ],
+  "skipped": []
+}

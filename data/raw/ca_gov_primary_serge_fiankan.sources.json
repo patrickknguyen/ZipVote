@@ -1,0 +1,110 @@
+{
+  "candidate": "ca_gov_primary_serge_fiankan",
+  "name": "Serge Fiankan",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:17:49+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 81
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/",
+      "snapshot": "20260530233330",
+      "words": 1220
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/visionforcalifornia",
+      "snapshot": "20260530233411",
+      "words": 1339
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233359/https://www.sf4gov.com/plan",
+      "snapshot": "20260530233359",
+      "words": 579
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/get-involved",
+      "snapshot": "20260530233330",
+      "words": 116
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/home",
+      "snapshot": "20260530233411",
+      "words": 1220
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness",
+      "snapshot": "20260530233411",
+      "words": 2418
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260414024940/https://www.sf4gov.com/plans/healthcare-public-health",
+      "snapshot": "20260414024940",
+      "words": 1719
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233319/https://www.sf4gov.com/plans/transportation-mobility",
+      "snapshot": "20260530233319",
+      "words": 1453
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/electricity-climate-ready-energy",
+      "snapshot": "20260530233411",
+      "words": 716
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/responsible-lawful-humane-immigration",
+      "snapshot": "20260530233330",
+      "words": 856
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/water-security",
+      "snapshot": "20260530233330",
+      "words": 1648
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/ai-policy-governance",
+      "snapshot": "20260530233411",
+      "words": 1275
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/tax-revenue",
+      "snapshot": "20260530233411",
+      "words": 1514
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260414024949/https://www.sf4gov.com/plans/crime-policy-beyond-community-policing",
+      "snapshot": "20260414024949",
+      "words": 1446
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/responsible-firearm-ownership",
+      "snapshot": "20260530233411",
+      "words": 1245
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://www.sf4gov.com/plans/california-next",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

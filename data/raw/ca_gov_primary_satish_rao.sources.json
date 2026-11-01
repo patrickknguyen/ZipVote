@@ -1,0 +1,55 @@
+{
+  "candidate": "ca_gov_primary_satish_rao",
+  "name": "Satish Rao",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:08:32+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 232
+    },
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Satish_B._Rao&oldid=1354126470",
+      "revision": 1354126470,
+      "revision_time": "2026-05-14T13:34:21Z",
+      "words": 1178
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260517202054/https://satish4guv.org/",
+      "snapshot": "20260517202054",
+      "words": 2605
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260517202111/https://satish4guv.org/platform",
+      "snapshot": "20260517202111",
+      "words": 2212
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260517202111/https://satish4guv.org/topics",
+      "snapshot": "20260517202111",
+      "words": 2119
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260517202111/https://satish4guv.org/bio",
+      "snapshot": "20260517202111",
+      "words": 621
+    }
+  ],
+  "skipped": [
+    {
+      "url": "https://www.rao4guv.org",
+      "reason": "no copy on or before 2026-06-01"
+    },
+    {
+      "url": "https://www.satish4guv.org/questions/where-does-the-money-go",
+      "reason": "no copy on or before 2026-06-01"
+    }
+  ]
+}

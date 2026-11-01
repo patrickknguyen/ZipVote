@@ -1,0 +1,17 @@
+{
+  "candidate": "ca_gov_primary_steve_hilton",
+  "name": "Steve Hilton",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:15:39+00:00",
+  "sources": [
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536",
+      "revision": 1356519536,
+      "revision_time": "2026-05-28T07:05:43Z",
+      "words": 2764
+    }
+  ],
+  "skipped": []
+}

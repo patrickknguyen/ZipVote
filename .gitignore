@@ -18,3 +18,9 @@ __pycache__/
 # Local Python environment and run logs
 .venv/
 *.log
+
+# Scout's copies of candidates' web pages. They're other people's text, and
+# Scout can rebuild them (python -m agents.scout --as-of DATE). The
+# .sources.json records next to them stay in git: they list what was read
+# and skipped, with links to the exact versions.
+data/raw/*.txt

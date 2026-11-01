@@ -1,0 +1,17 @@
+{
+  "candidate": "ca_gov_primary_tom_steyer",
+  "name": "Tom Steyer",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:11:40+00:00",
+  "sources": [
+    {
+      "kind": "wikipedia",
+      "url": "https://en.wikipedia.org/w/index.php?title=Tom_Steyer&oldid=1357270944",
+      "revision": 1357270944,
+      "revision_time": "2026-06-01T18:47:36Z",
+      "words": 7357
+    }
+  ],
+  "skipped": []
+}

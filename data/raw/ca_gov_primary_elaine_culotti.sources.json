@@ -1,0 +1,21 @@
+{
+  "candidate": "ca_gov_primary_elaine_culotti",
+  "name": "Elaine Culotti",
+  "mode": "as-of",
+  "as_of": "2026-06-01",
+  "retrieved_at": "2026-11-01T02:15:54+00:00",
+  "sources": [
+    {
+      "kind": "voter guide",
+      "url": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
+      "words": 228
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/",
+      "snapshot": "20260530081517",
+      "words": 500
+    }
+  ],
+  "skipped": []
+}
