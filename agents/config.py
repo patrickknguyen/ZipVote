@@ -14,8 +14,15 @@ Source strategy is described in agents/scout.py. Every source is a public
 page; nothing is typed in by hand.
 
 Race options:
-  - voter_guide: {"live": url, "archive": url} for the state's official
-    candidate statement page. As-of runs read the archive.
+  - voter_guide: {"format": name, "live": url, "archive": url} for the
+    state's official candidate statement page. "format" picks the parser in
+    scout.GUIDE_PARSERS (each state's guide is laid out differently). As-of
+    runs read the state's "archive" if it keeps one, otherwise the Internet
+    Archive's copy of the live page.
+  - office: the office's name ("Governor", "Attorney General"), used to
+    check that a page is about this race. Defaults to the start of the title.
+  - election: "YYYY-MM-DD type". Manifests set it for every race; the FEC
+    lookup takes the year from it.
   - fec_office: "S" or "H" for federal races, so Scout can find the
     campaign's website on its FEC filing. House races also need "district".
   - identity_terms: words a third-party page must mention to count as this
@@ -68,6 +75,7 @@ RACES = [
         # Statements candidates wrote for the official guide. The live page
         # moves on to the next election; the archive keeps June 2, 2026.
         "voter_guide": {
+            "format": "ca_sos",
             "live": "https://voterguide.sos.ca.gov/candidates/governor-candidate-statements.htm",
             "archive": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm",
         },
@@ -186,3 +194,42 @@ CANDIDATES = {
         "campaign_urls": ["https://stevehiltonforgovernor.com/policies"],
     },
 }
+
+
+# ── Races loaded from manifests ──────────────────────────────────────────────
+# Each file in data/manifests/ is one election's official candidate list,
+# transcribed from the state's certified list and citing it. Candidates get
+# only a name, party, race and state: Scout finds every source itself, the
+# same way for everyone.
+
+import json as _json
+import re as _re
+import unicodedata as _ud
+from pathlib import Path as _Path
+
+_MANIFESTS = _Path(__file__).parent.parent / "data" / "manifests"
+
+
+def _slug(name: str) -> str:
+    text = "".join(c for c in _ud.normalize("NFKD", name) if not _ud.combining(c))
+    return _re.sub(r"[^a-z0-9]+", "_", text.lower()).strip("_")
+
+
+# Races written above, before manifests, are the November 3 general election
+for _r in RACES:
+    _r.setdefault("election", "2026-11-03 general")
+
+for _path in sorted(_MANIFESTS.glob("*.json")):
+    _m = _json.loads(_path.read_text(encoding="utf-8"))
+    for _race in _m["races"]:
+        _ids = []
+        for _c in _race["candidates"]:
+            _cid = f"{_race['id']}_{_slug(_c['name'])}"
+            assert _cid not in CANDIDATES, f"duplicate candidate id {_cid}"
+            CANDIDATES[_cid] = {"id": _cid, "name": _c["name"], "party": _c["party"],
+                                "race": _race["id"], "state": _m["state"],
+                                **{k: v for k, v in _c.items() if k not in ("name", "party")}}
+            _ids.append(_cid)
+        RACES.append({**{k: v for k, v in _race.items() if k != "candidates"},
+                      "state": _m["state"], "election": _m["election"],
+                      "manifest": _path.name, "candidates": _ids})

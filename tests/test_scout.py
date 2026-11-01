@@ -27,13 +27,23 @@ GUIDE_HTML = """<html><body><nav>Home | Candidates</nav>
 <h2>Tony K. Thurmond | DEMOCRATIC</h2>
 <p>As your Governor I will raise teacher pay and fund universal preschool for every four year old in California.</p>
 <p><a href="https://www.facebook.com/thurmond">Facebook</a> <a href="https://thurmondtest.com">thurmondtest.com</a></p>
+<h2>Scott P Shields | DEMOCRATIC</h2>
+<p>Visit ShieldsForGovernor.com</p>
+<p>Los Angeles, CA 90012<br>(213) 555-0199<br>E-mail: &lt;scott@shieldsforgovernor.com&gt;</p>
+<hr>
+<h2>Rafael M. Hernandez | REPUBLICAN</h2>
+<p>To Me: The people of California Come First.</p>
+<ol><li>Lower the high cost of living.</li><li>Create more good pay jobs.</li></ol>
+<p>P.O. Box 1234<br>Fresno, CA</p>
 <hr>
 </body></html>"""
 
 WIKI_HTML = """<div><table class="infobox"><tr><th>Political party</th><td>Democratic</td></tr>
 <tr><th>Website</th><td><a href="https://www.portertest.com">Campaign website</a></td></tr></table>
 <p>Katherine Moore Porter is an American politician and member of the Democratic Party who ran for Governor of California in 2026.</p>
-<p>Porter supports banning congressional stock trading and has introduced legislation to that effect in the House.</p></div>"""
+<p>Porter supports banning congressional stock trading and has introduced legislation to that effect in the House.</p>
+<div class="mw-heading mw-heading2"><h2 id="External_links">External links</h2></div>
+<ul><li><a class="external text" href="https://www.portertest.com">Campaign website</a></li></ul></div>"""
 
 WIKI_WRONG_PERSON = """<div><p>Katie Porter is an American swimmer from California who competed at the 2012 Olympic Games in London.</p></div>"""
 
@@ -99,7 +109,7 @@ def setup(tmp):
     scout.RAW_DIR = wedge.RAW_DIR = Path(tmp)
     RACES.append({"id": "test_gov", "state": "CA", "title": "Governor — California, test",
                   "candidates": ["porter_t", "thurmond_t"],
-                  "voter_guide": {"live": GUIDE_LIVE, "archive": GUIDE_ARCHIVE}})
+                  "voter_guide": {"format": "ca_sos", "live": GUIDE_LIVE, "archive": GUIDE_ARCHIVE}})
     CANDIDATES["porter_t"] = {"id": "porter_t", "name": "Katie Porter", "party": "Democrat",
                               "race": "test_gov", "state": "CA"}
     CANDIDATES["thurmond_t"] = {"id": "thurmond_t", "name": "Tony Thurmond", "party": "Democrat",
@@ -113,13 +123,19 @@ def kinds(rec):
 
 def test_voter_guide_parsing():
     entries = scout.parse_voter_guide(GUIDE_HTML, GUIDE_ARCHIVE)
-    assert set(entries) == {"Katie Porter", "Tony K. Thurmond"}, entries.keys()
+    assert set(entries) == {"Katie Porter", "Tony K. Thurmond", "Scott P Shields", "Rafael M. Hernandez"}, entries.keys()
     porter = entries["Katie Porter"]
-    assert len(porter["statement"]) == 2
+    assert len(porter["statement"]) == 2, porter["statement"]
     text = " ".join(porter["statement"])
     assert "555" not in text and "@" not in text and "Main St" not in text, "contact info must never be kept"
     assert porter["websites"] == ["https://portertest.com"], porter["websites"]
     assert entries["Tony K. Thurmond"]["websites"] == ["https://thurmondtest.com"], "social links are skipped"
+    shields = entries["Scott P Shields"]
+    assert shields["statement"] == ["Visit ShieldsForGovernor.com"], shields["statement"]
+    assert shields["websites"] == ["https://ShieldsForGovernor.com"], "an address inside a sentence is found, an e-mail is not"
+    hern = entries["Rafael M. Hernandez"]["statement"]
+    assert "Lower the high cost of living." in hern and "Create more good pay jobs." in hern, "short lines and lists are kept"
+    assert not any("Box" in l or "Fresno" in l for l in hern), hern
     assert "chief executive" not in text, "text before the first candidate isn't anyone's"
 
 
@@ -157,6 +173,36 @@ def test_as_of_run():
     assert any("preventing-gun-violence" in s["url"] for s in rec["skipped"]), "a page with no copy is left out, and recorded"
 
 
+def test_redirect_to_election_article_skipped():
+    get, calls = fake_web()
+
+    def redirecting(url, params=None, retries=2):
+        if url == scout.WIKI_API and params.get("prop") == "pageprops":
+            return Resp({"query": {"redirects": [{"from": "Katie Porter", "to": "2026 California gubernatorial election"}],
+                                   "pages": [{"title": "2026 California gubernatorial election", "pageprops": {}}]}})
+        return get(url, params)
+    scout.http_get = redirecting
+    assert scout.wikipedia_page(CANDIDATES["porter_t"]) is None, "an election article is never a candidate's page"
+
+
+def test_office_site_only_as_fallback():
+    # No voter guide, and Wikipedia gives only an infobox Website: it's used
+    office = WIKI_HTML.replace(">Campaign website<", ">Biography<")
+    RACES.append({"id": "test_noguide", "state": "CA", "title": "Governor — California, test", "candidates": []})
+    CANDIDATES["porter_t"]["race"] = "test_noguide"
+    try:
+        scout.http_get, _ = fake_web(wiki_html=office)
+        rec = scout.scout_candidate("porter_t")
+        assert "office site" in kinds(rec) and "campaign site" not in kinds(rec), \
+            "with no campaign link, the infobox site is read, labeled as an office site"
+        # With a campaign link, the infobox site is never read
+        scout.http_get, calls = fake_web()
+        rec = scout.scout_candidate("porter_t")
+        assert "office site" not in kinds(rec)
+    finally:
+        CANDIDATES["porter_t"]["race"] = "test_gov"
+
+
 def test_wrong_person_skipped():
     scout.http_get, _ = fake_web(wiki_html=WIKI_WRONG_PERSON)
     rec = scout.scout_candidate("porter_t")
@@ -169,6 +215,26 @@ def test_name_matching():
     assert scout.same_name("Gretha Solorzano", "Gretha Solórzano")
     assert scout.same_name("Duane Loynes", "Duane Terrence Loynes Jr.")
     assert not scout.same_name("Katie Porter", "Katie Hill")
+
+
+def test_wikipedia_title_variants():
+    t = lambda name: scout.wikipedia_titles({"name": name})
+    assert "Tony Thurmond" in t("Tony K. Thurmond")
+    assert "Betty Yee" in t("Betty T. Yee")
+    assert "Erin Zezulak" in t('Erin "Zez" Zezulak')
+    assert "James Athans Jr." in t("James Athans Jr."), "suffixes are kept"
+    assert "Duane Loynes Jr." in t("Duane Terrence Loynes Jr.")
+    assert t("Katie Porter")[0] == "Katie Porter"
+
+
+def test_campaign_link_in_external_links():
+    html = """<div><p>Xavier Becerra is a Democratic politician from California.</p>
+    <div class="mw-heading mw-heading2"><h2 id="External_links">External links</h2></div>
+    <ul><li><a class="external text" href="https://www.xavierbecerra2026.com/">Campaign website</a></li>
+    <li><a class="external text" href="https://bioguide.congress.gov/x">Biography</a> at the Biographical Directory</li>
+    <li><a class="external text" href="https://www.joincalifornia.com/candidate/123">Join California Xavier Becerra</a></li></ul></div>"""
+    assert scout.campaign_link(html) == "https://www.xavierbecerra2026.com/"
+    assert scout.campaign_link("<div><p>No links section here.</p></div>") is None
 
 
 def test_fec_match():
@@ -225,6 +291,70 @@ def test_no_sources_removes_old_file():
                               "race": "test_gov", "state": "CA", "skip_wikipedia": True}
     rec = scout.scout_candidate("nobody_t")
     assert not rec["sources"] and not (scout.RAW_DIR / "nobody_t.txt").exists()
+
+
+def test_contact_lines_any_state():
+    for line in ("Boston, MA 02108", "Portland, Oregon", "Austin, TX 78701-1234", "Fresno, CA 93721"):
+        assert scout.CONTACT_LINE.search(line), line
+    assert not scout.CONTACT_LINE.search("I will fight for working families in Ohio, Texas and beyond."), \
+        "a sentence that names a state is kept"
+
+
+def test_guide_problems_are_reported():
+    scout.http_get, _ = fake_web()
+    race = next(r for r in RACES if r["id"] == "test_gov")
+    saved = race["voter_guide"]
+    try:
+        # A guide with no parser for its format: reported, run carries on
+        race["voter_guide"] = {"format": "or_sos", "live": GUIDE_LIVE}
+        scout._guide_cache.clear()
+        rec = scout.scout_candidate("thurmond_t")
+        assert any("no parser" in s["reason"] for s in rec["skipped"]), rec["skipped"]
+        # A guide whose page doesn't match its format: 0 candidates is a problem, not "no statement"
+        race["voter_guide"] = {"format": "ca_sos", "live": SITE}
+        scout._guide_cache.clear()
+        rec = scout.scout_candidate("thurmond_t")
+        assert any("0 candidates" in s["reason"] for s in rec["skipped"]), rec["skipped"]
+    finally:
+        race["voter_guide"] = saved
+        scout._guide_cache.clear()
+
+
+def test_guide_without_state_archive_uses_internet_archive():
+    scout.http_get, calls = fake_web(as_of_copies={GUIDE_LIVE: "20260501120000"})
+    race = next(r for r in RACES if r["id"] == "test_gov")
+    saved = race["voter_guide"]
+    try:
+        race["voter_guide"] = {"format": "ca_sos", "live": GUIDE_LIVE}
+        scout._guide_cache.clear()
+        entry, cited, problem = scout.voter_guide_entry(CANDIDATES["porter_t"], as_of="2026-05-03")
+        assert entry and not problem
+        assert cited == f"https://web.archive.org/web/20260501120000/{GUIDE_LIVE}", cited
+        assert not any(u == GUIDE_LIVE for u, _ in calls), "never the live guide in an as-of run"
+    finally:
+        race["voter_guide"] = saved
+        scout._guide_cache.clear()
+
+
+def test_office_words():
+    w = lambda office, title="X — Y": scout.office_words({"office": office, "title": title})
+    assert w("Governor") == ["governor", "gubernatorial"]
+    assert w("Lieutenant Governor") == ["lieutenant governor"], "not matched as plain governor"
+    assert w("U.S. Senate") == ["senate", "senator"]
+    assert w("State Assembly District 12") == ["assembly"]
+    assert "congress" in w("U.S. House of Representatives, District 6")
+    assert w("Attorney General") == ["attorney general"]
+    assert w(None, "Governor — California, Nov 3 2026") == ["governor", "gubernatorial"], "falls back to the title"
+
+
+def test_election_year():
+    assert scout.election_year({"id": "a", "election": "2028-03-03 primary"}) == 2028
+    assert scout.election_year({"id": "a", "year": 2030, "election": "2028-03-03 primary"}) == 2030
+    try:
+        scout.election_year({"id": "a"})
+        assert False, "a race with no date must fail loudly, not guess a year"
+    except ValueError:
+        pass
 
 
 if __name__ == "__main__":

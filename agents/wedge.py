@@ -197,7 +197,7 @@ def call_json(prompt: str, retries: int = 2, fast: bool = False) -> dict:
 # ---------------------------------------------------------------------------
 
 SOURCE_HEADER = re.compile(
-    r"^#{1,3}\s*(Source|Voter guide|Wikipedia|Campaign site|Bio page)\s*:\s*(https?://\S+)", re.I
+    r"^#{1,3}\s*(Source|Voter guide|Wikipedia|Campaign site|Office site|Bio page)\s*:\s*(https?://\S+)", re.I
 )
 
 POSITION_WORDS = re.compile(

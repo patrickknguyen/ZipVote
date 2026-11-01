@@ -6,6 +6,8 @@ Sources, in the order they're tried:
   1. State voter guide. Statements candidates wrote themselves for the
      official guide, where the state publishes one (California does for
      statewide offices). Also gives the candidate's website, if listed.
+     Each state's guide has its own layout, so each needs a parser in
+     GUIDE_PARSERS, named by the race's voter_guide "format".
   2. FEC. The campaign committee's official website, which federal
      candidates must list on their Statement of Organization.
   3. Wikipedia. Biography and record, plus the website in the infobox.
@@ -21,7 +23,8 @@ Two modes:
   - As of a date (--as-of YYYY-MM-DD): reads every source as it stood on that
     date, to reproduce a past election. Wikipedia is read at the last edit
     on or before the date, campaign sites from the Internet Archive's last
-    copy on or before it, and the voter guide from the state's archive. A
+    copy on or before it, and the voter guide from the state's archive, or
+    the Internet Archive when the state doesn't keep one. A
     source with no copy from on or before the date is left out.
 
 Every source is cited by a link to the exact version that was read: a
@@ -63,7 +66,7 @@ CDX_API = "https://web.archive.org/cdx/search/cdx"
 # Seconds between requests to each site. The Internet Archive refuses
 # connections from clients that go much faster than one request every few
 # seconds, so it gets the longest wait.
-DELAY = {"en.wikipedia.org": 0.5, "web.archive.org": 4.0, "api.open.fec.gov": 0.5}
+DELAY = {"en.wikipedia.org": 0.5, "web.archive.org": 6.0, "api.open.fec.gov": 0.5}
 DEFAULT_DELAY = 1.5
 MAX_CAMPAIGN_PAGES = 15
 
@@ -80,7 +83,7 @@ STATE_NAMES = {
     "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
     "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
     "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
-    "WI": "Wisconsin", "WY": "Wyoming",
+    "WI": "Wisconsin", "WY": "Wyoming", "DC": "District of Columbia",
 }
 
 # Links worth following on a campaign site, and links never worth following
@@ -118,7 +121,7 @@ def http_get(url: str, params: dict = None, retries: int = 2):
             # The Internet Archive drops connections when it's busy or thinks
             # we're going too fast; wait longer each time and try again
             if attempt < retries:
-                time.sleep(15 * (attempt + 1))
+                time.sleep(30 * (attempt + 1))
                 continue
             print(f"      (request failed after {retries + 1} tries: {e.__class__.__name__}: {url})")
             return None
@@ -287,6 +290,35 @@ def same_name(a: str, b: str) -> bool:
     return fa in words and la in words
 
 
+# Words a page uses for an office, tried in order. Lieutenant Governor comes
+# before Governor so it isn't matched by the shorter word.
+OFFICE_WORDS = [
+    (r"lieutenant governor", ["lieutenant governor"]),
+    (r"^governor$", ["governor", "gubernatorial"]),
+    (r"senat", ["senate", "senator"]),
+    (r"house|representative|congress", ["house of representatives", "congress", "congressional"]),
+    (r"assembly", ["assembly"]),
+]
+
+
+def office_words(race: dict) -> list:
+    """
+    The words a page must use for this race's office. Taken from the race's
+    "office" (manifests have one), or the start of its title. Anything not
+    in OFFICE_WORDS uses the office name itself, without "U.S.", "State" or
+    a district number ("Attorney General", "Secretary of State").
+    """
+    if race.get("identity_terms"):
+        return [t.lower() for t in race["identity_terms"]]
+    office = (race.get("office") or race["title"].split(" — ")[0]).lower()
+    office = re.sub(r"^(u\.?s\.?|united states|state)\s+", "", office)
+    office = re.sub(r"[,\s]*\b(district|seat|no\.?)\b.*$|\s+\d+$", "", office).strip()
+    for pattern, words in OFFICE_WORDS:
+        if re.search(pattern, office):
+            return words
+    return [office]
+
+
 def identity_terms(info: dict) -> list:
     """
     What a third-party page must mention to count as this candidate:
@@ -297,18 +329,7 @@ def identity_terms(info: dict) -> list:
     """
     race = race_of(info)
     state_full = STATE_NAMES.get(info["state"], info["state"]).lower()
-    office = race["title"].split(" — ")[0].lower()
-    if race.get("identity_terms"):
-        office_words = [t.lower() for t in race["identity_terms"]]
-    elif "governor" in office:
-        office_words = ["governor", "gubernatorial"]
-    elif "senate" in office:
-        office_words = ["senate", "senator"]
-    elif "house" in office:
-        office_words = ["house of representatives", "congress", "congressional"]
-    else:
-        office_words = [office]
-    terms = [("state", [state_full]), ("office", office_words)]
+    terms = [("state", [state_full]), ("office", office_words(race))]
     party = PARTY_WORDS.get(info.get("party", "").lower())
     if party:
         terms.append(("party", party))
@@ -331,12 +352,30 @@ def is_right_person(info: dict, text: str) -> bool:
 
 # ── 1. State voter guide ─────────────────────────────────────────────────────
 
-DOMAIN_LINE = re.compile(r"^(https?://)?(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(/\S*)?$", re.I)
+# Every state's postal code and name, for spotting "City, ST 00000" lines
+STATE_WORDS = "|".join(re.escape(w) for w in sorted(
+    [k.lower() for k in STATE_NAMES] + [v.lower() for v in STATE_NAMES.values()] + ["d.c."],
+    key=len, reverse=True))
+
+# A web address anywhere in a line, unless it's part of an e-mail address
+WEB_ADDRESS = re.compile(
+    r"(?<![@\w.-])((?:https?://)?(?:www\.)?[a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*"
+    r"\.(?:com|org|net|us|vote|info|co|io|gov)(?:/[^\s,;)]*)?)(?![\w@-])", re.I)
+CONTACT_LINE = re.compile(
+    r"^(tel|phone|fax|e-?mail|website|web)\s*:|"            # labeled contact lines
+    r"^\(?\d{3}\)?[\s.-]?\d{3}[\s.-]\d{4}$|"             # bare phone numbers
+    r"^@\w+$|"                                              # social handles
+    r"\S+@\S+\.\S+|"                                        # e-mail addresses
+    r"^\d+\s+\S.*\b(st|street|ave|avenue|blvd|boulevard|rd|road|dr|drive|way|ln|lane|ct|court|pl|place|hwy|suite|ste)\b\.?|"
+    r"^p\.?\s?o\.?\s+box\b|"                                # street and PO box addresses
+    rf"^[a-z .'-]+,\s*({STATE_WORDS})\.?(\s+\d{{5}}(-\d{{4}})?)?$|"  # City, ST 00000, any state
+    r"^no photo submitted$", re.I)
 
 
-def parse_voter_guide(html: str, page_url: str) -> dict:
+def parse_ca_sos_guide(html: str, page_url: str) -> dict:
     """
-    Split a voter guide page into one entry per candidate. Each entry starts
+    California Secretary of State's guide (format "ca_sos"). Split the page
+    into one entry per candidate. Each entry starts
     at a heading like "Name | PARTY" and runs to the next one. Returns
     {heading name: {"party", "statement": [paragraphs], "websites": [urls]}}.
     Phone numbers, addresses and e-mail are never kept: only statement
@@ -371,41 +410,108 @@ def parse_voter_guide(html: str, page_url: str) -> dict:
             continue  # only innermost blocks, so nothing is read twice
         for line in tag.get_text("\n", strip=True).split("\n"):
             line = re.sub(r"\s+", " ", line).strip()
-            if len(line.split()) >= 12:
-                current["statement"].append(line)
-            elif DOMAIN_LINE.match(line) and "@" not in line and not SOCIAL.search(line):
-                current["websites"].append(line if line.startswith("http") else f"https://{line}")
+            if not line:
+                continue
+            for addr in WEB_ADDRESS.findall(line):
+                if not SOCIAL.search(addr):
+                    current["websites"].append(addr if addr.lower().startswith("http") else f"https://{addr}")
+            # Everything the candidate wrote is kept, short lines and lists
+            # included. Only contact details are dropped, and a line that is
+            # nothing but a web address.
+            if CONTACT_LINE.search(line) or WEB_ADDRESS.fullmatch(line):
+                continue
+            current["statement"].append(line)
     for e in entries.values():
         e["websites"] = list(dict.fromkeys(e["websites"]))
     return entries
 
 
+# One parser per voter guide layout. Each state's guide looks different, so a
+# race names its guide's "format" in config. A new state needs a parser here
+# that returns the same {name: {"party", "statement", "websites"}} shape.
+GUIDE_PARSERS = {
+    "ca_sos": parse_ca_sos_guide,
+}
+
+
+def parse_voter_guide(html: str, page_url: str, fmt: str = "ca_sos") -> dict:
+    if fmt not in GUIDE_PARSERS:
+        raise ValueError(f"no parser for voter guide format {fmt!r}; add one to GUIDE_PARSERS")
+    return GUIDE_PARSERS[fmt](html, page_url)
+
+
 _guide_cache = {}
+
+
+def load_guide(guide: dict, as_of: str = None) -> tuple:
+    """
+    Read and parse a race's voter guide once. Returns (entries, cited_url,
+    problem). Live runs read the "live" page. As-of runs read the state's own
+    "archive" page when it keeps one; otherwise the Internet Archive's last
+    copy of the live page on or before the date, like any other page.
+    A guide that can't be read, or parses to no candidates at all, is a
+    problem to report, never the same as nobody having a statement.
+    """
+    key = (guide.get("live"), guide.get("archive"), as_of)
+    if key in _guide_cache:
+        return _guide_cache[key]
+    fmt = guide.get("format")
+    url = guide.get("archive") if as_of and guide.get("archive") else guide.get("live")
+    entries, cited, problem = {}, url, None
+    if fmt not in GUIDE_PARSERS:
+        problem = f"voter guide format {fmt!r} has no parser; set \"format\" in config"
+    elif not url:
+        problem = "voter guide has no address"
+    else:
+        try:
+            if as_of and not guide.get("archive"):
+                page = fetch_page(url, as_of)
+            else:
+                resp = http_get(url)
+                page = (page_text(resp), url, None) if resp is not None else None
+        except LookupFailed as e:
+            page, problem = None, str(e)
+        if page is None:
+            problem = problem or "voter guide could not be read"
+        else:
+            cited = page[1]
+            entries = parse_voter_guide(page[0], url, fmt)
+            if not entries:
+                problem = f"voter guide parsed to 0 candidates; the page may not match format {fmt!r}"
+    if problem:
+        print(f"   ⚠ {problem}: {url}")
+    _guide_cache[key] = (entries, cited, problem)
+    return _guide_cache[key]
 
 
 def voter_guide_entry(info: dict, as_of: str = None):
     """
-    The candidate's entry in their race's voter guide, or None. Config gives
-    the race a "voter_guide" with a "live" page and an "archive" page; as-of
-    runs read the state's archive, since the live guide moves on to the next
-    election. Returns (entry, cited_url).
+    The candidate's entry in their race's voter guide. Config gives the race
+    a "voter_guide" with a "format", a "live" page and optionally the state's
+    "archive" page. Returns (entry or None, cited_url, problem or None), or
+    None when the race has no guide.
     """
     guide = race_of(info).get("voter_guide")
     if not guide:
         return None
-    url = guide.get("archive") if as_of else guide.get("live")
-    if not url:
-        return None
-    if url not in _guide_cache:
-        resp = http_get(url)
-        _guide_cache[url] = parse_voter_guide(resp.text, url) if resp is not None else {}
-    for name, entry in _guide_cache[url].items():
+    entries, cited, problem = load_guide(guide, as_of)
+    for name, entry in entries.items():
         if same_name(info["name"], name):
-            return entry, url
-    return None
+            return entry, cited, None
+    return None, cited, problem
 
 
 # ── 2. FEC ───────────────────────────────────────────────────────────────────
+
+def election_year(race: dict) -> int:
+    """The year of a race's election, from "year" or the "election" date."""
+    if race.get("year"):
+        return int(race["year"])
+    m = re.match(r"\d{4}", race.get("election", ""))
+    if not m:
+        raise ValueError(f"race {race['id']} needs an \"election\" date (YYYY-MM-DD) or a \"year\"")
+    return int(m.group())
+
 
 def fec_website(info: dict):
     """
@@ -422,7 +528,7 @@ def fec_website(info: dict):
         found = (http_json(f"{FEC_API}/candidate/{info['fec_candidate_id']}/", {"api_key": key}) or {}).get("results", [])
     else:
         params = {"api_key": key, "q": name_parts(info["name"])[1], "state": info["state"],
-                  "office": office, "election_year": race.get("year", 2026), "per_page": 50}
+                  "office": office, "election_year": election_year(race), "per_page": 50}
         if office == "H" and race.get("district"):
             params["district"] = f"{int(race['district']):02d}"
         found = (http_json(f"{FEC_API}/candidates/", params) or {}).get("results", [])
@@ -459,8 +565,16 @@ def fec_website(info: dict):
 def wikipedia_titles(info: dict) -> list:
     if info.get("wikipedia_slug"):
         return [info["wikipedia_slug"].replace("_", " ")]
-    name = info["name"]
-    return [name, f"{name} (politician)", f"{name} (American politician)"]
+    # Official lists use full legal names ("Tony K. Thurmond") while Wikipedia
+    # titles usually don't ("Tony Thurmond"), so also try first and last name.
+    # Nicknames in quotes are dropped. The identity check guards against the
+    # shorter name landing on someone else.
+    full = re.sub(r'\s*"[^"]*"\s*', " ", info["name"]).strip()
+    words = full.split()
+    suffix = [w for w in words[2:] if w.rstrip(".").lower() in SUFFIXES]
+    short = " ".join([words[0]] + [w for w in words[1:] if w not in suffix][-1:] + suffix)
+    names = list(dict.fromkeys([full, short]))
+    return [t for n in names for t in (n, f"{n} (politician)", f"{n} (American politician)")]
 
 
 def wikipedia_page(info: dict, as_of: str = None):
@@ -477,9 +591,17 @@ def wikipedia_page(info: dict, as_of: str = None):
     pages = {p["title"]: p for p in (data or {}).get("query", {}).get("pages", [])
              if not p.get("missing") and "disambiguation" not in p.get("pageprops", {})}
     redirects = {r["from"]: r["to"] for r in (data or {}).get("query", {}).get("redirects", [])}
+    last = name_parts(info["name"])[1]
     for t in titles:
         title = redirects.get(t, t)
         if title not in pages:
+            continue
+        # Minor candidates' names often redirect to the election article,
+        # which mentions the state, office and party and would pass the
+        # identity check. The page must be about the person: their last
+        # name in its title, and not an election or race article.
+        if last not in plain(title).split() or "election" in title.lower():
+            print(f"   ✗ Wikipedia: {t} leads to \"{title}\", not a page about the candidate, skipped")
             continue
         params = {"action": "query", "titles": title, "prop": "revisions", "rvprop": "ids|timestamp",
                   "rvlimit": 1, "format": "json", "formatversion": 2}
@@ -499,6 +621,26 @@ def wikipedia_page(info: dict, as_of: str = None):
             continue
         link = f"https://en.wikipedia.org/w/index.php?title={title.replace(' ', '_')}&oldid={rev['revid']}"
         return html, link, rev["revid"], rev["timestamp"]
+    return None
+
+
+def campaign_link(html: str):
+    """
+    The "Campaign website" (or "Official campaign website") link in a
+    Wikipedia article's External links section, if it has one. Candidates'
+    pages often list their campaign site here and not in the infobox.
+    """
+    soup = BeautifulSoup(html, "html.parser")
+    heading = soup.find(id="External_links")
+    if heading is None:
+        return None
+    links = heading.find_next("ul")
+    for li in (links.find_all("li") if links else []):
+        label = li.get_text(" ", strip=True).lower()
+        if label.startswith(("campaign website", "official campaign website", "campaign site")):
+            a = li.find("a", href=re.compile(r"^https?://"))
+            if a and not SOCIAL.search(a["href"]):
+                return a["href"]
     return None
 
 
@@ -601,11 +743,14 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
               "as_of": as_of, "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
               "sources": [], "skipped": []}
     websites = []
+    office_site = None   # a Wikipedia infobox site, used only as a last resort
 
     # 1. Voter guide: the candidate's own statement, in the state's guide
     found = voter_guide_entry(info, as_of)
-    if found:
-        entry, url = found
+    if found and found[2]:
+        record["skipped"].append({"url": found[1], "reason": found[2]})
+    if found and found[0]:
+        entry, url, _ = found
         if entry["statement"]:
             text.append(f"\n## Voter guide: {url}\n\n" + "\n".join(entry["statement"]))
             record["sources"].append({"kind": "voter guide", "url": url, "words": len(" ".join(entry["statement"]).split())})
@@ -627,9 +772,13 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
         record["sources"].append({"kind": "wikipedia", "url": link, "revision": revid, "revision_time": ts,
                                   "words": len(" ".join(lines).split())})
         print(f"   ✓ Wikipedia, version of {ts[:10]}: {link}")
-        site = infobox_website(html)
+        # The campaign site from External links is a campaign link. The
+        # infobox Website is often the candidate's office (a sheriff's
+        # department, a Senate page), so it's only used if nothing else is found.
+        site = campaign_link(html)
         if site:
             websites.append(site)
+        office_site = infobox_website(html)
 
     # 4. Campaign site: pages listed in config, or found from the sites above
     hand_listed = info.get("campaign_urls", [])
@@ -642,6 +791,13 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
     starts = hand_listed or list(dict.fromkeys(w for w in websites if any(same_site(w, v) for v in sites[:2])))
     if starts:
         pages, skipped = campaign_pages(info, starts, as_of, crawl=not hand_listed)
+        # Pages listed by hand came up empty (often JavaScript pages): fall
+        # back to following links from the websites found in public records
+        found_sites = [w for w in websites if any(same_site(w, v) for v in sites[:2])]
+        if hand_listed and not pages and found_sites:
+            print("   – Listed pages came up empty; following links from the campaign's website instead")
+            pages, more = campaign_pages(info, found_sites, as_of)
+            skipped += more
         for cited, lines, snap in pages:
             text.append(f"\n## Campaign site: {cited}\n\n" + "\n".join(lines))
             record["sources"].append({"kind": "campaign site", "url": cited, "snapshot": snap,
@@ -649,6 +805,18 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
         record["skipped"] += [{"url": u, "reason": r} for u, r in skipped]
         print(f"   {'✓' if pages else '✗'} Campaign site: {len(pages)} page(s) read, {len(skipped)} skipped")
     else:
+        pages = []
+    # Last resort: no campaign pages at all, so try the Wikipedia infobox
+    # website, which is often the candidate's office rather than campaign
+    if not pages and office_site and not hand_listed and not any(same_site(office_site, w) for w in websites):
+        print(f"   – No campaign pages found; falling back to the infobox website {office_site}")
+        pages, skipped = campaign_pages(info, [office_site], as_of)
+        for cited, lines, snap in pages:
+            text.append(f"\n## Office site: {cited}\n\n" + "\n".join(lines))
+            record["sources"].append({"kind": "office site", "url": cited, "snapshot": snap,
+                                      "words": len(" ".join(lines).split())})
+        record["skipped"] += [{"url": u, "reason": r} for u, r in skipped]
+    if not websites and not office_site and not hand_listed:
         print("   – No campaign website found in the voter guide, FEC or Wikipedia")
 
     # 5. About page, for the bio when there's no Wikipedia page
@@ -696,7 +864,7 @@ def main():
 
     have = [r for r in records if r["sources"]]
     print(f"\n✅ {len(have)} of {len(records)} candidates have at least one source.")
-    for kind in ("voter guide", "wikipedia", "campaign site"):
+    for kind in ("voter guide", "wikipedia", "campaign site", "office site"):
         n = sum(any(s["kind"] == kind for s in r["sources"]) for r in records)
         print(f"   {kind}: {n}")
     missing = [r["name"] for r in records if not r["sources"]]

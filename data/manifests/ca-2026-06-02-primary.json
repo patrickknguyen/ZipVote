@@ -1,0 +1,267 @@
+{
+ "election": "2026-06-02 primary",
+ "state": "CA",
+ "primary_type": "top-two: every candidate on one ballot, the top two advance regardless of party",
+ "source": "https://elections.cdn.sos.ca.gov/statewide-elections/2026-primary/cert-list-candidates.pdf",
+ "source_title": "Official Certified List of Candidates, Statewide Direct Primary Election, June 2, 2026",
+ "certified": "2026-03-26",
+ "transcribed": "2026-10-31",
+ "races": [
+  {
+   "id": "ca_gov_primary",
+   "office": "Governor",
+   "title": "Governor — California, June 2 2026 primary",
+   "voter_guide": {
+    "format": "ca_sos",
+    "live": "https://voterguide.sos.ca.gov/candidates/governor-candidate-statements.htm",
+    "archive": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+   },
+   "candidates": [
+    {
+     "name": "Akinyemi Agbede",
+     "party": "Democrat"
+    },
+    {
+     "name": "Mohammad Arif",
+     "party": "Democrat"
+    },
+    {
+     "name": "Larry Azevedo",
+     "party": "Democrat"
+    },
+    {
+     "name": "Xavier Becerra",
+     "party": "Democrat"
+    },
+    {
+     "name": "Carolina Buhler",
+     "party": "Democrat"
+    },
+    {
+     "name": "Louis A. De Barraicua",
+     "party": "Democrat"
+    },
+    {
+     "name": "Sophia Edum-a-Sam",
+     "party": "Democrat"
+    },
+    {
+     "name": "Derek Grasty",
+     "party": "Democrat"
+    },
+    {
+     "name": "Joel E. Jacob",
+     "party": "Democrat"
+    },
+    {
+     "name": "Gary Howard Kidgell",
+     "party": "Democrat"
+    },
+    {
+     "name": "Matthew Chase Levy",
+     "party": "Democrat"
+    },
+    {
+     "name": "Matt Mahan",
+     "party": "Democrat"
+    },
+    {
+     "name": "Barack D. Obama Shaw",
+     "party": "Democrat"
+    },
+    {
+     "name": "Thunder Parley",
+     "party": "Democrat"
+    },
+    {
+     "name": "Katie Porter",
+     "party": "Democrat"
+    },
+    {
+     "name": "Raji Rab",
+     "party": "Democrat"
+    },
+    {
+     "name": "Satish Rao",
+     "party": "Democrat"
+    },
+    {
+     "name": "Scott P Shields",
+     "party": "Democrat"
+    },
+    {
+     "name": "Tom Steyer",
+     "party": "Democrat"
+    },
+    {
+     "name": "Eric Swalwell",
+     "party": "Democrat"
+    },
+    {
+     "name": "Tony K. Thurmond",
+     "party": "Democrat"
+    },
+    {
+     "name": "Antonio Villaraigosa",
+     "party": "Democrat"
+    },
+    {
+     "name": "Betty T. Yee",
+     "party": "Democrat"
+    },
+    {
+     "name": "Erin \"Zez\" Zezulak",
+     "party": "Democrat"
+    },
+    {
+     "name": "James Athans Jr.",
+     "party": "Republican"
+    },
+    {
+     "name": "Chad Bianco",
+     "party": "Republican"
+    },
+    {
+     "name": "Patricia De Luca Basualdo",
+     "party": "Republican"
+    },
+    {
+     "name": "Randeep S. Dhillon",
+     "party": "Republican"
+    },
+    {
+     "name": "Rafael M. Hernandez",
+     "party": "Republican"
+    },
+    {
+     "name": "Steve Hilton",
+     "party": "Republican"
+    },
+    {
+     "name": "Alicia Olivia Lapp",
+     "party": "Republican"
+    },
+    {
+     "name": "Leo Naranjo IV",
+     "party": "Republican"
+    },
+    {
+     "name": "Tim Nelson",
+     "party": "Republican"
+    },
+    {
+     "name": "Gretha Solórzano",
+     "party": "Republican"
+    },
+    {
+     "name": "Leo Samuel Zacky",
+     "party": "Republican"
+    },
+    {
+     "name": "David Zickefoose",
+     "party": "Republican"
+    },
+    {
+     "name": "Tom Woodard",
+     "party": "Libertarian"
+    },
+    {
+     "name": "Ramsey Robinson",
+     "party": "Peace and Freedom"
+    },
+    {
+     "name": "Naomi Bar-Lev",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Joseph Cabrera",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Elaine Culotti",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "LivingForGod AndCountry DeMott",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Serge Fiankan",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Lukasz Adam Filinski",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Max Fomin",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Don J. Grundmann",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Jon Henderson",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Lewis Herms",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Dawit Kellel",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Anne Komarovsk",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Duane Terrence Loynes Jr.",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Amanda Martin",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Brent Maupin",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Daniel Mercuri",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Mauro Alberto Orozco",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Reza Safarnejad",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Sam Sandak",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Christine R. Sarmiento",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Frederic C. Schultz",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Margaret Trowe",
+     "party": "No Party Preference"
+    },
+    {
+     "name": "Nancy D. Young",
+     "party": "No Party Preference"
+    }
+   ]
+  }
+ ]
+}
