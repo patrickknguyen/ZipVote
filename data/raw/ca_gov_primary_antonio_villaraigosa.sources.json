@@ -3,7 +3,7 @@
   "name": "Antonio Villaraigosa",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:12:12+00:00",
+  "retrieved_at": "2026-11-02T00:03:30+00:00",
   "sources": [
     {
       "kind": "wikipedia",
@@ -41,12 +41,13 @@
       "url": "https://web.archive.org/web/20260519213742/https://www.antonio2026.com/gas",
       "snapshot": "20260519213742",
       "words": 5302
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260507050743/https://www.antonio2026.com/issues",
+      "snapshot": "20260507050743",
+      "words": 891
     }
   ],
-  "skipped": [
-    {
-      "url": "https://www.antonio2026.com/policy",
-      "reason": "no copy on or before 2026-06-01"
-    }
-  ]
+  "skipped": []
 }

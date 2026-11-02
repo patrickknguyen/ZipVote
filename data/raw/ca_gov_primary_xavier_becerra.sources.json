@@ -3,7 +3,7 @@
   "name": "Xavier Becerra",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:01:01+00:00",
+  "retrieved_at": "2026-11-01T23:42:08+00:00",
   "sources": [
     {
       "kind": "wikipedia",
@@ -11,6 +11,66 @@
       "revision": 1356916135,
       "revision_time": "2026-05-30T16:51:58Z",
       "words": 6273
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260509231655/https://www.xavierbecerra2026.com/",
+      "snapshot": "20260509231655",
+      "words": 826
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260522233726/https://www.xavierbecerra2026.com/priorities/",
+      "snapshot": "20260522233726",
+      "words": 367
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/",
+      "snapshot": "20260523180733",
+      "words": 1977
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260529115158/https://www.xavierbecerra2026.com/priorities/fighting-donald-trump/",
+      "snapshot": "20260529115158",
+      "words": 207
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260520214518/https://www.xavierbecerra2026.com/priorities/housing/",
+      "snapshot": "20260520214518",
+      "words": 2697
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260522233614/https://www.xavierbecerra2026.com/priorities/economy-and-affordability/",
+      "snapshot": "20260522233614",
+      "words": 227
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260526093934/https://www.xavierbecerra2026.com/priorities/energy-utilities/",
+      "snapshot": "20260526093934",
+      "words": 146
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260522233620/https://www.xavierbecerra2026.com/priorities/california-disaster-preparedness-resilience/",
+      "snapshot": "20260522233620",
+      "words": 211
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530213613/https://www.xavierbecerra2026.com/priorities/ai/",
+      "snapshot": "20260530213613",
+      "words": 1456
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260522233626/https://www.xavierbecerra2026.com/priorities/homelessness/",
+      "snapshot": "20260522233626",
+      "words": 978
     }
   ],
   "skipped": []

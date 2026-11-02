@@ -3,7 +3,7 @@
   "name": "Eric Swalwell",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:11:45+00:00",
+  "retrieved_at": "2026-11-02T00:01:22+00:00",
   "sources": [
     {
       "kind": "wikipedia",
@@ -13,5 +13,10 @@
       "words": 6864
     }
   ],
-  "skipped": []
+  "skipped": [
+    {
+      "url": "https://ericswalwell.com",
+      "reason": "Internet Archive copy exists but couldn't be downloaded; run again"
+    }
+  ]
 }

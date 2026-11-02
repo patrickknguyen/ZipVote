@@ -3,7 +3,7 @@
   "name": "Tom Steyer",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:11:40+00:00",
+  "retrieved_at": "2026-11-01T23:56:57+00:00",
   "sources": [
     {
       "kind": "wikipedia",
@@ -11,7 +11,96 @@
       "revision": 1357270944,
       "revision_time": "2026-06-01T18:47:36Z",
       "words": 7357
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531200831/https://www.tomsteyer.com/",
+      "snapshot": "20260531200831",
+      "words": 431
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260601025010/https://www.tomsteyer.com/issues",
+      "snapshot": "20260601025010",
+      "words": 138
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260517145054/https://www.tomsteyer.com/issues/housing",
+      "snapshot": "20260517145054",
+      "words": 2465
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260516145818/https://www.tomsteyer.com/issues/tax-loopholes",
+      "snapshot": "20260516145818",
+      "words": 317
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260530020615/https://www.tomsteyer.com/issues/entertainment",
+      "snapshot": "20260530020615",
+      "words": 1290
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260524052159/https://www.tomsteyer.com/issues/electricity",
+      "snapshot": "20260524052159",
+      "words": 1626
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260527040214/https://www.tomsteyer.com/issues/oil-gas-prices",
+      "snapshot": "20260527040214",
+      "words": 993
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260516144403/https://www.tomsteyer.com/issues/education",
+      "snapshot": "20260516144403",
+      "words": 314
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260524212648/https://www.tomsteyer.com/issues/abolish-ice",
+      "snapshot": "20260524212648",
+      "words": 440
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260516151403/https://www.tomsteyer.com/issues/climate",
+      "snapshot": "20260516151403",
+      "words": 441
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260531012246/https://www.tomsteyer.com/issues/healthcare",
+      "snapshot": "20260531012246",
+      "words": 441
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260524052159/https://www.tomsteyer.com/issues/care",
+      "snapshot": "20260524052159",
+      "words": 1260
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260516142317/https://www.tomsteyer.com/issues/ai-policy",
+      "snapshot": "20260516142317",
+      "words": 656
+    },
+    {
+      "kind": "campaign site",
+      "url": "https://web.archive.org/web/20260527040227/https://www.tomsteyer.com/gas-prices-survey?signup=true",
+      "snapshot": "20260527040227",
+      "words": 77
     }
   ],
-  "skipped": []
+  "skipped": [
+    {
+      "url": "https://www.tomsteyer.com/cdn-cgi/l/email-protection",
+      "reason": "newest copy is from 2024-07-30, more than 180 days before 2026-06-01"
+    }
+  ]
 }

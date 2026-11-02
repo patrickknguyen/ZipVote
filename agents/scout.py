@@ -23,7 +23,7 @@ Two modes:
   - As of a date (--as-of YYYY-MM-DD): reads every source as it stood on that
     date, to reproduce a past election. Wikipedia is read at the last edit
     on or before the date, campaign sites from the Internet Archive's last
-    copy on or before it, and the voter guide from the state's archive, or
+    copy on or before it (no more than MAX_COPY_AGE_DAYS older), and the voter guide from the state's archive, or
     the Internet Archive when the state doesn't keep one. A
     source with no copy from on or before the date is left out.
 
@@ -46,6 +46,7 @@ import argparse
 import json
 import os
 import re
+import sys
 import time
 import unicodedata
 from datetime import datetime, timezone
@@ -69,6 +70,10 @@ CDX_API = "https://web.archive.org/cdx/search/cdx"
 DELAY = {"en.wikipedia.org": 0.5, "web.archive.org": 6.0, "api.open.fec.gov": 0.5}
 DEFAULT_DELAY = 1.5
 MAX_CAMPAIGN_PAGES = 15
+# In as-of runs, an Internet Archive copy older than this is left out: a site
+# saved long before the date may belong to an earlier campaign (Becerra's
+# newest copy before June 2026 was his 2022 attorney general site).
+MAX_COPY_AGE_DAYS = 180
 
 STATE_NAMES = {
     "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
@@ -216,26 +221,47 @@ def page_text(resp) -> str:
     return data.decode(resp.encoding or "utf-8", errors="replace")
 
 
-class LookupFailed(Exception):
+class SourceSkipped(Exception):
+    """A source was found but left out; the message says why."""
+
+
+class LookupFailed(SourceSkipped):
     """A source couldn't be reached. Not the same as the source not existing."""
+
+
+class StaleCopy(SourceSkipped):
+    """The archive's newest copy before the date is too old to trust."""
 
 
 def ymd(as_of: str) -> str:
     return as_of.replace("-", "")
 
 
-def fetch_page(url: str, as_of: str = None):
+ARCHIVE_URL = re.compile(r"/web/(\d{14})(?:id_)?/(.+)$")
+
+
+def fetch_page(url: str, as_of: str = None, hops: int = 0):
     """
-    One web page, live or as of a date. Returns (html, cited_url, snapshot)
-    or None. In as-of mode the page comes from the Internet Archive's last
-    copy on or before the date; cited_url links to that exact copy.
+    One web page, live or as of a date. Returns (html, cited_url, snapshot,
+    final_url) or None. final_url is where the page actually lives after any
+    redirect (a campaign that moved to a new address), so links on it are
+    read against the right site.
+
+    In as-of mode the page comes from the Internet Archive's last copy on or
+    before the date, and no more than MAX_COPY_AGE_DAYS older; cited_url
+    links to that exact copy. When that copy is a redirect, it is followed:
+    the Internet Archive replays the redirect to its copy of the new address.
+    If that copy is from after the date, the new address is looked up on its
+    own, under the same date rules.
     """
     if not as_of:
         resp = http_get(url)
-        return (page_text(resp), url, None) if resp is not None else None
+        if resp is None:
+            return None
+        return page_text(resp), url, None, getattr(resp, "url", None) or url
     rows = http_json(CDX_API, {
-        "url": url, "to": ymd(as_of), "output": "json", "fl": "timestamp,original",
-        "filter": "statuscode:200", "limit": "-1",
+        "url": url, "to": ymd(as_of), "output": "json", "fl": "timestamp,original,statuscode",
+        "filter": "statuscode:[23]..", "limit": "-1",
     })
     if rows is None:
         raise LookupFailed("Internet Archive lookup failed; run again")
@@ -243,13 +269,34 @@ def fetch_page(url: str, as_of: str = None):
     if len(rows) < 2:
         print(f"      (no Internet Archive copy on or before {as_of}: {url})")
         return None
-    ts, original = rows[-1][0], rows[-1][1]
+    ts, original, status = rows[-1][0], rows[-1][1], (rows[-1][2:3] or ["200"])[0]
     if ts[:8] > ymd(as_of):
         return None
+    age = (datetime.strptime(as_of, "%Y-%m-%d") - datetime.strptime(ts[:8], "%Y%m%d")).days
+    if age > MAX_COPY_AGE_DAYS:
+        print(f"      (newest Internet Archive copy is from {ts[:4]}-{ts[4:6]}-{ts[6:8]}, {age} days before {as_of}: {url})")
+        raise StaleCopy(f"newest copy is from {ts[:4]}-{ts[4:6]}-{ts[6:8]}, more than {MAX_COPY_AGE_DAYS} days before {as_of}")
     resp = http_get(f"https://web.archive.org/web/{ts}id_/{original}")
     if resp is None:
         raise LookupFailed("Internet Archive copy exists but couldn't be downloaded; run again")
-    return page_text(resp), f"https://web.archive.org/web/{ts}/{original}", ts
+    if not status.startswith("3"):
+        return page_text(resp), f"https://web.archive.org/web/{ts}/{original}", ts, original
+    # A redirect: where did the Internet Archive's replay end up?
+    m = ARCHIVE_URL.search(getattr(resp, "url", None) or "")
+    if not m or m.group(2).rstrip("/") == original.rstrip("/"):
+        raise SourceSkipped(f"redirected on {ts[:8]}, but the new address couldn't be found")
+    final_ts, final = m.group(1), m.group(2)
+    print(f"      ({original} redirected to {final})")
+    if final_ts[:8] <= ymd(as_of):
+        final_age = (datetime.strptime(as_of, "%Y-%m-%d") - datetime.strptime(final_ts[:8], "%Y%m%d")).days
+        if final_age <= MAX_COPY_AGE_DAYS:
+            return page_text(resp), f"https://web.archive.org/web/{final_ts}/{final}", final_ts, final
+    # The replayed copy is from after the date (or too old): look the new
+    # address up on its own. Only for a new site, so a redirect within one
+    # site (www to no www) can't loop.
+    if hops < 2 and not same_site(final, original):
+        return fetch_page(final, as_of, hops + 1)
+    raise SourceSkipped(f"redirected to {final}, which has no usable copy on or before {as_of}")
 
 
 # ── Who is this? ─────────────────────────────────────────────────────────────
@@ -468,8 +515,8 @@ def load_guide(guide: dict, as_of: str = None) -> tuple:
                 page = fetch_page(url, as_of)
             else:
                 resp = http_get(url)
-                page = (page_text(resp), url, None) if resp is not None else None
-        except LookupFailed as e:
+                page = (page_text(resp), url, None, url) if resp is not None else None
+        except SourceSkipped as e:
             page, problem = None, str(e)
         if page is None:
             problem = problem or "voter guide could not be read"
@@ -624,24 +671,48 @@ def wikipedia_page(info: dict, as_of: str = None):
     return None
 
 
+# Labels for a candidate's own site in a Wikipedia article's External links:
+# "Campaign website", "Official Campaign Website", "Eric Swalwell for
+# Governor campaign website". A label in quotation marks is a news headline.
+CAMPAIGN_LABEL = re.compile(r"\bcampaign\s+(web\s?)?site\b", re.I)
+# The plain "Official website" template, which points to the person's own
+# site (Steyer's tomsteyer.com). Used only when no campaign link is labeled,
+# and never a government site (swalwell.house.gov), which is their office.
+OFFICIAL_LABEL = re.compile(r"^official\s+(web\s?)?site$", re.I)
+HEADLINE = re.compile(r"[\"\u201c\u201d]")
+
+
 def campaign_link(html: str):
     """
-    The "Campaign website" (or "Official campaign website") link in a
-    Wikipedia article's External links section, if it has one. Candidates'
-    pages often list their campaign site here and not in the infobox.
+    The candidate's own site from a Wikipedia article's External links
+    section: a link labeled as their campaign website, or failing that, a
+    plain "Official website" that isn't a government site. Pages often list
+    the campaign site here and not in the infobox.
+    Every list item in the section is read, up to the next section heading:
+    the section often opens with a sister-projects box (Commons, Wikiquote)
+    that is a list of its own, so the first list isn't always the links.
+    Navigation boxes at the foot of the article are never read.
     """
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.find(id="External_links")
     if heading is None:
         return None
-    links = heading.find_next("ul")
-    for li in (links.find_all("li") if links else []):
-        label = li.get_text(" ", strip=True).lower()
-        if label.startswith(("campaign website", "official campaign website", "campaign site")):
-            a = li.find("a", href=re.compile(r"^https?://"))
-            if a and not SOCIAL.search(a["href"]):
-                return a["href"]
-    return None
+    labeled, official = [], []
+    for el in heading.find_all_next(["h2", "li"]):
+        if el.name == "h2":
+            break   # the next section
+        if el.find_parent(class_=re.compile(r"navbox|side-box|sistersitebox")):
+            continue
+        a = el.find("a", href=re.compile(r"^https?://"))
+        if not a or SOCIAL.search(a["href"]):
+            continue
+        label = el.get_text(" ", strip=True)
+        if CAMPAIGN_LABEL.search(label) and not HEADLINE.search(label):
+            labeled.append(a["href"])
+        elif OFFICIAL_LABEL.match(label) and not urlparse(a["href"]).netloc.lower().endswith(".gov"):
+            official.append(a["href"])
+    found = labeled or official
+    return found[0] if found else None
 
 
 def infobox_website(html: str):
@@ -697,15 +768,17 @@ def campaign_pages(info: dict, start_urls: list, as_of: str = None, crawl: bool 
             continue   # another address for a site already read
         try:
             page = fetch_page(url, as_of)
-        except LookupFailed as e:
+        except SourceSkipped as e:
             skipped.append((url, str(e)))
             continue
         if page is None:
             skipped.append((url, "could not read" if not as_of else f"no copy on or before {as_of}"))
             continue
-        html, cited, snap = page
+        html, cited, snap, base = page
+        base = base.rstrip("/")
+        seen.add(base)
         if depth == 0:
-            sites_read.append(url)
+            sites_read += [url, base]
         lines = html_to_lines(html, whole_page=True)
         site_text.append(BeautifulSoup(html, "html.parser").get_text(" "))
         # Almost no text usually means the page needs JavaScript to show anything
@@ -715,7 +788,7 @@ def campaign_pages(info: dict, start_urls: list, as_of: str = None, crawl: bool 
             skipped.append((url, "almost no text; may need JavaScript"))
         if not crawl or depth >= 2:
             continue
-        for link, text in page_links(html, url, main_only=depth == 1):
+        for link, text in page_links(html, base, main_only=depth == 1):
             if link in seen or is_skippable(link, text):
                 continue
             if depth == 0 and not (ISSUE_WORDS.search(urlparse(link).path) or ISSUE_WORDS.search(text)):
@@ -823,7 +896,7 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
     for url in info.get("bio_urls", []):
         try:
             page = fetch_page(url, as_of)
-        except LookupFailed:
+        except SourceSkipped:
             page = None
         lines = html_to_lines(page[0], whole_page=True) if page else []
         if sum(len(l) for l in lines) >= 200:
@@ -846,6 +919,9 @@ def scout_candidate(candidate_id: str, as_of: str = None) -> dict:
 
 
 def main():
+    # Print each line as it happens, even through a pipe (| tee), so a long
+    # run never looks frozen
+    sys.stdout.reconfigure(line_buffering=True)
     parser = argparse.ArgumentParser(description="ZipVote Scout Agent")
     parser.add_argument("--candidate", help="Scout one candidate id")
     parser.add_argument("--race", help="Scout every candidate in one race id")

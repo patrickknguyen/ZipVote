@@ -60,8 +60,9 @@ HOUSING = """<html><body><main><p>Katie will end exclusionary zoning near transi
 
 
 class Resp:
-    def __init__(self, body, status=200, content=None):
+    def __init__(self, body, status=200, content=None, url=None):
         self.status_code = status
+        self.url = url
         self.text = body if isinstance(body, str) else json.dumps(body)
         self._body = body
         self.content = content if content is not None else self.text.encode("utf-8")
@@ -235,6 +236,48 @@ def test_campaign_link_in_external_links():
     <li><a class="external text" href="https://www.joincalifornia.com/candidate/123">Join California Xavier Becerra</a></li></ul></div>"""
     assert scout.campaign_link(html) == "https://www.xavierbecerra2026.com/"
     assert scout.campaign_link("<div><p>No links section here.</p></div>") is None
+    # Becerra's page: a sister-projects box, with its own list, comes before the links
+    boxed = """<div><div class="mw-heading mw-heading2"><h2 id="External_links">External links</h2></div>
+    <div class="side-box sistersitebox"><ul><li><a href="https://commons.wikimedia.org/x">Media</a> from Commons</li>
+    <li><a href="https://en.wikisource.org/x">Texts</a> from Wikisource</li></ul></div>
+    <ul><li><a class="external text" href="https://www.xavierbecerra2026.com/">Campaign website</a></li>
+    <li><a class="external text" href="https://www.fec.gov/x">Financial information (federal office)</a></li></ul></div>"""
+    assert scout.campaign_link(boxed) == "https://www.xavierbecerra2026.com/", "a box before the list is passed over"
+    # Hilton's page: different wording and capitals, after a Wikiquote line
+    hilton = """<div><div class="mw-heading mw-heading2"><h2 id="External_links">External links</h2></div>
+    <ul><li>Quotations related to <a href="/wiki/Steve_Hilton">Steve Hilton</a> at Wikiquote</li></ul>
+    <ul><li><a class="external text" href="https://stevehiltonforgovernor.com/">Official Campaign Website</a></li>
+    <li><a class="external text" href="https://www.bbc.co.uk/x">BBC Radio 4 – Profile, Steve Hilton</a></li></ul></div>"""
+    assert scout.campaign_link(hilton) == "https://stevehiltonforgovernor.com/"
+    # A link in the next section is never read as this one's
+    later = """<div><div class="mw-heading mw-heading2"><h2 id="External_links">External links</h2></div>
+    <ul><li><a href="https://bioguide.congress.gov/x">Biography</a></li></ul>
+    <div class="mw-heading mw-heading2"><h2 id="Notes">Notes</h2></div>
+    <ul><li><a href="https://example.com/">Campaign website</a></li></ul></div>"""
+    assert scout.campaign_link(later) is None
+    # A news headline that mentions a campaign website isn't the campaign's link
+    news = """<div><h2 id="External_links">External links</h2>
+    <ul><li>"<a href="https://news.example.com/x">Hilton launches campaign website</a>" at The Example Times</li></ul></div>"""
+    assert scout.campaign_link(news) is None
+    # Swalwell's page: the House site comes first, the campaign label is mid-sentence
+    swalwell = """<div><h2 id="External_links">External links</h2>
+    <ul><li><a href="https://swalwell.house.gov/">Congressman Eric Swalwell official U.S. House website</a></li>
+    <li><a href="https://ericswalwell.com/">Eric Swalwell for Governor campaign website</a></li></ul></div>"""
+    assert scout.campaign_link(swalwell) == "https://ericswalwell.com/"
+    # Steyer's page: a plain "Official website", used when nothing says campaign
+    steyer = """<div><h2 id="External_links">External links</h2>
+    <ul><li><a href="https://www.tomsteyer.com/">Official website</a></li>
+    <li><a href="https://galvanizeclimate.com/">Galvanize Climate</a></li></ul></div>"""
+    assert scout.campaign_link(steyer) == "https://www.tomsteyer.com/"
+    both = steyer.replace("</ul>", '<li><a href="https://steyer2026.com/">Campaign website</a></li></ul>')
+    assert scout.campaign_link(both) == "https://steyer2026.com/", "a labeled campaign link wins"
+    gov = """<div><h2 id="External_links">External links</h2>
+    <ul><li><a href="https://www.senate.gov/x">Official website</a></li></ul></div>"""
+    assert scout.campaign_link(gov) is None, "a government site is the office, not the campaign"
+    # Navigation boxes at the foot of the page are never read
+    nav = """<div><h2 id="External_links">External links</h2><ul><li><a href="https://bioguide.congress.gov/x">Biography</a></li></ul>
+    <div class="navbox"><ul><li><a href="https://x.com/">Campaign website</a></li></ul></div></div>"""
+    assert scout.campaign_link(nav) is None
 
 
 def test_fec_match():
@@ -355,6 +398,63 @@ def test_election_year():
         assert False, "a race with no date must fail loudly, not guess a year"
     except ValueError:
         pass
+
+
+def test_old_archive_copy_left_out():
+    scout.http_get, _ = fake_web(as_of_copies={SITE: "20250329030226"})
+    pages, skipped = scout.campaign_pages(CANDIDATES["porter_t"], [SITE], as_of="2026-06-01")
+    assert not pages, "a copy from 14 months before the date may be an earlier campaign's site"
+    assert skipped and "more than 180 days" in skipped[0][1], skipped
+
+
+def redirect_web(replay_ts, cdx_rows):
+    """A fake archive where Becerra's old site redirects to a new campaign site."""
+    new_home = """<html><body><main><h1>Xavier Becerra for Governor</h1>
+    <p>Xavier Becerra is running for governor to make California affordable for working families.</p>
+    <a href="/issues">Issues</a></main></body></html>"""
+    issues = """<html><body><main><p>Becerra will cap insulin costs at thirty five dollars a month for every Californian.</p></main></body></html>"""
+    calls = []
+
+    def get(url, params=None, retries=2):
+        params = params or {}
+        calls.append((url, dict(params)))
+        if url == scout.CDX_API:
+            rows = cdx_rows.get(params["url"].rstrip("/"))
+            return Resp([["timestamp", "original", "statuscode"]] + (rows or []))
+        if url == "https://web.archive.org/web/20260509231655id_/https://www.xavierbecerra.com/":
+            return Resp(new_home, url=f"https://web.archive.org/web/{replay_ts}id_/https://becerra4gov.com/")
+        if url.startswith("https://web.archive.org/web/") and url.rstrip("/").endswith("id_/https://becerra4gov.com"):
+            return Resp(new_home, url=url)
+        if url.startswith("https://web.archive.org/web/") and url.endswith("/https://becerra4gov.com/issues"):
+            return Resp(issues, url=url)
+        return None
+    return get, calls
+
+
+def test_archive_redirect_followed():
+    rows = {"https://xavierbecerra.com": [["20260509231655", "https://www.xavierbecerra.com/", "301"]],
+            "https://becerra4gov.com/issues": [["20260510000000", "https://becerra4gov.com/issues", "200"]]}
+    scout.http_get, calls = redirect_web("20260509231700", rows)
+    becerra = {"id": "b", "name": "Xavier Becerra", "party": "Democrat", "race": "test_gov", "state": "CA"}
+    pages, skipped = scout.campaign_pages(becerra, ["https://xavierbecerra.com"], as_of="2026-06-01")
+    cites = [c for c, _, _ in pages]
+    assert cites[0] == "https://web.archive.org/web/20260509231700/https://becerra4gov.com/", cites
+    assert any("becerra4gov.com/issues" in c for c in cites), "links on the new site are followed"
+    assert not skipped, skipped
+
+
+def test_archive_redirect_replayed_after_date():
+    # The archive's replay lands on a copy from after the date: the new
+    # address is looked up on its own, and only a copy before the date is used
+    rows = {"https://xavierbecerra.com": [["20260509231655", "https://www.xavierbecerra.com/", "301"]],
+            "https://becerra4gov.com": [["20260520000000", "https://becerra4gov.com/", "200"]]}
+    scout.http_get, calls = redirect_web("20260715000000", rows)
+    page = scout.fetch_page("https://xavierbecerra.com", as_of="2026-06-01")
+    assert page[1] == "https://web.archive.org/web/20260520000000/https://becerra4gov.com/", page[1]
+    assert page[3] == "https://becerra4gov.com/"
+    # With no copy of the new address before the date, the site is left out
+    del rows["https://becerra4gov.com"]
+    assert scout.fetch_page("https://xavierbecerra.com", as_of="2026-06-01") is None
 
 
 if __name__ == "__main__":

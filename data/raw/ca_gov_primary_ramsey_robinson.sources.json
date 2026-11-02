@@ -3,7 +3,7 @@
   "name": "Ramsey Robinson",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:15:46+00:00",
+  "retrieved_at": "2026-11-02T00:07:16+00:00",
   "sources": [
     {
       "kind": "voter guide",
@@ -13,7 +13,7 @@
   ],
   "skipped": [
     {
-      "url": "https://web.archive.org/web/20251107071832/https://leftunityslate.org/",
+      "url": "https://web.archive.org/web/20260509134725/https://leftunityslate.org/left-unity-slate-2026",
       "reason": "site never names Ramsey Robinson"
     }
   ]

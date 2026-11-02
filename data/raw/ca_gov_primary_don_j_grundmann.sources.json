@@ -3,7 +3,7 @@
   "name": "Don J. Grundmann",
   "mode": "as-of",
   "as_of": "2026-06-01",
-  "retrieved_at": "2026-11-01T02:22:57+00:00",
+  "retrieved_at": "2026-11-02T00:14:24+00:00",
   "sources": [
     {
       "kind": "voter guide",
@@ -17,8 +17,8 @@
       "reason": "no copy on or before 2026-06-01"
     },
     {
-      "url": "https://web.archive.org/web/20250421015148/http://cnparty.org/",
-      "reason": "site never names Don J. Grundmann"
+      "url": "https://CNParty.org",
+      "reason": "newest copy is from 2025-04-21, more than 180 days before 2026-06-01"
     }
   ]
 }
