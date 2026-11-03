@@ -5,7 +5,9 @@ Likert statements with a per-candidate agreement score.
 Two steps, with guardrails (all at generation time, nothing per user):
   1. Positions. One call per candidate lists the positions their sources
      state explicitly, each with a verbatim quote. Positions whose quote
-     isn't found word for word in the sources are dropped.
+     isn't found word for word in the sources are dropped. A quote that
+     joins sentences from different parts of one page is kept only if each
+     sentence is word for word on that page, and is shown with "…".
   2. Statements. One call writes up to 9 statements, one per topic, and
      must cite a checked position for every score. Quotes are attached by
      code from the cited position, never copied by the model.
@@ -35,6 +37,8 @@ Usage:
 
     python -m agents.wedge
     python -m agents.wedge --no-verify
+    python -m agents.wedge --positions ca_gov_primary   # step 1 + overlap only
+    python -m agents.wedge --race ca_gov_primary        # one race: full pool + core
 """
 
 import argparse
@@ -43,8 +47,15 @@ import hashlib
 import json
 import subprocess
 import os
+import sys
+import threading
+import time
 import re
 import unicodedata
+from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
+from itertools import combinations
+from statistics import median
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -77,7 +88,7 @@ def cache_put(name: str, key: str, value) -> None:
         json.dumps({"key": key, "value": value}, indent=2, ensure_ascii=False), encoding="utf-8")
 PROCESSED_DIR = Path(__file__).parent.parent / "data" / "processed"
 
-EXCERPT_BUDGET_CHARS = 12_000   # per candidate, roughly 3k tokens
+EXCERPT_BUDGET_CHARS = 36_000   # per candidate, roughly 9k tokens (about 6,000 words)
 MIN_QUOTE_CHARS = 25
 UNKNOWN_POSITION = "Not enough public information."
 
@@ -96,7 +107,7 @@ SYSTEM_PROMPT = (
 # and a fast, cheaper model for extraction (listing positions, filling gaps,
 # bios), where code already verifies every quote word for word.
 DEFAULT_MODELS = {
-    "ANTHROPIC_API_KEY": ("claude-sonnet-4-5", "claude-haiku-4-5"),
+    "ANTHROPIC_API_KEY": ("claude-sonnet-5-5", "claude-haiku-5-5"),
     "OPENAI_API_KEY": ("gpt-4o", "gpt-4o-mini"),
     "GEMINI_API_KEY": ("gemini-2.5-pro", "gemini-2.5-flash"),
 }
@@ -109,29 +120,158 @@ def active_model(fast: bool = False) -> str:
                 return os.environ.get("ZIPVOTE_MODEL_FAST", cheap)
             return os.environ.get("ZIPVOTE_MODEL", strong)
     raise EnvironmentError(
-        "No LLM API key found. Set ANTHROPIC_API_KEY, OPENAI_API_KEY or GEMINI_API_KEY."
+        "No LLM API key found. Put ANTHROPIC_API_KEY in ZipVote/.env (see .env.example), "
+        "or set ANTHROPIC_API_KEY, OPENAI_API_KEY or GEMINI_API_KEY in your shell."
     )
 
 
-def call_llm(prompt: str, fast: bool = False) -> str:
+# Each step's model tier and effort (how hard Claude 5+ thinks before
+# answering; thinking is billed as output). Every step runs on the fast,
+# cheap model so a whole state costs a few dollars. The guardrails that
+# cost nothing stay in code: quotes are matched word for word, evidence is
+# attached by code, a candidate who disagrees makes a statement contested.
+# The verify step runs at high effort, since it's the model's one check.
+# Override one step's effort with ZIPVOTE_EFFORT_<STEP> (low, medium, high).
+STEPS = {
+    "positions":  ("fast", "low"),      # quotes are checked word for word by code
+    "bios":       ("fast", "low"),
+    "write":      ("fast", "medium"),   # drafts; verify checks every one
+    "rollup":     ("fast", "medium"),
+    "fill":       ("fast", "medium"),
+    "flip":       ("fast", "medium"),
+    "rewrite":    ("fast", "medium"),
+    "topup":      ("fast", "medium"),
+    "statements": ("fast", "medium"),   # ballot mode's single writing call
+    "group":      ("fast", "medium"),   # one call that sorts the whole field
+    "verify":     ("fast", "high"),     # the model's check on every score and statement
+}
+
+
+def step_settings(step: str = None, fast: bool = False) -> tuple:
+    """(model, effort) for a step. Unnamed calls fall back to fast or strong."""
+    tier, effort = STEPS.get(step, ("fast" if fast else "strong", "low" if fast else "high"))
+    if step:
+        effort = os.environ.get(f"ZIPVOTE_EFFORT_{step.upper()}", effort)
+    return active_model(tier == "fast"), effort
+
+
+# What each model costs, in USD per million tokens (input, output), from
+# platform.claude.com/docs/en/about-claude/pricing. Thinking is output.
+PRICES = {
+    "claude-sonnet-5-5": (2.00, 10.00),
+    "claude-haiku-5-5": (0.10, 0.50),        # prompts over 100K tokens: 0.50 / 2.50
+    "claude-opus-5-5": (4.00, 20.00),
+    "claude-sonnet-4-5": (3.00, 15.00),
+    "claude-haiku-4-5": (1.00, 5.00),
+}
+
+
+def price(model: str, tokens_in: int, tokens_out: int) -> float:
+    rate_in, rate_out = PRICES.get(model, (0.0, 0.0))
+    if model == "claude-haiku-5-5" and tokens_in > 100_000:
+        rate_in, rate_out = 0.50, 2.50
+    return (tokens_in * rate_in + tokens_out * rate_out) / 1e6
+
+
+class Meter:
+    """Tokens and cost per step, across threads. Saved answers reused from the cache cost nothing."""
+
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.rows = {}
+
+    def add(self, step, model, tokens_in, tokens_out):
+        with self.lock:
+            r = self.rows.setdefault((step or "other", model), [0, 0, 0, 0.0])
+            r[0] += 1
+            r[1] += tokens_in
+            r[2] += tokens_out
+            r[3] += price(model, tokens_in, tokens_out)
+
+    def summary(self) -> dict:
+        rows = [{"step": st, "model": m, "calls": c, "input_tokens": i, "output_tokens": o, "usd": round(u, 4)}
+                for (st, m), (c, i, o, u) in sorted(self.rows.items(), key=lambda kv: -kv[1][3])]
+        return {"steps": rows, "total_usd": round(sum(r["usd"] for r in rows), 4)}
+
+    def print(self):
+        sm = self.summary()
+        if not sm["steps"]:
+            print("   💵 No model calls (everything reused from saved answers)")
+            return
+        print("   💵 Cost by step:")
+        for r in sm["steps"]:
+            print(f"      {r['step']:<11} {r['model']:<18} {r['calls']:>3} calls  "
+                  f"{r['input_tokens'] / 1000:>7.1f}k in  {r['output_tokens'] / 1000:>7.1f}k out  ${r['usd']:.2f}")
+        print(f"      {'total':<11} {'':<18} {'':>9}  {'':>10}  {'':>11}  ${sm['total_usd']:.2f}")
+
+
+METER = Meter()
+
+TIMES = []   # (stage, seconds), in the order the stages ran
+
+
+class timed:
+    """with timed("writing"): ... records how long a stage took, for the summary."""
+
+    def __init__(self, stage):
+        self.stage = stage
+
+    def __enter__(self):
+        self.t = time.monotonic()
+
+    def __exit__(self, *exc):
+        TIMES.append((self.stage, round(time.monotonic() - self.t, 1)))
+        return False
+
+
+def print_times():
+    if TIMES:
+        print("   ⏱  Time by stage: " + ", ".join(f"{st} {sec:.0f}s" for st, sec in TIMES))
+
+
+class ModelStopped(RuntimeError):
+    """The model declined or ran out of room before answering."""
+
+
+def call_llm(prompt: str, fast: bool = False, step: str = None) -> str:
     """Send a prompt to the available LLM and return the text response."""
-    model = active_model(fast)
+    model, effort = step_settings(step, fast)
     if os.environ.get("ANTHROPIC_API_KEY"):
-        return _call_anthropic(prompt, model)
+        return _call_anthropic(prompt, model, effort, step)
     if os.environ.get("OPENAI_API_KEY"):
         return _call_openai(prompt, model)
     return _call_gemini(prompt, model)
 
 
-def _call_anthropic(prompt: str, model: str) -> str:
+MAX_TOKENS = 32000   # thinking counts toward this
+
+
+def _call_anthropic(prompt: str, model: str, effort: str = "high", step: str = None) -> str:
     import anthropic
     client = anthropic.Anthropic()
-    response = client.messages.create(
+    extra = {}
+    # Claude 5 and later think by default, and effort sets how much. Sent
+    # through extra_body so it works with any SDK version.
+    if not re.search(r"-[34]-", model):
+        extra["extra_body"] = {"output_config": {"effort": effort}}
+    # Streamed, so a long reply (thinking plus answer) can use the full
+    # MAX_TOKENS without the request timing out
+    with client.messages.stream(
         model=model,
-        max_tokens=8000,
+        max_tokens=MAX_TOKENS,
         system=SYSTEM_PROMPT + " Respond ONLY with valid JSON, no markdown fences.",
         messages=[{"role": "user", "content": prompt}],
-    )
+        **extra,
+    ) as stream:
+        response = stream.get_final_message()
+    usage = getattr(response, "usage", None)
+    if usage is not None:
+        METER.add(step, model, getattr(usage, "input_tokens", 0) or 0, getattr(usage, "output_tokens", 0) or 0)
+    if response.stop_reason == "refusal":
+        raise ModelStopped(f"{model} declined the request")
+    if response.stop_reason == "max_tokens":
+        raise ModelStopped(f"{model} ran out of room before finishing (max_tokens)")
+    # A response can open with thinking blocks; only text blocks are the answer
     return "".join(b.text for b in response.content if b.type == "text")
 
 
@@ -174,7 +314,7 @@ def parse_json(raw: str) -> dict:
         return json.loads(text[start:end + 1])
 
 
-def call_json(prompt: str, retries: int = 2, fast: bool = False) -> dict:
+def call_json(prompt: str, retries: int = 2, fast: bool = False, step: str = None) -> dict:
     """Call the model and parse JSON, asking again if the reply isn't valid JSON."""
     last_error = None
     for attempt in range(retries + 1):
@@ -184,7 +324,7 @@ def call_json(prompt: str, retries: int = 2, fast: bool = False) -> dict:
             "quotes inside strings as \\\"."
         )
         try:
-            return parse_json(call_llm(ask, fast=fast))
+            return parse_json(call_llm(ask, fast=fast, step=step))
         except json.JSONDecodeError as e:
             last_error = e
             if attempt < retries:
@@ -296,20 +436,49 @@ def _norm(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
-def locate_quote(quote: str, segments: list):
-    """Return the source a quote came from, or None if it isn't verbatim in any source."""
+# Where one sentence ends and the next begins, or where the model already
+# marked a gap with an ellipsis
+SENTENCE_BREAK = re.compile(r"(?<=[.!?])\s+(?=[\"'(\u201c]?[A-Z0-9])|\s*(?:\.\.\.|\u2026)\s*")
+MIN_PIECE_CHARS = 15     # each sentence of a joined quote, so "Yes." can't pass alone
+
+
+def match_quote(quote: str, segments: list):
+    """
+    Check a quote against the sources. Returns (source, quote_to_show,
+    pieces), or None if it isn't word for word in any one source.
+
+    A quote found as written is shown as written (pieces = 1). Models
+    sometimes join two real sentences from different parts of a page into
+    one quote. Then each sentence is checked on its own, all of them must
+    be word for word on the same page, and the quote is shown with "…"
+    between them so a reader sees the gap. Any sentence that isn't found
+    drops the whole quote.
+    """
     if not quote or len(quote.strip()) < MIN_QUOTE_CHARS:
         return None
+    pages = [(seg.source, _norm(" ".join(seg.lines))) for seg in segments]
     needle = _norm(quote).strip(" .\"'")
-    for seg in segments:
-        if needle in _norm(" ".join(seg.lines)):
-            return seg.source
+    for source, text in pages:
+        if needle in text:
+            return source, quote.strip(), 1
+    parts = [x.strip() for x in SENTENCE_BREAK.split(quote.strip()) if x and x.strip()]
+    if len(parts) < 2 or any(len(x) < MIN_PIECE_CHARS for x in parts):
+        return None
+    for source, text in pages:
+        if all(_norm(x).strip(" .\"'") in text for x in parts):
+            return source, " … ".join(parts), len(parts)
     return None
+
+
+def locate_quote(quote: str, segments: list):
+    """The source a quote came from, or None if it isn't word for word in any source."""
+    found = match_quote(quote, segments)
+    return found[0] if found else None
 
 
 MAX_STATEMENTS = 12      # for the whole ballot: one statement per topic
 PER_CANDIDATE = 3        # target statements each candidate is scored on
-MAX_POSITIONS = 12       # per candidate, from step 1
+MAX_POSITIONS = 20       # per candidate, from step 1
 MIN_SCORED = 1           # a statement needs at least one candidate's stated position
 
 
@@ -409,9 +578,12 @@ For each candidate, either cite the id of the position that answers this
 statement and give a score, or give null:
 - 5 = strongly agrees, 4 = mostly agrees, 3 = documented mixed or middle
   position, 2 = mostly disagrees, 1 = strongly disagrees.
-- The cited position must speak to this statement **directly**. A position
-  on a related but different policy means null. Never guess from party,
-  and never use 3 for unknown.
+- A position answers a statement when it takes a side on it. A specific
+  proposal answers a broader statement it clearly takes a side on: capping
+  developer fees answers "California should make it cheaper to build
+  housing". A broad goal never answers a specific policy: supporting
+  affordable housing does not answer a statement about rent control. A
+  position on a related but different policy does not count. Never guess from party, and never use 3 for unknown.
 
 ### Also provide for each statement
 - **candidatePositions**: one plain sentence per scored candidate restating
@@ -446,8 +618,12 @@ Some statements in a voter guide have candidates with no score yet. For
 each item below, read that candidate's documented positions and decide
 whether one of them **directly** answers the statement.
 
-- Directly means the same specific policy question. A position on a
-  related but different policy does not count.
+- A position answers a statement when it takes a side on it. A specific
+  proposal answers a broader statement it clearly takes a side on: capping
+  developer fees answers "California should make it cheaper to build
+  housing". A broad goal never answers a specific policy: supporting
+  affordable housing does not answer a statement about rent control. A
+  position on a related but different policy does not count.
 - If one does, cite its id, give a score (5 strongly agrees, 4 mostly
   agrees, 3 documented mixed position, 2 mostly disagrees, 1 strongly
   disagrees), and write one plain sentence restating only that position.
@@ -536,8 +712,12 @@ For each item below, a candidate was given a 1–5 agreement score on a
 statement, backed by a quote from a source, plus a one-sentence summary of
 their position. Decide:
   - supported: does the quote, on its own, clearly show which side of this
-    statement the candidate is on (agree or disagree)? Mark it unsupported
-    only if the quote is about a different policy or the side is unclear.
+    statement the candidate is on (agree or disagree)? A specific proposal
+    shows a side on a broader statement it clearly implies (capping
+    developer fees shows support for making it cheaper to build housing);
+    a broad goal never shows a side on a specific policy. Mark it
+    unsupported if the quote is about a different policy or the side is
+    unclear.
   - best_score: how strongly the candidate holds this position, 1–5, based
     on what the quote says (a firm commitment is 5 or 1; a qualified or
     partial one is 4 or 2). Judge the candidate's stance, **not** how
@@ -556,7 +736,19 @@ Also review each statement's wording. Mark it loaded if it uses emotional or
 one-sided language, makes one answer sound obviously correct, combines more
 than one policy, includes a reason for the policy, or describes a position
 no real candidate or advocate would put that way (for example "X should be
-weakened" or "loopholes should remain open"). Loaded statements are removed.
+weakened" or "loopholes should remain open"). For a loaded statement, also
+give fixed_text: a rewrite that fixes the problem and keeps the same policy
+and the same side, so every scored candidate's score still holds. If it
+combined several policies, keep the main one. If it can't be fixed that
+way, give null and it is removed.
+
+Also mark contested false only if nobody argues the other side: no
+candidate, party or advocacy group anywhere takes the opposite position,
+for example "State spending should be audited" or "Government should spend
+money wisely". Such a statement tells a voter nothing. A policy that any
+real group opposes is contested, even if most voters in this state agree
+with it: abortion access, single-payer health care, school vaccine
+requirements and gun restrictions are all contested.
 
 ## Scores to check
 {score_items}
@@ -570,9 +762,26 @@ Respond with this exact JSON structure:
     {{"statement_id": "s1", "candidate_id": "x", "supported": true, "best_score": 5, "direct": false, "summary_faithful": true, "own_position": true, "note": "short reason"}}
   ],
   "wording": [
-    {{"statement_id": "s1", "loaded": false, "note": "short reason"}}
+    {{"statement_id": "s1", "loaded": false, "fixed_text": null, "contested": true, "note": "short reason"}}
   ]
 }}
+"""
+
+REWRITE_PROMPT_TEMPLATE = """
+Each statement below was rejected for its wording, for the reason given.
+Rewrite it so it passes: one short, plain, neutral sentence, one policy, no
+reason inside it, no emotional or one-sided words, and a policy real people
+disagree about. Keep the same policy and the same side, so anyone who agreed
+with the original agrees with the rewrite. If it combined several policies,
+keep only the main one. If it can't be fixed that way, return null text.
+
+Also rewrite the background: 2-3 neutral sentences explaining only the
+terms in the new statement.
+
+{items}
+
+Respond with this exact JSON structure:
+{{"rewrites": [{{"statement_id": "x_s1", "text": "... or null", "policyBackground": "..."}}]}}
 """
 
 
@@ -621,6 +830,7 @@ HEURISTICS = {
     4: "Let people speak for themselves",   # speaker check in verify_with_llm
     5: "Ask without leaning",
     6: "Give everyone equal footing",
+    8: "Spend attention where it tells you the most",
 }
 
 
@@ -669,6 +879,7 @@ def run_record(race: dict) -> dict:
         "uncommitted_changes": bool(git("status", "--porcelain", "agents")),
         "model": active_model(),
         "fast_model": active_model(fast=True),
+        "steps": {st: dict(zip(("model", "effort"), step_settings(st))) for st in STEPS},
         "prompts": {k: fp(v) for k, v in sorted(prompts.items())},
         "sources": sources,
         # How Scout read each candidate's sources: live or as of a date
@@ -722,8 +933,12 @@ def check_schema(data: dict, race: dict) -> None:
                     del s[key][cid]
 
 
-def verify_with_llm(data: dict, flags: list) -> None:
-    """Guardrail 4: a second model call checks each score against its quote."""
+def verify_with_llm(data: dict, flags: list, strict: bool = False) -> None:
+    """
+    Guardrail 4: a second model call checks each score against its quote.
+    strict: a reply cut off by length raises ModelStopped, so the caller can
+    split the batch, instead of leaving the scores unchecked.
+    """
     score_items, statement_items = [], []
     for s in data["statements"]:
         statement_items.append(f'- {s["id"]}: "{s["text"]}"')
@@ -743,10 +958,18 @@ def verify_with_llm(data: dict, flags: list) -> None:
         score_items="\n".join(score_items),
         statement_items="\n".join(statement_items),
     )
-    print("   Checking scores against their quotes...")
+    key = cache_key(prompt, *step_settings("verify"))
+    result = cache_get(f"verify_{key}", key)
     try:
-        result = call_json(prompt)
+        if result is None:
+            print("   Checking scores against their quotes...")
+            result = call_json(prompt, step="verify")
+            cache_put(f"verify_{key}", key, result)
+        else:
+            print("   Checking scores against their quotes (unchanged, reusing the saved check)...")
     except Exception as e:  # a failed check must never silently pass
+        if strict and isinstance(e, ModelStopped):
+            raise
         flag(flags, None, f"verification call failed ({e}); scores are unchecked")
         return
 
@@ -791,10 +1014,26 @@ def verify_with_llm(data: dict, flags: list) -> None:
                  item=score_snapshot(s, cid))
     loaded = set()
     for item in result.get("wording", []):
+        sid = item.get("statement_id")
         if item.get("loaded"):
-            loaded.add(item.get("statement_id"))
-            flag(flags, 5, f"dropped for loaded wording ({item.get('note', '')})", item.get("statement_id"),
-                 item=by_id.get(item.get("statement_id")))
+            fixed = (item.get("fixed_text") or "").strip()
+            if fixed and sid in by_id:
+                st = by_id[sid]
+                old = st["text"]
+                st.setdefault("draft", old)
+                st["text"] = fixed
+                flag(flags, 5, f'reworded by the check ({item.get("note", "")}): "{old[:50]}" → "{fixed[:50]}"',
+                     sid, item={"text": old})
+                continue
+            loaded.add(sid)
+            flag(flags, 5, f"dropped for loaded wording ({item.get('note', '')})", sid, item=by_id.get(sid))
+            if sid in by_id:   # kept aside in case a caller wants to rewrite it
+                data.setdefault("rejected", []).append((by_id[sid], item.get("note", "")))
+        elif (item.get("contested") is False and sid in by_id
+              and not any(v is not None and v <= 2 for v in by_id[sid]["candidateAgreement"].values())):
+            # A candidate who disagrees proves it's contested, whatever the check says
+            by_id[sid]["consensus"] = True
+            flag(flags, 8, f"nearly every voter would agree ({item.get('note', '')}); kept out of the core", sid)
     data["statements"] = [s for s in data["statements"] if s["id"] not in loaded]
 
 
@@ -863,48 +1102,299 @@ def extract_positions(race: dict, sources: dict, flags: list) -> dict:
     Returns candidate id → list of {id, issue, stance, quote, source}.
     """
     positions = {}
-    for cid in race["candidates"]:
+    total = len(race["candidates"])
+
+    def listed(cid):
+        """The model's list for one candidate (saved answer if nothing changed), or None."""
+        info = CANDIDATES[cid]
+        prompt = EXTRACT_PROMPT_TEMPLATE.format(
+            name=info["name"], party=info["party"], race_title=RACE_TITLES[info["race"]],
+            excerpt=select_excerpt(sources[cid]), max_positions=MAX_POSITIONS,
+        )
+        # Sources, prompt and model unchanged since last run → reuse the
+        # model's answer, no call. The raw answer is kept, not the checked
+        # one, so a change to the quote check applies without new calls.
+        key = cache_key(prompt, *step_settings("positions"))
+        found = cache_get(f"positions_raw_{cid}", key)
+        if found is not None:
+            return found
+        try:
+            found = call_json(prompt, step="positions").get("positions", [])
+        except Exception as e:
+            flag(flags, None, f"position listing failed ({e})", candidate=cid)
+            return None
+        cache_put(f"positions_raw_{cid}", key, found)
+        return found
+
+    todo = [c for c in race["candidates"] if sources.get(c)]
+    print(f"   Listing positions for {len(todo)} candidates, {WORKERS} at a time...")
+    answers = {}
+    with ThreadPoolExecutor(WORKERS) as ex:
+        for n, (cid, found) in enumerate(zip(todo, ex.map(listed, todo)), 1):
+            answers[cid] = found
+    for n, cid in enumerate(race["candidates"], 1):
         info = CANDIDATES[cid]
         positions[cid] = []
         if not sources.get(cid):
             flag(flags, 1, "no sources, no positions", candidate=cid)
             continue
-        prompt = EXTRACT_PROMPT_TEMPLATE.format(
-            name=info["name"], party=info["party"], race_title=RACE_TITLES[info["race"]],
-            excerpt=select_excerpt(sources[cid]), max_positions=MAX_POSITIONS,
-        )
-        # Sources, prompt and model unchanged since last run → reuse, no call
-        key = cache_key(prompt, active_model(fast=True))
-        cached = cache_get(f"positions_{cid}", key)
-        if cached is not None:
-            positions[cid] = cached
-            print(f"   {info['name']}: sources unchanged, reusing {len(cached)} positions")
+        found = answers.get(cid)
+        if found is None:
             continue
-        print(f"   Listing {info['name']}'s positions...")
-        try:
-            found = call_json(prompt, fast=True).get("positions", [])
-        except Exception as e:
-            flag(flags, None, f"position listing failed ({e})", candidate=cid)
-            continue
-        missed = []
+        missed, joined = [], []
         for p in found:
-            source = locate_quote(p.get("quote", ""), sources[cid])
-            if source is None:
+            match = match_quote(p.get("quote", ""), sources[cid])
+            if match is None:
                 missed.append(p)
                 continue
-            positions[cid].append({
+            source, quote, pieces = match
+            pos = {
                 "id": f"{cid}.{len(positions[cid]) + 1}",
                 "issue": p.get("issue", ""),
                 "stance": p.get("stance", ""),
-                "quote": p["quote"].strip(),
+                "quote": quote,
                 "source": source,
-            })
-        print(f"     {len(positions[cid])} positions kept, {len(missed)} dropped (quote not in source)")
-        cache_put(f"positions_{cid}", key, positions[cid])
+            }
+            positions[cid].append(pos)
+            if pieces > 1:
+                joined.append({"position": pos["id"], "as_listed": p.get("quote", "")})
+        print(f"   [{n}/{total}] {info['name']}: {len(positions[cid])} positions kept "
+              f"({len(joined)} from separate sentences), {len(missed)} dropped (quote not in source)")
+        if joined:
+            flag(flags, 1, f"{len(joined)} quote(s) joined sentences from different parts of a page; "
+                           "each sentence checked on its own and shown with …", candidate=cid, item=joined)
         if missed:
             flag(flags, 1, f"{len(missed)} listed position(s) dropped, quote not found in sources",
                  candidate=cid, item=missed)
     return positions
+
+
+# ---------------------------------------------------------------------------
+# Positions only: one race, and how much candidates' positions overlap
+# ---------------------------------------------------------------------------
+
+# A question at least this many candidates take a position on tells a voter
+# something about a good part of the field (heuristic 8).
+WIDE_QUESTION = 5
+
+GROUP_PROMPT_TEMPLATE = """
+Below are {n} policy positions taken by candidates in the {race_title}.
+Each line is: <position id> | <issue label> | <stance>
+Candidate names are left out on purpose.
+
+{lines}
+
+---
+
+Group the positions by the policy question they answer, so we can see which
+positions speak to the same question.
+- A question is one specific policy a voter could agree or disagree with,
+  such as rent control, high-speed rail funding or single-payer health care.
+  Not a broad area such as housing or health care.
+- Positions on opposite sides belong together: "expand rent control" and
+  "repeal rent control" answer one question.
+- Only group positions that answer the same question. Zoning reform and rent
+  control are two questions, even though both are about housing.
+- A position no other position shares gets a question of its own.
+- Name each question with a short neutral label that names the policy, not
+  a side ("Rent control", not "Protect renters").
+- Give each question a broad "area" (Housing, Health care, Economy...), and
+  use the same area name every time it applies.
+- Every position id appears in exactly one question.
+
+Respond with this exact JSON structure:
+{{"questions": [{{"area": "...", "question": "...", "positions": ["P1", "P7"]}}]}}
+"""
+
+
+def clean_groups(raw: list, short: dict, flags: list) -> list:
+    """
+    Check the model's grouping against the positions it was given. Ids it
+    made up are dropped, an id it used twice keeps its first question, and a
+    position it left out becomes a question of its own. Leaving one out can
+    only make overlap look smaller, never larger.
+    short maps the ids shown to the model (P1, P2...) to position ids.
+    """
+    seen, unknown, repeated, out = set(), [], [], []
+    for q in raw:
+        ids = []
+        for s in q.get("positions", []):
+            if s not in short:
+                unknown.append(s)
+            elif s in seen:
+                repeated.append(s)
+            else:
+                seen.add(s)
+                ids.append(short[s])
+        if ids:
+            out.append({
+                "area": (q.get("area") or "Other").strip().capitalize(),
+                "question": (q.get("question") or "").strip(),
+                "positions": ids,
+            })
+    missing = [short[s] for s in short if s not in seen]
+    for pid in missing:
+        out.append({"area": "Ungrouped", "question": "(not grouped)", "positions": [pid]})
+    if unknown or repeated or missing:
+        flag(flags, None, f"grouping: {len(unknown)} unknown id(s) dropped, {len(repeated)} "
+                          f"repeated id(s) kept once, {len(missing)} position(s) left out "
+                          "and counted as unshared",
+             item={"unknown": unknown, "repeated": repeated, "missing": missing})
+    return out
+
+
+def group_positions(race: dict, positions: dict, flags: list) -> list:
+    """
+    One call that sorts every checked position in a race into the policy
+    question it answers. Candidates are shown by position id only, so the
+    grouping can't lean on who said what or which party they're in.
+    """
+    items = [p for cid in race["candidates"] for p in positions.get(cid, [])]
+    if not items:
+        return []
+    short = {f"P{i}": p["id"] for i, p in enumerate(items, 1)}
+    lines = "\n".join(f"{s} | {p['issue']} | {p['stance']}" for s, p in zip(short, items))
+    prompt = GROUP_PROMPT_TEMPLATE.format(n=len(items), race_title=race["title"], lines=lines)
+    key = cache_key(prompt, *step_settings("group"))
+    cached = cache_get(f"groups_{race['id']}", key)
+    if cached is not None:
+        print(f"   Positions unchanged, reusing {len(cached)} questions")
+        return cached
+    print(f"   Grouping {len(items)} positions into shared questions "
+          "(one long call, usually a few minutes)...")
+    try:
+        raw = call_json(prompt, step="group").get("questions", [])
+    except Exception as e:
+        flag(flags, None, f"grouping failed ({e})")
+        return []
+    questions = clean_groups(raw, short, flags)
+    for q in questions:
+        q["candidates"] = sorted({pid.rsplit(".", 1)[0] for pid in q["positions"]})
+    cache_put(f"groups_{race['id']}", key, questions)
+    return questions
+
+
+def overlap_report(all_ids: list, positions: dict, questions: list) -> dict:
+    """
+    How much candidates' positions overlap. A quiz question can only tell
+    apart candidates who took a position on it, so this decides how far a
+    narrowing quiz can go. It counts positions on a question, not whether
+    candidates disagree on it.
+    """
+    with_pos = [c for c in all_ids if positions.get(c)]
+    owners = [q["candidates"] for q in questions]
+    sizes = Counter()
+    for cs in owners:
+        n = len(cs)
+        sizes["1" if n == 1 else "2-4" if n < 5 else "5-9" if n < 10 else "10+"] += 1
+    on = {c: set() for c in with_pos}
+    for i, cs in enumerate(owners):
+        for c in cs:
+            on[c].add(i)
+    wide = {i for i, cs in enumerate(owners) if len(cs) >= WIDE_QUESTION}
+    shared = [len(on[a] & on[b]) for a, b in combinations(with_pos, 2)]
+    areas = {}
+    for q in questions:
+        areas.setdefault(q["area"], set()).update(q["candidates"])
+    ranked = sorted(range(len(questions)), key=lambda i: (-len(owners[i]), questions[i]["question"]))
+    return {
+        "candidates": {
+            "in_race": len(all_ids),
+            "with_sources": sum(1 for c in all_ids if c in positions),
+            "with_positions": len(with_pos),
+        },
+        "positions": sum(len(positions.get(c, [])) for c in all_ids),
+        "questions": len(questions),
+        "questions_by_candidates": {k: sizes.get(k, 0) for k in ("1", "2-4", "5-9", "10+")},
+        "wide_question_min": WIDE_QUESTION,
+        "widest": [{"area": questions[i]["area"], "question": questions[i]["question"],
+                    "candidates": len(owners[i])} for i in ranked[:15]],
+        "areas": dict(sorted(((a, len(cs)) for a, cs in areas.items()), key=lambda x: -x[1])),
+        "pairs": {
+            "count": len(shared),
+            "median_shared_questions": median(shared) if shared else None,
+            "share_with_none": round(sum(1 for s in shared if s == 0) / len(shared), 2) if shared else None,
+        },
+        "per_candidate": {c: {"positions": len(positions[c]), "questions": len(on[c]),
+                              "wide_questions": len(on[c] & wide)} for c in with_pos},
+        # Candidates no wide question reaches: the quiz has no way to tell them apart
+        "on_no_wide_question": [c for c in with_pos if not on[c] & wide],
+    }
+
+
+def print_overlap(race: dict, report: dict) -> None:
+    c, b = report["candidates"], report["questions_by_candidates"]
+    name = lambda cid: CANDIDATES[cid]["name"]
+    print(f"\n📊 Overlap, {race['title']}")
+    print(f"   {c['in_race']} candidates, {c['with_sources']} with sources, "
+          f"{c['with_positions']} with at least one checked position ({report['positions']} positions)")
+    print(f"   Positions fall into {report['questions']} questions. Candidates per question:")
+    print(f"     1: {b['1']}   2-4: {b['2-4']}   5-9: {b['5-9']}   10+: {b['10+']}")
+    print("   Widest questions:")
+    for w in report["widest"][:10]:
+        print(f"     {w['candidates']:>3}  {w['area']} · {w['question']}")
+    p = report["pairs"]
+    if p["count"]:
+        print(f"   Candidate pairs share a median of {p['median_shared_questions']} question(s); "
+              f"{p['share_with_none']:.0%} share none.")
+    left = report["on_no_wide_question"]
+    print(f"   {len(left)} candidate(s) take no position on any question {WIDE_QUESTION}+ candidates share"
+          + (f": {', '.join(name(x) for x in left)}" if left else ""))
+
+
+def race_for_run(race_id: str) -> tuple:
+    """The race from config, with only the candidates who have sources."""
+    from agents.scout import STATE_NAMES
+    race = next((r for r in RACES if r["id"] == race_id), None)
+    if race is None:
+        raise SystemExit(f"No race {race_id!r} in config. Races: {', '.join(r['id'] for r in RACES)}")
+    with_sources = [c for c in race["candidates"] if (RAW_DIR / f"{c}.txt").exists()]
+    run_race = {**race, "candidates": with_sources, "state_name": STATE_NAMES.get(race["state"], race["state"])}
+    return race, run_race
+
+
+def positions_only(race_id: str) -> dict:
+    """
+    Step 1 for a single race, with no statements written: each candidate's
+    checked positions, grouped into shared questions, and an overlap report.
+    Saved to data/processed/positions_<race id>.json.
+    """
+    race, run_race = race_for_run(race_id)
+    print(f"\n🧭 Positions for {race['title']}: {len(run_race['candidates'])} of "
+          f"{len(race['candidates'])} candidates")
+    print(f"   Models: {step_settings('positions')[0]} (positions), {step_settings('group')[0]} (grouping)")
+    flags = []
+    positions = extract_positions(run_race, load_sources(run_race), flags)
+    questions = group_positions(run_race, positions, flags)
+    report = overlap_report(race["candidates"], positions, questions)
+    output = {
+        "run": run_record(run_race),
+        "race_id": race["id"],
+        "race_title": race["title"],
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "model": active_model(),
+        "fast_model": active_model(fast=True),
+        "report": report,
+        "cost": METER.summary(),
+        "questions": questions,
+        "positions": positions,
+        "flags": flags,
+        "flag_counts": {
+            (f"H{h}" if h else "system"): sum(1 for f in flags if f["heuristic"] == h)
+            for h in dict.fromkeys(f["heuristic"] for f in flags)
+        },
+    }
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = PROCESSED_DIR / f"positions_{race['id']}.json"
+    out_path.write_text(json.dumps(output, indent=2, ensure_ascii=False), encoding="utf-8")
+    print_overlap(race, report)
+    print(f"\n   ✓ Saved → data/processed/{out_path.name}")
+    system = [f for f in flags if f["heuristic"] is None]
+    if system:
+        print(f"   ⚠ {len(system)} step(s) failed; see flags in the file:")
+        for f in system:
+            print(f"      - {flag_text(f)}")
+    return output
 
 
 def build_statement_prompt(race: dict, positions: dict) -> str:
@@ -948,7 +1438,7 @@ def attach_evidence(data: dict, race: dict, positions: dict, flags: list) -> Non
                            "summary": s["candidatePositions"].get(cid)})
                 set_unknown(s, cid)
             else:
-                s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"]}
+                s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"], "position": pos["id"]}
 
 
 def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
@@ -971,7 +1461,7 @@ def fill_gaps(data: dict, race: dict, positions: dict, flags: list) -> None:
         return
     print(f"   Checking {len(items)} blank score(s) against each candidate's positions...")
     try:
-        result = call_json(FILL_PROMPT_TEMPLATE.format(items="\n\n".join(items)), fast=True)
+        result = call_json(FILL_PROMPT_TEMPLATE.format(items="\n\n".join(items)), step="fill")
     except Exception as e:
         flag(flags, None, f"gap-filling call failed ({e})")
         return
@@ -1026,7 +1516,7 @@ def top_up(data: dict, race: dict, positions: dict, flags: list) -> list:
         )
         print(f"   Topping up {info['name']} ({have} → {PER_CANDIDATE} questions)...")
         try:
-            new = call_json(prompt).get("statements", [])
+            new = call_json(prompt, step="topup").get("statements", [])
         except Exception as e:
             flag(flags, None, f"top-up failed ({e})", candidate=cid)
             continue
@@ -1082,12 +1572,27 @@ def balance_direction(data: dict, race: dict, flags: list) -> None:
     if not to_flip:
         return
     print(f"   Rephrasing {len(to_flip)} question(s) as the opposing policy for balance...")
-    items = "\n".join(f'- statement_id: {s["id"]}\n  statement: "{s["text"]}"' for s in to_flip)
-    try:
-        result = call_json(FLIP_PROMPT_TEMPLATE.format(items=items))
-    except Exception as e:
-        flag(flags, None, f"direction balancing failed ({e})")
-        return
+    batches = [to_flip[i:i + 20] for i in range(0, len(to_flip), 20)]
+
+    def one(batch):
+        items = "\n".join(f'- statement_id: {s["id"]}\n  statement: "{s["text"]}"' for s in batch)
+        prompt = FLIP_PROMPT_TEMPLATE.format(items=items)
+        # Saved, so an unchanged rerun words things the same way and the
+        # verify checks that follow can be reused too
+        key = cache_key(prompt, *step_settings("flip"))
+        found = cache_get(f"flip_{key}", key)
+        if found is not None:
+            return found
+        try:
+            found = call_json(prompt, step="flip").get("rewrites", [])
+        except Exception as e:
+            flag(flags, None, f"direction balancing failed for {len(batch)} statement(s) ({e})")
+            return []
+        cache_put(f"flip_{key}", key, found)
+        return found
+
+    with ThreadPoolExecutor(WORKERS) as ex:
+        result = {"rewrites": [r for rs in ex.map(one, batches) for r in rs]}
     by_id = {s["id"]: s for s in to_flip}
     for r in result.get("rewrites", []):
         st = by_id.get(r.get("statement_id"))
@@ -1099,8 +1604,697 @@ def balance_direction(data: dict, race: dict, flags: list) -> None:
         for c, v in st["candidateAgreement"].items():
             if v is not None:
                 st["candidateAgreement"][c] = 6 - v
-        st["draft"] = old  # kept so the glass box can show the first draft
+        st.setdefault("draft", old)  # kept so the glass box can show the first draft
         flag(flags, 5, f"rephrased as opposing policy (\"{old[:50]}\" → \"{st['text'][:50]}\")", st["id"])
+
+
+# ---------------------------------------------------------------------------
+# One race: the full question pool, a capped core, and a disagreement report
+# ---------------------------------------------------------------------------
+
+CORE_SIZE = 15        # questions every voter is asked first (heuristic 8)
+CORE_PER_AREA = 2     # core questions from one area, while other areas still have some
+AREA_CHUNK = 25       # positions per statement-writing call; bigger areas split by question
+WORKERS = 10          # model calls run at the same time (the SDK retries if a rate limit is hit)
+
+POOL_PROMPT_TEMPLATE = """
+You are writing questions for a voter guide on the **{race_title}**. This
+batch covers one issue area: **{area}**.
+
+Below are candidates' documented positions in this area, grouped by the
+policy question they answer. Candidates are shown by letter codes and
+positions by ids; names are left out on purpose. Every position has already
+been checked against its source.
+
+{blocks}
+
+---
+
+## Your task
+
+Write statements a voter rates from 1 (strongly disagree) to 5 (strongly
+agree). Their agreement with a candidate is measured only on positions that
+candidate has actually stated. Silence is never counted for or against.
+
+### Which statements to write
+1. **Shared debates first.** Where two or more candidates have positions on
+   the same question, write one statement that scores all of them. Write it
+   at the level where their positions actually meet: broad enough that each
+   cited position answers it directly, never so broad that it stops being a
+   real choice.
+2. **Then every remaining position.** Write a statement for each position
+   not yet used, scoring that candidate and anyone else whose position
+   answers it directly.
+3. **Skip only positions with no real choice in them**: slogans nobody
+   opposes ("support great schools", "create good jobs") or biography.
+   List each skipped position id with a short reason.
+4. Write as many statements as these rules justify. There is no limit, but
+   never two statements on the same policy.
+
+### Writing statements
+- Plain language for someone new to politics: one short sentence, no
+  jargon, no acronyms without explanation.
+- **One idea per statement.** Never combine several policies.
+- **No reasons inside the statement.** State the policy, not why.
+- Neutral wording: no loaded or emotional words, no names of candidates or
+  bills that make one answer sound right.
+- Every statement must be a policy real people disagree about, worded the
+  way its supporters would say it, never as a negation or strawman ("X
+  should be weakened").
+- **Vary direction.** For single-candidate statements, phrase about a third
+  as the real opposing policy, so the candidate disagrees (1 or 2), and
+  agreeing never always means siding with the same people. Score each
+  candidate on the statement as phrased.
+
+### Scoring
+For each candidate you score, cite the id of the position that answers the
+statement and give a score:
+- 5 = strongly agrees, 4 = mostly agrees, 3 = documented mixed or middle
+  position, 2 = mostly disagrees, 1 = strongly disagrees.
+- A position answers a statement when it takes a side on it. A specific
+  proposal answers a broader statement it clearly takes a side on: capping
+  developer fees answers "California should make it cheaper to build
+  housing". A broad goal never answers a specific policy: supporting
+  affordable housing does not answer a statement about rent control. A
+  position on a related but different policy does not count. Never guess from party, and never use 3 for unknown. Leave out
+  candidates you don't score.
+
+### Also provide for each statement
+- **candidatePositions**: one plain sentence per scored candidate restating
+  only their cited position. Add nothing that is not in it.
+- **raceInsight**: 1-2 sentences on why this issue matters to voters in
+  {state_name}. Talk about the issue only: never describe or compare the
+  candidates, and never mention how much information exists about them.
+- **policyBackground**: 2-3 neutral sentences explaining the policy in the
+  statement. Only explain terms that appear in the statement itself.
+
+Respond with this exact JSON structure:
+{{
+  "statements": [
+    {{
+      "topic": "Rent Control",
+      "text": "Statement text here.",
+      "basis": {{"C1": "P3", "C4": "P9"}},
+      "candidateAgreement": {{"C1": 5, "C4": 2}},
+      "candidatePositions": {{"C1": "Their cited stance.", "C4": "Their cited stance."}},
+      "raceInsight": "Why this issue matters here.",
+      "policyBackground": "Neutral background."
+    }}
+  ],
+  "skipped": [{{"position": "P7", "reason": "slogan with no policy choice"}}]
+}}
+"""
+
+FILL_CANDIDATE_PROMPT_TEMPLATE = """
+Below are one candidate's documented positions, and voter guide statements
+this candidate has no score on yet. The candidate's name is left out on
+purpose. For each statement, decide whether one of the positions
+**directly** answers it.
+
+- A position answers a statement when it takes a side on it. A specific
+  proposal answers a broader statement it clearly takes a side on: capping
+  developer fees answers "California should make it cheaper to build
+  housing". A broad goal never answers a specific policy: supporting
+  affordable housing does not answer a statement about rent control. A
+  position on a related but different policy does not count.
+- If one does, cite its id, give a score (5 strongly agrees, 4 mostly
+  agrees, 3 documented mixed position, 2 mostly disagrees, 1 strongly
+  disagrees), and write one plain sentence restating only that position.
+- List only statements a position answers. Never guess from party.
+
+## Positions
+{positions}
+
+## Statements
+{statements}
+
+Respond with this exact JSON structure:
+{{"fills": [{{"statement": "S12", "position": "P1", "score": 4, "summary": "..."}}]}}
+"""
+
+
+def owner(pid: str) -> str:
+    """The candidate id in a position id ("ca_gov_primary_katie_porter.3")."""
+    return pid.rsplit(".", 1)[0]
+
+
+def sides(s: dict) -> tuple:
+    """(candidates scored, how many agree, how many disagree) on a statement."""
+    vals = [v for v in s["candidateAgreement"].values() if v is not None]
+    return len(vals), sum(v >= 4 for v in vals), sum(v <= 2 for v in vals)
+
+
+def area_chunks(questions: list) -> list:
+    """(area, questions) batches of at most AREA_CHUNK positions; a question is never split."""
+    by_area = {}
+    for q in questions:
+        by_area.setdefault(q["area"], []).append(q)
+    chunks = []
+    for area, qs in by_area.items():
+        batch, size = [], 0
+        for q in sorted(qs, key=lambda q: -len(q["positions"])):
+            if batch and size + len(q["positions"]) > AREA_CHUNK:
+                chunks.append((area, batch))
+                batch, size = [], 0
+            batch.append(q)
+            size += len(q["positions"])
+        if batch:
+            chunks.append((area, batch))
+    return chunks
+
+
+def area_blocks(qs: list, by_id: dict) -> tuple:
+    """
+    An area's positions as prompt text, grouped by question, with candidates
+    as letter codes (C1, C2...) and positions as ids (P1, P2...). Returns
+    (text, candidate codes, position codes).
+    """
+    c_alias, p_alias, blocks = {}, {}, []
+    for q in qs:
+        lines = [f"### Question: {q['question']}"]
+        for pid in q["positions"]:
+            c = c_alias.setdefault(owner(pid), f"C{len(c_alias) + 1}")
+            p = p_alias.setdefault(pid, f"P{len(p_alias) + 1}")
+            lines.append(f"- {c} [{p}] {by_id[pid]['issue']}: {by_id[pid]['stance']}")
+        blocks.append("\n".join(lines))
+    return "\n\n".join(blocks), c_alias, p_alias
+
+
+def map_back(raw_statements: list, c_alias: dict, p_alias: dict, area: str) -> list:
+    """Statements from a coded prompt, with real candidate and position ids. Unknown codes are dropped."""
+    c_back = {v: k for k, v in c_alias.items()}
+    p_back = {v: k for k, v in p_alias.items()}
+
+    def real(d):
+        return {c_back[a]: v for a, v in (d or {}).items() if a in c_back}
+
+    out = []
+    for s in raw_statements:
+        if not isinstance(s, dict) or not s.get("text"):
+            continue
+        out.append({
+            "topic": s.get("topic", ""), "text": s["text"], "area": area,
+            "basis": {c_back[a]: p_back.get(p) for a, p in (s.get("basis") or {}).items() if a in c_back},
+            "candidateAgreement": real(s.get("candidateAgreement")),
+            "candidatePositions": real(s.get("candidatePositions")),
+            "raceInsight": s.get("raceInsight", ""), "policyBackground": s.get("policyBackground", ""),
+        })
+    return out
+
+
+ROLLUP_PROMPT_TEMPLATE = """
+You are writing questions for a voter guide on the **{race_title}**, issue
+area **{area}**. Candidates are shown by letter codes and positions by ids;
+names are left out on purpose. Every position has been checked against its
+source.
+
+## Positions in this area
+{blocks}
+
+## Statements already written for this area
+{existing}
+
+---
+
+Many of these positions are specific proposals that no other candidate
+mentions. Some of them still take a side on the same **broader debate**:
+"cap developer fees" and "declare a housing emergency" both take a side on
+"California should make it cheaper and faster to build housing". "Eliminate
+property taxes" and "reassess commercial property at market value" take
+**opposite** sides on "Property taxes in California should be lower".
+
+Write broader debate statements like these:
+- Each must be one that **at least two candidates'** positions take a side
+  on. Debates where candidates take opposite sides are the most valuable.
+- A specific proposal can count toward a broader debate it clearly takes a
+  side on. A broad goal never counts toward a specific policy.
+- Each must be a debate real voters split on. Never write something nearly
+  everyone agrees with ("Housing should be affordable").
+- Don't repeat a statement already written above.
+- Plain, neutral, one short sentence, one idea, no reasons inside it.
+- If no such debate exists in this area, return an empty list.
+
+Score every candidate whose position takes a side, citing the position:
+5 strongly agrees, 4 mostly agrees, 3 documented mixed or middle position,
+2 mostly disagrees, 1 strongly disagrees. Never guess from party, never use
+3 for unknown, and leave out candidates you don't score.
+
+For each statement also give candidatePositions (one plain sentence per
+scored candidate restating only their cited position), raceInsight (1-2
+sentences on why the issue matters to voters in {state_name}, never about
+the candidates), and policyBackground (2-3 neutral sentences explaining
+only terms in the statement).
+
+Respond with this exact JSON structure:
+{{"statements": [{{"topic": "...", "text": "...", "basis": {{"C1": "P3", "C2": "P8"}},
+  "candidateAgreement": {{"C1": 5, "C2": 1}}, "candidatePositions": {{"C1": "...", "C2": "..."}},
+  "raceInsight": "...", "policyBackground": "..."}}]}}
+"""
+
+
+def rollup_area(race: dict, area: str, qs: list, existing: list, by_id: dict, flags: list) -> list:
+    """
+    The roll-up pass for one area: broader debates that two or more
+    candidates' specific positions take a side on, often opposite sides.
+    The specific statements stay in the pool for the deep dive.
+    """
+    blocks, c_alias, p_alias = area_blocks(qs, by_id)
+    if len(c_alias) < 2:
+        return []
+    prompt = ROLLUP_PROMPT_TEMPLATE.format(
+        race_title=race["title"], area=area, blocks=blocks, state_name=race["state_name"],
+        existing="\n".join(f"- {s['text']}" for s in existing) or "- (none)")
+    key = cache_key(prompt, *step_settings("rollup"))
+    name = f"rollup_{race['id']}_{cache_key(area, *sorted(p_alias))}"
+    raw = cache_get(name, key)
+    if raw is None:
+        try:
+            raw = call_json(prompt, step="rollup")
+        except Exception as e:
+            flag(flags, None, f"roll-up for {area} failed ({e})")
+            return []
+        cache_put(name, key, raw)
+    out = []
+    for st in map_back(raw.get("statements", []), c_alias, p_alias, area):
+        if len([v for v in st["candidateAgreement"].values() if v is not None]) >= 2:
+            st["rollup"] = True
+            out.append(st)
+    return out
+
+
+def write_area_statements(race: dict, area: str, qs: list, by_id: dict, flags: list,
+                          retry: bool = True) -> tuple:
+    """
+    One call writes every statement one issue area justifies. Candidates and
+    positions are shown by short codes, so the wording can't lean on names
+    or party. Returns (statements with real ids, skipped positions).
+    """
+    blocks, c_alias, p_alias = area_blocks(qs, by_id)
+    prompt = POOL_PROMPT_TEMPLATE.format(race_title=race["title"], area=area,
+                                         blocks=blocks, state_name=race["state_name"])
+    key = cache_key(prompt, *step_settings("write"))
+    name = f"pool_{race['id']}_{cache_key(area, *sorted(p_alias))}"
+    raw = cache_get(name, key)
+    if raw is None:
+        try:
+            raw = call_json(prompt, step="write")
+        except Exception as e:
+            flag(flags, None, f"writing {area} statements failed ({e})")
+            return [], []
+        cache_put(name, key, raw)
+    statements = map_back(raw.get("statements", []), c_alias, p_alias, area)
+    p_back = {v: k for k, v in p_alias.items()}
+    skipped = [{"position": p_back[x["position"]], "reason": x.get("reason", "")}
+               for x in raw.get("skipped", []) if isinstance(x, dict) and x.get("position") in p_back]
+
+    # Heuristic 6: every position is written into a statement or skipped with
+    # a reason. Ones the model passed over silently get one more call.
+    def left_over():
+        used = {pid for st in statements for pid in st["basis"].values() if pid}
+        done = used | {x["position"] for x in skipped}
+        return [pid for q in qs for pid in q["positions"] if pid not in done]
+
+    left = left_over()
+    if left and retry:
+        rest = [{**q, "positions": [pid for pid in q["positions"] if pid in left]} for q in qs]
+        more, more_skipped = write_area_statements(race, area, [q for q in rest if q["positions"]],
+                                                   by_id, flags, retry=False)
+        statements += more
+        skipped += more_skipped
+        left = left_over()
+    if left and retry:
+        flag(flags, 6, f"{len(left)} position(s) in {area} not written into any statement; "
+                       "shown on results cards", item=left)
+    return statements, skipped
+
+
+def fill_gaps_by_candidate(data: dict, race: dict, positions: dict, flags: list) -> None:
+    """
+    For each candidate, one call asks which unscored statements one of their
+    positions answers directly. Catches positions grouped under another area
+    ("Taxes" vs "Economy"). Calls run in parallel; scores are applied after.
+    """
+    stmts = data["statements"]
+    s_alias = {s["id"]: f"S{i}" for i, s in enumerate(stmts, 1)}
+    s_back = {v: k for k, v in s_alias.items()}
+    by_sid = {s["id"]: s for s in stmts}
+    jobs = [c for c in race["candidates"] if positions.get(c)]
+
+    def one(cid):
+        todo = [s for s in stmts if s["candidateAgreement"].get(cid) is None]
+        if not todo:
+            return cid, {}, []
+        p_alias = {p["id"]: f"P{i}" for i, p in enumerate(positions[cid], 1)}
+        prompt = FILL_CANDIDATE_PROMPT_TEMPLATE.format(
+            positions="\n".join(f"- [{p_alias[p['id']]}] {p['issue']}: {p['stance']}" for p in positions[cid]),
+            statements="\n".join(f'- {s_alias[s["id"]]}: "{s["text"]}"' for s in todo),
+        )
+        key = cache_key(prompt, *step_settings("fill"))
+        found = cache_get(f"fill_{cid}", key)
+        if found is None:
+            try:
+                found = call_json(prompt, step="fill").get("fills", [])
+            except Exception as e:
+                flag(flags, None, f"gap-filling failed ({e})", candidate=cid)
+                return cid, {}, []
+            cache_put(f"fill_{cid}", key, found)
+        return cid, {v: k for k, v in p_alias.items()}, found
+
+    print(f"   Checking every statement against each of {len(jobs)} candidates' positions...")
+    filled = []
+    with ThreadPoolExecutor(WORKERS) as ex:
+        for n, (cid, p_back, found) in enumerate(ex.map(one, jobs), 1):
+            got = 0
+            for f in found:
+                sid = s_back.get(f.get("statement"))
+                pid = p_back.get(f.get("position"))
+                score = f.get("score")
+                s = by_sid.get(sid)
+                if not s or not pid or s["candidateAgreement"].get(cid) is not None:
+                    continue
+                if not isinstance(score, int) or not 1 <= score <= 5:
+                    continue
+                pos = next(p for p in positions[cid] if p["id"] == pid)
+                s["candidateAgreement"][cid] = score
+                s["evidence"][cid] = {"quote": pos["quote"], "source": pos["source"], "position": pid}
+                s["candidatePositions"][cid] = f.get("summary") or pos["stance"]
+                filled.append({"statement": sid, "candidate": cid, "position": pid, "score": score})
+                got += 1
+            print(f"     [{n}/{len(jobs)}] {CANDIDATES[cid]['name']}: {got} added")
+    if filled:
+        flag(flags, 2, f"gap-filling added {len(filled)} score(s) the first pass missed (checked below)",
+             item=filled)
+
+
+def rewrite_rejected(rejected: list, flags: list) -> list:
+    """
+    Statements rejected for wording (two policies bundled, a reason built in)
+    get one rewrite each, so fixing the wording never erases a candidate's
+    position. Rewrites keep their scores and are checked again by the caller.
+    """
+    by_id = {st["id"]: st for st, _ in rejected}
+    items = [f'- statement_id: {st["id"]}\n  statement: "{st["text"]}"\n  rejected because: {note}'
+             for st, note in rejected]
+    batches = [items[i:i + 20] for i in range(0, len(items), 20)]
+    print(f"   Rewriting {len(rejected)} statement(s) rejected for wording...")
+
+    def one(batch):
+        prompt = REWRITE_PROMPT_TEMPLATE.format(items="\n".join(batch))
+        key = cache_key(prompt, *step_settings("rewrite"))
+        found = cache_get(f"rewrite_{key}", key)
+        if found is not None:
+            return found
+        try:
+            found = call_json(prompt, step="rewrite").get("rewrites", [])
+        except Exception as e:
+            flag(flags, None, f"rewriting {len(batch)} rejected statement(s) failed ({e})")
+            return []
+        cache_put(f"rewrite_{key}", key, found)
+        return found
+
+    fixed = []
+    with ThreadPoolExecutor(WORKERS) as ex:
+        for rewrites in ex.map(one, batches):
+            for r in rewrites:
+                st = by_id.pop(r.get("statement_id"), None)
+                if not st or not r.get("text"):
+                    continue
+                st = copy.deepcopy(st)
+                old = st["text"]
+                st.setdefault("draft", old)
+                st["text"] = r["text"]
+                st["policyBackground"] = r.get("policyBackground") or st.get("policyBackground", "")
+                flag(flags, 5, f'rewritten for wording ("{old[:50]}" → "{st["text"][:50]}"), checked again', st["id"])
+                fixed.append(st)
+    return fixed
+
+
+def verify_in_batches(data: dict, flags: list, size: int = 15, rewrite: bool = False) -> None:
+    """
+    The second-pass check (verify_with_llm) in parallel batches. A batch whose
+    reply runs out of room is split in half and checked again, down to one
+    statement, so no score is left unchecked for length. The check fixes
+    loaded wording in place; with rewrite=True, statements it couldn't fix
+    get one more rewrite call and a second check.
+    """
+    stmts = data["statements"]
+    batches = [stmts[i:i + size] for i in range(0, len(stmts), size)]
+    print(f"   Checking scores against their quotes in {len(batches)} batch(es)...")
+    rejected = []
+
+    def one(b):
+        batch = {"statements": list(b)}
+        try:
+            verify_with_llm(batch, flags, strict=True)
+        except ModelStopped as e:
+            if len(b) > 1:
+                h = len(b) // 2
+                print(f"     (a reply ran out of room; splitting {len(b)} statements into {h} + {len(b) - h})")
+                return one(b[:h]) + one(b[h:])
+            flag(flags, None, f"verification failed ({e}); scores are unchecked", b[0]["id"])
+            return list(b)
+        rejected.extend(batch.get("rejected", []))
+        return batch["statements"]
+
+    with ThreadPoolExecutor(WORKERS) as ex:
+        data["statements"] = [st for kept in ex.map(one, batches) for st in kept]
+    if rewrite and rejected:
+        again = {"statements": rewrite_rejected(rejected, flags)}
+        if again["statements"]:
+            verify_in_batches(again, flags, size, rewrite=False)
+            data["statements"] += again["statements"]
+
+
+def select_core(statements: list) -> list:
+    """
+    Heuristic 8: the core every voter is asked first, at most CORE_SIZE.
+    No two core questions rest on the same candidate's same quote, so one
+    position is never asked about twice in different words.
+    Shared statements (2+ candidates take a side) come first, those with
+    candidates on opposite sides ahead, then by how many take a side, with
+    no more than CORE_PER_AREA from one area while others have some left.
+    When a race has fewer shared statements than that (a small field),
+    single-candidate statements fill the rest, going to whichever candidate
+    has the fewest core questions so far. Picked from the field, never from
+    anything about the voter. Sets s["core"] to the rank, or None.
+    """
+    def rank(s):
+        n, a, d = sides(s)
+        return (-(min(a, d) > 0), -n, -min(a, d), s["id"])
+
+    open_ = [s for s in statements if not s.get("consensus")]   # nearly everyone agrees: tells no one anything
+    shared = sorted((s for s in open_ if sides(s)[0] >= 2), key=rank)
+    core, chosen, per_area, used = [], set(), Counter(), set()
+
+    def rests_on(s):
+        """(candidate, position) pairs a statement's scores rest on."""
+        ev = s.get("evidence") or {}
+        return {(c, (ev.get(c) or {}).get("position") or s["id"])
+                for c, v in s["candidateAgreement"].items() if v is not None}
+
+    def take(s):
+        core.append(s)
+        chosen.add(s["id"])
+        per_area[s["area"]] += 1
+        used.update(rests_on(s))
+
+    for limit in (CORE_PER_AREA, CORE_SIZE):   # the second pass lifts the area limit
+        for s in shared:
+            if len(core) >= CORE_SIZE:
+                break
+            if s["id"] in chosen or per_area[s["area"]] >= limit:
+                continue
+            if rests_on(s) & used:
+                continue   # same candidate, same quote: a near-repeat of a question already asked
+            take(s)
+    solo = [s for s in open_ if sides(s)[0] == 1]
+    on_core = Counter(c for s in core for c, v in s["candidateAgreement"].items() if v is not None)
+
+    def who(s):
+        return next(c for c, v in s["candidateAgreement"].items() if v is not None)
+
+    solo = [s for s in solo if not rests_on(s) & used]
+    while len(core) < CORE_SIZE and solo:
+        s = min(solo, key=lambda s: (on_core[who(s)], per_area[s["area"]], s["id"]))
+        solo = [x for x in solo if x is not s and not rests_on(x) & rests_on(s)]
+        take(s)
+        on_core[who(s)] += 1
+    for s in statements:
+        s["core"] = None
+    for i, s in enumerate(core, 1):
+        s["core"] = i
+    return core
+
+
+def pool_report(all_ids: list, positions: dict, statements: list, core: list, skipped: list) -> dict:
+    """How many statements put candidates on opposite sides, and who the core reaches."""
+    with_pos = [c for c in all_ids if positions.get(c)]
+    counts = [sides(s) for s in statements]
+    on = {c: sum(1 for s in statements if s["candidateAgreement"].get(c) is not None) for c in with_pos}
+    on_core = {c: sum(1 for s in core if s["candidateAgreement"].get(c) is not None) for c in with_pos}
+    size = Counter("1" if n == 1 else "2-4" if n < 5 else "5-9" if n < 10 else "10+" for n, _, _ in counts)
+    cited = {(s.get("evidence") or {}).get(c, {}).get("position")
+             for s in statements for c in s["candidateAgreement"]
+             if s["candidateAgreement"][c] is not None and (s.get("evidence") or {}).get(c)}
+    return {
+        "candidates": {"in_race": len(all_ids), "with_positions": len(with_pos)},
+        "statements": len(statements),
+        "shared": sum(1 for n, _, _ in counts if n >= 2),
+        "opposite_sides": sum(1 for _, a, d in counts if a and d),
+        "consensus": sum(1 for s in statements if s.get("consensus")),
+        "rollups": sum(1 for s in statements if s.get("rollup")),
+        "rollups_opposite_sides": sum(1 for s in statements if s.get("rollup") and sides(s)[1] and sides(s)[2]),
+        "by_candidates_scored": {k: size.get(k, 0) for k in ("1", "2-4", "5-9", "10+")},
+        "areas": dict(Counter(s["area"] for s in statements).most_common()),
+        "core": [{"rank": s["core"], "area": s["area"], "text": s["text"],
+                  "scored": sides(s)[0], "agree": sides(s)[1], "disagree": sides(s)[2]} for s in core],
+        "core_reaches": sum(1 for c in with_pos if on_core[c]),
+        "not_in_core": [c for c in with_pos if not on_core[c]],
+        "on_no_statement": [c for c in with_pos if not on[c]],
+        "positions_skipped": len(skipped),
+        # Checked positions no statement uses: still shown on the candidate's results card
+        "positions_card_only": sum(1 for c in with_pos for p in positions[c] if p["id"] not in cited),
+        "per_candidate": {c: {"positions": len(positions[c]), "statements": on[c], "core": on_core[c]}
+                          for c in with_pos},
+    }
+
+
+def print_pool(race: dict, report: dict) -> None:
+    name = lambda cid: CANDIDATES[cid]["name"]
+    b = report["by_candidates_scored"]
+    print(f"\n📊 Question pool, {race['title']}")
+    print(f"   {report['statements']} statements from {report['candidates']['with_positions']} candidates "
+          f"with positions ({report['candidates']['in_race']} in the race)")
+    print(f"   {report['shared']} shared by 2+ candidates; {report['opposite_sides']} have candidates on opposite sides; "
+          f"{report['consensus']} nearly every voter would agree with (kept out of the core)")
+    print(f"   {report['rollups']} broader debates from the roll-up, "
+          f"{report['rollups_opposite_sides']} with opposite sides")
+    print(f"   Candidates per statement:  1: {b['1']}   2-4: {b['2-4']}   5-9: {b['5-9']}   10+: {b['10+']}")
+    print(f"   {report['positions_skipped']} position(s) skipped as slogans; "
+          f"{report['positions_card_only']} shown on results cards only")
+    print(f"\n   Core ({len(report['core'])} of max {CORE_SIZE}), asked of every voter first:")
+    for c in report["core"]:
+        side = f"{c['agree']} agree / {c['disagree']} disagree"
+        print(f"     {c['rank']:>2}. [{c['scored']} scored: {side}] {c['area']} · {c['text']}")
+    print(f"\n   The core reaches {report['core_reaches']} of {report['candidates']['with_positions']} candidates")
+    if report["not_in_core"]:
+        print(f"   Not in the core (deep dive only): {', '.join(name(c) for c in report['not_in_core'])}")
+    if report["on_no_statement"]:
+        print(f"   On no statement at all: {', '.join(name(c) for c in report['on_no_statement'])}")
+
+
+def process_pool(race_id: str, verify: bool = True) -> dict:
+    """
+    Step 2 for a single race: every statement the race's positions justify,
+    written one issue area at a time, then checked; the core picked from
+    them; and a report on how many put candidates on opposite sides.
+    Saved to data/processed/statements_<race id>.json.
+    """
+    race, run_race = race_for_run(race_id)
+    print(f"\n⚖️  Question pool for {race['title']}: {len(run_race['candidates'])} of "
+          f"{len(race['candidates'])} candidates")
+    print(f"   Models: {step_settings('write')[0]} drafts, extracts and fills; "
+          f"{step_settings('verify')[0]} groups and checks")
+    flags = []
+    sources = load_sources(run_race)
+    # Bios depend on nothing else, so they run alongside the rest
+    side = ThreadPoolExecutor(1)
+    bios_job = side.submit(build_bios, run_race, sources, flags)
+    with timed("positions"):
+        positions = extract_positions(run_race, sources, flags)
+    with timed("grouping"):
+        questions = group_positions(run_race, positions, flags)
+    by_id = {p["id"]: p for c in positions for p in positions[c]}
+
+    chunks = area_chunks(questions)
+    print(f"   Writing statements for {len(chunks)} area batch(es), {WORKERS} at a time...")
+    statements, skipped = [], []
+
+    def one(job):
+        area, qs = job
+        return area, qs, write_area_statements(run_race, area, qs, by_id, flags)
+
+    with timed("writing"), ThreadPoolExecutor(WORKERS) as ex:
+        for n, (area, qs, (st, sk)) in enumerate(ex.map(one, chunks), 1):
+            statements += st
+            skipped += sk
+            print(f"     [{n}/{len(chunks)}] {area}: {len(st)} statement(s) from "
+                  f"{sum(len(q['positions']) for q in qs)} position(s), {len(sk)} skipped")
+    if skipped:
+        flag(flags, 5, f"{len(skipped)} position(s) skipped as slogans with no policy choice; "
+                       "shown on results cards", item=skipped)
+
+    # Roll-up: broader debates that specific positions take sides on, per area
+    areas = {}
+    for q in questions:
+        areas.setdefault(q["area"], []).append(q)
+    print(f"   Looking for broader debates across {len(areas)} area(s), {WORKERS} at a time...")
+
+    def roll(item):
+        area, qs = item
+        return area, rollup_area(run_race, area, qs, [s for s in statements if s["area"] == area], by_id, flags)
+
+    with timed("roll-up"), ThreadPoolExecutor(WORKERS) as ex:
+        found = list(ex.map(roll, areas.items()))
+    for n, (area, ups) in enumerate(found, 1):
+        statements += ups
+        if ups:
+            print(f"     {area}: {len(ups)} broader debate(s)")
+
+    data = {"statements": statements}
+    check_schema(data, run_race)
+    for i, s in enumerate(data["statements"], 1):
+        s["id"], s["race"] = f"{race['id']}_s{i}", race["id"]
+    attach_evidence(data, run_race, positions, flags)
+    with timed("gap filling"):
+        fill_gaps_by_candidate(data, run_race, positions, flags)
+    drop_unscorable(data, flags, "before check")
+    # No separate rewording pass: the writer already varies direction, and
+    # the check fixes loaded wording in place (see verify_with_llm)
+    if verify:
+        with timed("checking"):
+            verify_in_batches(data, flags)
+        drop_unscorable(data, flags, "after check")
+    with timed("bios (alongside)"):
+        bios = bios_job.result()
+    side.shutdown()
+    check_structure(data, run_race, flags)
+    core = select_core(data["statements"])
+    report = pool_report(race["candidates"], positions, data["statements"], core, skipped)
+
+    output = {
+        "run": run_record(run_race),
+        "race_id": race["id"],
+        "race_title": race["title"],
+        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "model": active_model(),
+        "fast_model": active_model(fast=True),
+        "verified": verify,
+        "core_size": CORE_SIZE,
+        "report": report,
+        "cost": METER.summary(),
+        "timing": dict(TIMES),
+        "statements": data["statements"],
+        "flags": flags,
+        "flag_counts": {
+            (f"H{h}" if h else "system"): sum(1 for f in flags if f["heuristic"] == h)
+            for h in dict.fromkeys(f["heuristic"] for f in flags)
+        },
+        "questions": questions,
+        "positions": positions,
+        "bios": bios,
+    }
+    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = PROCESSED_DIR / f"statements_{race['id']}.json"
+    out_path.write_text(json.dumps(output, indent=2, ensure_ascii=False), encoding="utf-8")
+    print_pool(race, report)
+    print(f"\n   ✓ Saved → data/processed/{out_path.name}")
+    system = [f for f in flags if f["heuristic"] is None]
+    if system:
+        print(f"   ⚠ {len(system)} step(s) failed; see flags in the file:")
+        for f in system:
+            print(f"      - {flag_text(f)}")
+    return output
 
 
 def bio_excerpt(segments: list, lines_per_source: int = 30) -> tuple:
@@ -1120,33 +2314,43 @@ def bio_excerpt(segments: list, lines_per_source: int = 30) -> tuple:
 def build_bios(race: dict, sources: dict, flags: list) -> dict:
     """Short sourced background per candidate; unsupported sentences are dropped."""
     bios = {}
-    for cid in race["candidates"]:
+
+    def one(cid):
+        """(cid, kind, saved bio or None, model sentences or None)"""
         info = CANDIDATES[cid]
         excerpt, kind = bio_excerpt(sources.get(cid, []))
         if not excerpt:
             flag(flags, 1, "no Wikipedia or About page, no bio", candidate=cid)
-            continue
+            return cid, kind, None, None, None
         prompt = BIO_PROMPT_TEMPLATE.format(
             name=info["name"], party=info["party"],
             office=RACE_TITLES[info["race"]].split(" — ")[0], excerpt=excerpt,
         )
-        key = cache_key(prompt, active_model(fast=True))
+        key = cache_key(prompt, *step_settings("bios"))
         cached = cache_get(f"bio_{cid}", key)
         if cached is not None:
-            bios[cid] = cached
-            print(f"   {info['name']}: bio sources unchanged, reusing bio")
-            continue
-        print(f"   Writing {info['name']}'s bio from {kind}...")
+            return cid, kind, key, cached, None
         try:
-            found = call_json(prompt, fast=True).get("sentences", [])
+            return cid, kind, key, None, call_json(prompt, step="bios").get("sentences", [])
         except Exception as e:
             flag(flags, None, f"bio failed ({e})", candidate=cid)
+            return cid, kind, None, None, None
+
+    with ThreadPoolExecutor(WORKERS) as ex:
+        results = list(ex.map(one, race["candidates"]))
+    written = 0
+    for cid, kind, key, cached, found in results:
+        if cached is not None:
+            bios[cid] = cached
             continue
+        if found is None:
+            continue
+        written += 1
         sentences, dropped = [], []
         for snt in found:
-            source = locate_quote(snt.get("quote", ""), sources[cid])
-            if source and snt.get("text"):
-                sentences.append({"text": snt["text"], "quote": snt["quote"].strip(), "source": source})
+            match = match_quote(snt.get("quote", ""), sources[cid])
+            if match and snt.get("text"):
+                sentences.append({"text": snt["text"], "quote": match[1], "source": match[0]})
             else:
                 dropped.append(snt)
         if dropped:
@@ -1155,6 +2359,7 @@ def build_bios(race: dict, sources: dict, flags: list) -> dict:
         # "self-described" when the only source is the candidate's own About page
         bios[cid] = {"sentences": sentences, "selfDescribed": kind == "bio page"}
         cache_put(f"bio_{cid}", key, bios[cid])
+    print(f"   Bios: {written} written, {len(bios) - written} reused")
     return bios
 
 
@@ -1174,9 +2379,9 @@ def process_race(race: dict, verify: bool = True):
     # Step 2: statements built only from those positions
     print("   Writing statements...")
     try:
-        data = call_json(build_statement_prompt(race, positions))
+        data = call_json(build_statement_prompt(race, positions), step="statements")
         check_schema(data, race)
-    except (json.JSONDecodeError, AssertionError) as e:
+    except (json.JSONDecodeError, AssertionError, ModelStopped) as e:
         print(f"   ❌ Could not use LLM output: {e}")
         return None
 
@@ -1248,11 +2453,38 @@ def process_race(race: dict, verify: bool = True):
     return output
 
 
+def elapsed(started: float) -> str:
+    m, sec = divmod(int(time.monotonic() - started), 60)
+    return f"{m} min {sec} s" if m else f"{sec} s"
+
+
 def main():
+    # Print each line as it happens, even through a pipe (| tee), so a long
+    # run never looks frozen
+    sys.stdout.reconfigure(line_buffering=True)
+    started = time.monotonic()
     parser = argparse.ArgumentParser(description="ZipVote Wedge Agent")
     parser.add_argument("--no-verify", action="store_true", help="Skip the second-pass LLM check")
     parser.add_argument("--state", help="Only generate one state's ballot (e.g. CA)", default=None)
+    parser.add_argument("--race", metavar="RACE_ID",
+                        help="Write one race's full question pool and pick its core "
+                             "(e.g. ca_gov_primary)")
+    parser.add_argument("--positions", metavar="RACE_ID",
+                        help="Only list and group one race's positions and report how much they "
+                             "overlap (e.g. ca_gov_primary). Writes no statements.")
     args = parser.parse_args()
+
+    if args.race:
+        process_pool(args.race, verify=not args.no_verify)
+        METER.print()
+        print_times()
+        print(f"\n✅ Done in {elapsed(started)}. Read every flag before wiring into the app.")
+        return
+    if args.positions:
+        positions_only(args.positions)
+        METER.print()
+        print(f"   ⏱  {elapsed(started)}")
+        return
 
     STATE_NAMES = {"MA": "Massachusetts", "CA": "California"}
     only = args.state.upper() if args.state else None
@@ -1288,7 +2520,8 @@ def main():
         print(f"\n🗳️  {ballot['title']} — {len(ballot['candidates'])} candidates")
         print(f"   Models: {active_model()} (writing, checking), {active_model(fast=True)} (extraction)")
         process_race(ballot, verify=not args.no_verify)
-    print("\n✅ Done. Read every flag in data/processed/ before wiring into the app.")
+    METER.print()
+    print(f"\n✅ Done in {elapsed(started)}. Read every flag in data/processed/ before wiring into the app.")
 
 
 if __name__ == "__main__":

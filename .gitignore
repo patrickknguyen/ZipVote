@@ -11,6 +11,7 @@ __pycache__/
 # Secrets: never commit API keys
 .env
 .env.*
+!.env.example
 
 # macOS
 .DS_Store
@@ -24,3 +25,6 @@ __pycache__/
 # .sources.json records next to them stay in git: they list what was read
 # and skipped, with links to the exact versions.
 data/raw/*.txt
+
+# Wedge's saved model answers, so unchanged reruns make no calls
+data/cache/

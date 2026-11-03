@@ -1,0 +1,3884 @@
+{
+  "run": {
+    "git_commit": "91592bd",
+    "uncommitted_changes": true,
+    "model": "claude-sonnet-5-5",
+    "fast_model": "claude-haiku-5-5",
+    "effort": {
+      "model": "high",
+      "fast_model": "low"
+    },
+    "prompts": {
+      "BIO_PROMPT_TEMPLATE": "39f2c150e1ea",
+      "EXTRACT_PROMPT_TEMPLATE": "02c6d9c3a524",
+      "FILL_PROMPT_TEMPLATE": "0f333885bf4f",
+      "FLIP_PROMPT_TEMPLATE": "06867ab578e0",
+      "GROUP_PROMPT_TEMPLATE": "01f67c136930",
+      "SYSTEM_PROMPT": "4e2a1c798e03",
+      "TOPUP_PROMPT_TEMPLATE": "d87d179d09bb",
+      "VERIFY_PROMPT_TEMPLATE": "361d082f3bbe",
+      "WEDGE_PROMPT_TEMPLATE": "439bbf5b96dd"
+    },
+    "sources": {
+      "ca_gov_primary_akinyemi_agbede": "24d037b3ccd3",
+      "ca_gov_primary_xavier_becerra": "32a85c495dcd",
+      "ca_gov_primary_derek_grasty": "af51dc9883fe",
+      "ca_gov_primary_gary_howard_kidgell": "873479ef3957",
+      "ca_gov_primary_matthew_chase_levy": "5fc14c26b713",
+      "ca_gov_primary_matt_mahan": "70d5385343d3",
+      "ca_gov_primary_katie_porter": "597ccff756de",
+      "ca_gov_primary_raji_rab": "f8bdc9c551bc",
+      "ca_gov_primary_satish_rao": "79000f38233a",
+      "ca_gov_primary_scott_p_shields": "8d35159543db",
+      "ca_gov_primary_tom_steyer": "fc25afa3f1ac",
+      "ca_gov_primary_eric_swalwell": "bbc2e7e0502d",
+      "ca_gov_primary_tony_k_thurmond": "1ecbdb8127d6",
+      "ca_gov_primary_antonio_villaraigosa": "0f668e274654",
+      "ca_gov_primary_betty_t_yee": "57d4e3a838b3",
+      "ca_gov_primary_erin_zez_zezulak": "6ef8342a5729",
+      "ca_gov_primary_chad_bianco": "16dc2062ac3d",
+      "ca_gov_primary_randeep_s_dhillon": "9548a1b54a71",
+      "ca_gov_primary_rafael_m_hernandez": "88f16d69ed67",
+      "ca_gov_primary_steve_hilton": "6a385a50a725",
+      "ca_gov_primary_gretha_solorzano": "a9e43d35077a",
+      "ca_gov_primary_ramsey_robinson": "8ebbb7636f8b",
+      "ca_gov_primary_naomi_bar_lev": "8415786a0e13",
+      "ca_gov_primary_joseph_cabrera": "441a8e1e4701",
+      "ca_gov_primary_elaine_culotti": "98b832d46dc5",
+      "ca_gov_primary_livingforgod_andcountry_demott": "6c04aefb6fde",
+      "ca_gov_primary_serge_fiankan": "57f1eeecbf0f",
+      "ca_gov_primary_max_fomin": "325fb590ee63",
+      "ca_gov_primary_don_j_grundmann": "79dfaa217004",
+      "ca_gov_primary_jon_henderson": "670d3bbd1268",
+      "ca_gov_primary_lewis_herms": "8461cc99dcf4",
+      "ca_gov_primary_anne_komarovsk": "c780e9a59ca0",
+      "ca_gov_primary_duane_terrence_loynes_jr": "d56ca952c778",
+      "ca_gov_primary_amanda_martin": "dd01a360e626",
+      "ca_gov_primary_daniel_mercuri": "6a5ed20f96ce",
+      "ca_gov_primary_christine_r_sarmiento": "b62f7aadde42",
+      "ca_gov_primary_frederic_c_schultz": "732bd2c20d6b",
+      "ca_gov_primary_margaret_trowe": "b89fd2df6fee"
+    },
+    "scout": {
+      "ca_gov_primary_akinyemi_agbede": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:41:57+00:00"
+      },
+      "ca_gov_primary_xavier_becerra": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:42:08+00:00"
+      },
+      "ca_gov_primary_derek_grasty": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:45:49+00:00"
+      },
+      "ca_gov_primary_gary_howard_kidgell": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:46:00+00:00"
+      },
+      "ca_gov_primary_matthew_chase_levy": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:46:14+00:00"
+      },
+      "ca_gov_primary_matt_mahan": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:46:24+00:00"
+      },
+      "ca_gov_primary_katie_porter": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:46:38+00:00"
+      },
+      "ca_gov_primary_raji_rab": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:53:02+00:00"
+      },
+      "ca_gov_primary_satish_rao": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:53:34+00:00"
+      },
+      "ca_gov_primary_scott_p_shields": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:56:33+00:00"
+      },
+      "ca_gov_primary_tom_steyer": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-01T23:56:57+00:00"
+      },
+      "ca_gov_primary_eric_swalwell": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:01:22+00:00"
+      },
+      "ca_gov_primary_tony_k_thurmond": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:01:38+00:00"
+      },
+      "ca_gov_primary_antonio_villaraigosa": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:03:30+00:00"
+      },
+      "ca_gov_primary_betty_t_yee": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:05:11+00:00"
+      },
+      "ca_gov_primary_erin_zez_zezulak": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:06:56+00:00"
+      },
+      "ca_gov_primary_chad_bianco": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:06:56+00:00"
+      },
+      "ca_gov_primary_randeep_s_dhillon": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:06+00:00"
+      },
+      "ca_gov_primary_rafael_m_hernandez": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:06+00:00"
+      },
+      "ca_gov_primary_steve_hilton": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:08+00:00"
+      },
+      "ca_gov_primary_gretha_solorzano": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:13+00:00"
+      },
+      "ca_gov_primary_ramsey_robinson": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:16+00:00"
+      },
+      "ca_gov_primary_naomi_bar_lev": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:24+00:00"
+      },
+      "ca_gov_primary_joseph_cabrera": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:24+00:00"
+      },
+      "ca_gov_primary_elaine_culotti": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:25+00:00"
+      },
+      "ca_gov_primary_livingforgod_andcountry_demott": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:43+00:00"
+      },
+      "ca_gov_primary_serge_fiankan": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:07:50+00:00"
+      },
+      "ca_gov_primary_max_fomin": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:14:12+00:00"
+      },
+      "ca_gov_primary_don_j_grundmann": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:14:24+00:00"
+      },
+      "ca_gov_primary_jon_henderson": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:14:36+00:00"
+      },
+      "ca_gov_primary_lewis_herms": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:14:39+00:00"
+      },
+      "ca_gov_primary_anne_komarovsk": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:14:40+00:00"
+      },
+      "ca_gov_primary_duane_terrence_loynes_jr": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:15:05+00:00"
+      },
+      "ca_gov_primary_amanda_martin": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:15:49+00:00"
+      },
+      "ca_gov_primary_daniel_mercuri": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:15:52+00:00"
+      },
+      "ca_gov_primary_christine_r_sarmiento": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:20:24+00:00"
+      },
+      "ca_gov_primary_frederic_c_schultz": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:20:32+00:00"
+      },
+      "ca_gov_primary_margaret_trowe": {
+        "mode": "as-of",
+        "as_of": "2026-06-01",
+        "retrieved_at": "2026-11-02T00:20:40+00:00"
+      }
+    }
+  },
+  "race_id": "ca_gov_primary",
+  "race_title": "Governor — California, June 2 2026 primary",
+  "generated_at": "2026-11-03T16:51:58+00:00",
+  "model": "claude-sonnet-5-5",
+  "fast_model": "claude-haiku-5-5",
+  "report": {
+    "candidates": {
+      "in_race": 61,
+      "with_sources": 38,
+      "with_positions": 33
+    },
+    "positions": 229,
+    "questions": 147,
+    "questions_by_candidates": {
+      "1": 103,
+      "2-4": 41,
+      "5-9": 3,
+      "10+": 0
+    },
+    "wide_question_min": 5,
+    "widest": [
+      {
+        "area": "Housing",
+        "question": "Affordable housing production (general)",
+        "candidates": 7
+      },
+      {
+        "area": "Health care",
+        "question": "Abortion access and restrictions",
+        "candidates": 6
+      },
+      {
+        "area": "Government",
+        "question": "Spending oversight and audits",
+        "candidates": 6
+      },
+      {
+        "area": "Energy",
+        "question": "Clean energy investment",
+        "candidates": 4
+      },
+      {
+        "area": "Taxes",
+        "question": "Eliminating income taxes",
+        "candidates": 4
+      },
+      {
+        "area": "Education",
+        "question": "K-12 education support and standards",
+        "candidates": 4
+      },
+      {
+        "area": "Health care",
+        "question": "Single-payer or universal free health care",
+        "candidates": 4
+      },
+      {
+        "area": "Taxes",
+        "question": "Wealth or billionaire tax",
+        "candidates": 4
+      },
+      {
+        "area": "Public safety",
+        "question": "Assault weapons and background checks",
+        "candidates": 3
+      },
+      {
+        "area": "Economy",
+        "question": "Business regulation reduction",
+        "candidates": 3
+      },
+      {
+        "area": "Immigration",
+        "question": "ICE operations in California",
+        "candidates": 3
+      },
+      {
+        "area": "Economy",
+        "question": "Job creation",
+        "candidates": 3
+      },
+      {
+        "area": "Immigration",
+        "question": "Pathway to citizenship or amnesty",
+        "candidates": 3
+      },
+      {
+        "area": "Public safety",
+        "question": "Police support and community policing",
+        "candidates": 3
+      },
+      {
+        "area": "Public safety",
+        "question": "Proposition 36",
+        "candidates": 3
+      }
+    ],
+    "areas": {
+      "Housing": 22,
+      "Government": 16,
+      "Health care": 15,
+      "Economy": 15,
+      "Taxes": 14,
+      "Immigration": 13,
+      "Education": 12,
+      "Public safety": 11,
+      "Energy": 10,
+      "Civil rights": 5,
+      "Environment": 5,
+      "Technology": 3,
+      "Foreign policy": 3,
+      "Transportation": 1
+    },
+    "pairs": {
+      "count": 528,
+      "median_shared_questions": 0.0,
+      "share_with_none": 0.79
+    },
+    "per_candidate": {
+      "ca_gov_primary_akinyemi_agbede": {
+        "positions": 3,
+        "questions": 3,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_xavier_becerra": {
+        "positions": 11,
+        "questions": 11,
+        "wide_questions": 2
+      },
+      "ca_gov_primary_derek_grasty": {
+        "positions": 3,
+        "questions": 3,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_gary_howard_kidgell": {
+        "positions": 5,
+        "questions": 5,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_matthew_chase_levy": {
+        "positions": 1,
+        "questions": 1,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_matt_mahan": {
+        "positions": 7,
+        "questions": 7,
+        "wide_questions": 2
+      },
+      "ca_gov_primary_katie_porter": {
+        "positions": 12,
+        "questions": 12,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_raji_rab": {
+        "positions": 13,
+        "questions": 13,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_satish_rao": {
+        "positions": 8,
+        "questions": 7,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_scott_p_shields": {
+        "positions": 5,
+        "questions": 5,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_tom_steyer": {
+        "positions": 9,
+        "questions": 9,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_eric_swalwell": {
+        "positions": 10,
+        "questions": 10,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_tony_k_thurmond": {
+        "positions": 12,
+        "questions": 12,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_antonio_villaraigosa": {
+        "positions": 9,
+        "questions": 8,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_betty_t_yee": {
+        "positions": 8,
+        "questions": 6,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_erin_zez_zezulak": {
+        "positions": 6,
+        "questions": 6,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_chad_bianco": {
+        "positions": 5,
+        "questions": 5,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_randeep_s_dhillon": {
+        "positions": 9,
+        "questions": 9,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_rafael_m_hernandez": {
+        "positions": 4,
+        "questions": 4,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_steve_hilton": {
+        "positions": 4,
+        "questions": 4,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_gretha_solorzano": {
+        "positions": 4,
+        "questions": 4,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_ramsey_robinson": {
+        "positions": 7,
+        "questions": 7,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_naomi_bar_lev": {
+        "positions": 7,
+        "questions": 7,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_joseph_cabrera": {
+        "positions": 4,
+        "questions": 4,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_elaine_culotti": {
+        "positions": 9,
+        "questions": 9,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_livingforgod_andcountry_demott": {
+        "positions": 2,
+        "questions": 2,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_serge_fiankan": {
+        "positions": 12,
+        "questions": 11,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_max_fomin": {
+        "positions": 5,
+        "questions": 5,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_don_j_grundmann": {
+        "positions": 2,
+        "questions": 2,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_jon_henderson": {
+        "positions": 1,
+        "questions": 1,
+        "wide_questions": 0
+      },
+      "ca_gov_primary_daniel_mercuri": {
+        "positions": 12,
+        "questions": 12,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_frederic_c_schultz": {
+        "positions": 12,
+        "questions": 12,
+        "wide_questions": 1
+      },
+      "ca_gov_primary_margaret_trowe": {
+        "positions": 8,
+        "questions": 8,
+        "wide_questions": 0
+      }
+    },
+    "on_no_wide_question": [
+      "ca_gov_primary_gary_howard_kidgell",
+      "ca_gov_primary_matthew_chase_levy",
+      "ca_gov_primary_katie_porter",
+      "ca_gov_primary_satish_rao",
+      "ca_gov_primary_scott_p_shields",
+      "ca_gov_primary_tom_steyer",
+      "ca_gov_primary_antonio_villaraigosa",
+      "ca_gov_primary_chad_bianco",
+      "ca_gov_primary_steve_hilton",
+      "ca_gov_primary_ramsey_robinson",
+      "ca_gov_primary_naomi_bar_lev",
+      "ca_gov_primary_elaine_culotti",
+      "ca_gov_primary_livingforgod_andcountry_demott",
+      "ca_gov_primary_don_j_grundmann",
+      "ca_gov_primary_jon_henderson",
+      "ca_gov_primary_margaret_trowe"
+    ]
+  },
+  "questions": [
+    {
+      "area": "Housing",
+      "question": "Tenant Protection Act enforcement",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.11",
+        "ca_gov_primary_tom_steyer.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_tom_steyer",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Rent freeze",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Housing state of emergency declaration",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Affordable housing production (general)",
+      "positions": [
+        "ca_gov_primary_akinyemi_agbede.1",
+        "ca_gov_primary_xavier_becerra.9",
+        "ca_gov_primary_derek_grasty.2",
+        "ca_gov_primary_erin_zez_zezulak.3",
+        "ca_gov_primary_rafael_m_hernandez.4",
+        "ca_gov_primary_gretha_solorzano.3",
+        "ca_gov_primary_matt_mahan.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_akinyemi_agbede",
+        "ca_gov_primary_derek_grasty",
+        "ca_gov_primary_erin_zez_zezulak",
+        "ca_gov_primary_gretha_solorzano",
+        "ca_gov_primary_matt_mahan",
+        "ca_gov_primary_rafael_m_hernandez",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Surplus school district property for housing",
+      "positions": [
+        "ca_gov_primary_tony_k_thurmond.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Converting vacant commercial buildings to housing",
+      "positions": [
+        "ca_gov_primary_gary_howard_kidgell.5",
+        "ca_gov_primary_serge_fiankan.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_gary_howard_kidgell",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Housing permitting and construction speed",
+      "positions": [
+        "ca_gov_primary_katie_porter.1",
+        "ca_gov_primary_serge_fiankan.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "CEQA restrictions",
+      "positions": [
+        "ca_gov_primary_steve_hilton.1",
+        "ca_gov_primary_daniel_mercuri.11"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri",
+        "ca_gov_primary_steve_hilton"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Guaranteed housing with cost capped at income share",
+      "positions": [
+        "ca_gov_primary_ramsey_robinson.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_ramsey_robinson"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Federal funding and relief for housing costs",
+      "positions": [
+        "ca_gov_primary_raji_rab.11"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Affordability covenants",
+      "positions": [
+        "ca_gov_primary_serge_fiankan.12"
+      ],
+      "candidates": [
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Section 8 expansion for vacant property",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.10"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Veteran homelessness",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Homelessness response (general)",
+      "positions": [
+        "ca_gov_primary_matt_mahan.3",
+        "ca_gov_primary_rafael_m_hernandez.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_matt_mahan",
+        "ca_gov_primary_rafael_m_hernandez"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Street encampments",
+      "positions": [
+        "ca_gov_primary_elaine_culotti.4",
+        "ca_gov_primary_max_fomin.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_max_fomin"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Homelessness prevention and rapid re-housing",
+      "positions": [
+        "ca_gov_primary_katie_porter.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Accountability for homelessness spending",
+      "positions": [
+        "ca_gov_primary_chad_bianco.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_chad_bianco"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Treatment requirement for housing",
+      "positions": [
+        "ca_gov_primary_serge_fiankan.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Housing",
+      "question": "Affordable housing and People's Park",
+      "positions": [
+        "ca_gov_primary_satish_rao.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Single-payer or universal free health care",
+      "positions": [
+        "ca_gov_primary_raji_rab.2",
+        "ca_gov_primary_tom_steyer.8",
+        "ca_gov_primary_tony_k_thurmond.3",
+        "ca_gov_primary_ramsey_robinson.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_ramsey_robinson",
+        "ca_gov_primary_tom_steyer",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Unified state healthcare system",
+      "positions": [
+        "ca_gov_primary_erin_zez_zezulak.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_erin_zez_zezulak"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Responding to federal Medi-Cal cuts",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.3",
+        "ca_gov_primary_katie_porter.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Proposition 35 MCO tax",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Healthcare workforce fund",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Employer fee for Medi-Cal-eligible workers",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Government negotiation of drug prices",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.7",
+        "ca_gov_primary_katie_porter.12"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "California drug manufacturing",
+      "positions": [
+        "ca_gov_primary_raji_rab.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "State-made biosimilar insulin",
+      "positions": [
+        "ca_gov_primary_raji_rab.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Medi-Cal bargaining power",
+      "positions": [
+        "ca_gov_primary_satish_rao.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Health insurance across state lines",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Vaccine mandates",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.7",
+        "ca_gov_primary_frederic_c_schultz.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri",
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "COVID lockdowns",
+      "positions": [
+        "ca_gov_primary_steve_hilton.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_steve_hilton"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Mental health treatment funding",
+      "positions": [
+        "ca_gov_primary_joseph_cabrera.2",
+        "ca_gov_primary_elaine_culotti.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_joseph_cabrera"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Illegal drug legalization or enforcement",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.7",
+        "ca_gov_primary_frederic_c_schultz.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz",
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Health care",
+      "question": "Abortion access and restrictions",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.1",
+        "ca_gov_primary_raji_rab.1",
+        "ca_gov_primary_eric_swalwell.2",
+        "ca_gov_primary_tony_k_thurmond.10",
+        "ca_gov_primary_daniel_mercuri.8",
+        "ca_gov_primary_frederic_c_schultz.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri",
+        "ca_gov_primary_eric_swalwell",
+        "ca_gov_primary_frederic_c_schultz",
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_tony_k_thurmond",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Same-sex marriage",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "LGBTQ+ youth protections",
+      "positions": [
+        "ca_gov_primary_katie_porter.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Disability rights and crisis response",
+      "positions": [
+        "ca_gov_primary_katie_porter.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Anti-discrimination protections",
+      "positions": [
+        "ca_gov_primary_erin_zez_zezulak.6",
+        "ca_gov_primary_margaret_trowe.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_erin_zez_zezulak",
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Civil liberties and free speech",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Antisemitism",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Civil rights",
+      "question": "Separation of church and state",
+      "positions": [
+        "ca_gov_primary_scott_p_shields.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_scott_p_shields"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Wealth or billionaire tax",
+      "positions": [
+        "ca_gov_primary_gary_howard_kidgell.1",
+        "ca_gov_primary_tom_steyer.3",
+        "ca_gov_primary_tony_k_thurmond.2",
+        "ca_gov_primary_frederic_c_schultz.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz",
+        "ca_gov_primary_gary_howard_kidgell",
+        "ca_gov_primary_tom_steyer",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Eliminating income taxes",
+      "positions": [
+        "ca_gov_primary_katie_porter.10",
+        "ca_gov_primary_naomi_bar_lev.6",
+        "ca_gov_primary_daniel_mercuri.1",
+        "ca_gov_primary_frederic_c_schultz.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri",
+        "ca_gov_primary_frederic_c_schultz",
+        "ca_gov_primary_katie_porter",
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Sales tax cut",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "State tax levels (general)",
+      "positions": [
+        "ca_gov_primary_matt_mahan.1",
+        "ca_gov_primary_raji_rab.13",
+        "ca_gov_primary_elaine_culotti.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_matt_mahan",
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Corporate tax loopholes and enforcement",
+      "positions": [
+        "ca_gov_primary_tom_steyer.2",
+        "ca_gov_primary_betty_t_yee.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_betty_t_yee",
+        "ca_gov_primary_tom_steyer"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Tax on AI companies and sovereign wealth fund",
+      "positions": [
+        "ca_gov_primary_tom_steyer.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_tom_steyer"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Gas tax pause",
+      "positions": [
+        "ca_gov_primary_tony_k_thurmond.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Mileage-driven tax",
+      "positions": [
+        "ca_gov_primary_livingforgod_andcountry_demott.2",
+        "ca_gov_primary_max_fomin.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_livingforgod_andcountry_demott",
+        "ca_gov_primary_max_fomin"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Transportation funding without new taxes",
+      "positions": [
+        "ca_gov_primary_joseph_cabrera.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_joseph_cabrera"
+      ]
+    },
+    {
+      "area": "Taxes",
+      "question": "Parking and permit fees",
+      "positions": [
+        "ca_gov_primary_naomi_bar_lev.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "State budget management",
+      "positions": [
+        "ca_gov_primary_gary_howard_kidgell.2",
+        "ca_gov_primary_betty_t_yee.1",
+        "ca_gov_primary_betty_t_yee.4",
+        "ca_gov_primary_betty_t_yee.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_betty_t_yee",
+        "ca_gov_primary_gary_howard_kidgell"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Spending oversight and audits",
+      "positions": [
+        "ca_gov_primary_matt_mahan.7",
+        "ca_gov_primary_betty_t_yee.3",
+        "ca_gov_primary_randeep_s_dhillon.9",
+        "ca_gov_primary_joseph_cabrera.4",
+        "ca_gov_primary_serge_fiankan.11",
+        "ca_gov_primary_max_fomin.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_betty_t_yee",
+        "ca_gov_primary_joseph_cabrera",
+        "ca_gov_primary_matt_mahan",
+        "ca_gov_primary_max_fomin",
+        "ca_gov_primary_randeep_s_dhillon",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Government transparency and partnerships",
+      "positions": [
+        "ca_gov_primary_naomi_bar_lev.4",
+        "ca_gov_primary_elaine_culotti.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Local control and unfunded mandates",
+      "positions": [
+        "ca_gov_primary_elaine_culotti.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Automatic raises for officials",
+      "positions": [
+        "ca_gov_primary_matt_mahan.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_matt_mahan"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Blind trusts for officials",
+      "positions": [
+        "ca_gov_primary_jon_henderson.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_jon_henderson"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Corporate and lobbyist donations",
+      "positions": [
+        "ca_gov_primary_katie_porter.11"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Government workforce size and welfare cuts",
+      "positions": [
+        "ca_gov_primary_steve_hilton.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_steve_hilton"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Scale of government and business organizations",
+      "positions": [
+        "ca_gov_primary_steve_hilton.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_steve_hilton"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Remote voting in Congress",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Election integrity and ballot seizure",
+      "positions": [
+        "ca_gov_primary_chad_bianco.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_chad_bianco"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Fusion centers for fraud investigations",
+      "positions": [
+        "ca_gov_primary_naomi_bar_lev.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Consumer and civil rights agency hiring",
+      "positions": [
+        "ca_gov_primary_naomi_bar_lev.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Device and services recall with refunds",
+      "positions": [
+        "ca_gov_primary_naomi_bar_lev.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Public-private partnerships",
+      "positions": [
+        "ca_gov_primary_gary_howard_kidgell.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_gary_howard_kidgell"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "California crypto coin",
+      "positions": [
+        "ca_gov_primary_scott_p_shields.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_scott_p_shields"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "California-owned technology",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Government",
+      "question": "Federal Reserve nationalization",
+      "positions": [
+        "ca_gov_primary_don_j_grundmann.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_don_j_grundmann"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Business regulation reduction",
+      "positions": [
+        "ca_gov_primary_satish_rao.5",
+        "ca_gov_primary_randeep_s_dhillon.4",
+        "ca_gov_primary_elaine_culotti.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_randeep_s_dhillon",
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Job creation",
+      "positions": [
+        "ca_gov_primary_akinyemi_agbede.2",
+        "ca_gov_primary_betty_t_yee.7",
+        "ca_gov_primary_rafael_m_hernandez.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_akinyemi_agbede",
+        "ca_gov_primary_betty_t_yee",
+        "ca_gov_primary_rafael_m_hernandez"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Cost of living (general)",
+      "positions": [
+        "ca_gov_primary_matt_mahan.2",
+        "ca_gov_primary_rafael_m_hernandez.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_matt_mahan",
+        "ca_gov_primary_rafael_m_hernandez"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Price gouging",
+      "positions": [
+        "ca_gov_primary_raji_rab.12",
+        "ca_gov_primary_antonio_villaraigosa.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa",
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Grocery price pass-through",
+      "positions": [
+        "ca_gov_primary_gary_howard_kidgell.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_gary_howard_kidgell"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Cash payments as policy benchmark",
+      "positions": [
+        "ca_gov_primary_satish_rao.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Capitalism and free markets",
+      "positions": [
+        "ca_gov_primary_scott_p_shields.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_scott_p_shields"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Human rights and economic independence",
+      "positions": [
+        "ca_gov_primary_scott_p_shields.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_scott_p_shields"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Marxist practices petition",
+      "positions": [
+        "ca_gov_primary_scott_p_shields.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_scott_p_shields"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Workers taking political power",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Right to union membership",
+      "positions": [
+        "ca_gov_primary_katie_porter.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Union wage floor",
+      "positions": [
+        "ca_gov_primary_ramsey_robinson.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_ramsey_robinson"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Guaranteed retirement",
+      "positions": [
+        "ca_gov_primary_ramsey_robinson.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_ramsey_robinson"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "School employee pension protection",
+      "positions": [
+        "ca_gov_primary_betty_t_yee.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_betty_t_yee"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Women's economic advancement",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Ending billionaire rule",
+      "positions": [
+        "ca_gov_primary_ramsey_robinson.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_ramsey_robinson"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Antitrust enforcement",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Economy",
+      "question": "Firefighter pay and coverage",
+      "positions": [
+        "ca_gov_primary_katie_porter.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    },
+    {
+      "area": "Technology",
+      "question": "AI company regulation",
+      "positions": [
+        "ca_gov_primary_tony_k_thurmond.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Technology",
+      "question": "Data center regulation",
+      "positions": [
+        "ca_gov_primary_tom_steyer.6",
+        "ca_gov_primary_tony_k_thurmond.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_tom_steyer",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Technology",
+      "question": "Social media ban for children",
+      "positions": [
+        "ca_gov_primary_tom_steyer.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_tom_steyer"
+      ]
+    },
+    {
+      "area": "Technology",
+      "question": "Mass surveillance and Flock cameras",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.11"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Clean energy investment",
+      "positions": [
+        "ca_gov_primary_katie_porter.5",
+        "ca_gov_primary_raji_rab.7",
+        "ca_gov_primary_frederic_c_schultz.7",
+        "ca_gov_primary_matthew_chase_levy.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz",
+        "ca_gov_primary_katie_porter",
+        "ca_gov_primary_matthew_chase_levy",
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Domestic oil production",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.2",
+        "ca_gov_primary_gretha_solorzano.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_gretha_solorzano",
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Refinery capacity and permitting",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.8",
+        "ca_gov_primary_antonio_villaraigosa.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Gasoline price surcharge investigation",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Refining margin cap",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Low Carbon Fuel Standard credit price ceiling",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Cap-and-trade price containment",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Automatic consumer relief payments for fuel prices",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Fracking",
+      "positions": [
+        "ca_gov_primary_betty_t_yee.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_betty_t_yee"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Utility rates",
+      "positions": [
+        "ca_gov_primary_xavier_becerra.10",
+        "ca_gov_primary_gretha_solorzano.2",
+        "ca_gov_primary_max_fomin.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_gretha_solorzano",
+        "ca_gov_primary_max_fomin",
+        "ca_gov_primary_xavier_becerra"
+      ]
+    },
+    {
+      "area": "Energy",
+      "question": "Energy grid reliability",
+      "positions": [
+        "ca_gov_primary_max_fomin.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_max_fomin"
+      ]
+    },
+    {
+      "area": "Environment",
+      "question": "Pesticides, factory farms and autonomous vehicles",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Environment",
+      "question": "Agricultural water policy",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.1",
+        "ca_gov_primary_serge_fiankan.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_randeep_s_dhillon",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Environment",
+      "question": "Water supply and infrastructure",
+      "positions": [
+        "ca_gov_primary_erin_zez_zezulak.4",
+        "ca_gov_primary_serge_fiankan.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_erin_zez_zezulak",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Environment",
+      "question": "Wildfire fighting and detection",
+      "positions": [
+        "ca_gov_primary_erin_zez_zezulak.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_erin_zez_zezulak"
+      ]
+    },
+    {
+      "area": "Environment",
+      "question": "Wildfire rebuilding permitting",
+      "positions": [
+        "ca_gov_primary_chad_bianco.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_chad_bianco"
+      ]
+    },
+    {
+      "area": "Transportation",
+      "question": "High-speed rail",
+      "positions": [
+        "ca_gov_primary_serge_fiankan.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Transportation",
+      "question": "Public transit and roads investment",
+      "positions": [
+        "ca_gov_primary_serge_fiankan.10"
+      ],
+      "candidates": [
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Proposition 36",
+      "positions": [
+        "ca_gov_primary_matt_mahan.5",
+        "ca_gov_primary_chad_bianco.3",
+        "ca_gov_primary_elaine_culotti.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_chad_bianco",
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_matt_mahan"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Police support and community policing",
+      "positions": [
+        "ca_gov_primary_akinyemi_agbede.3",
+        "ca_gov_primary_naomi_bar_lev.2",
+        "ca_gov_primary_elaine_culotti.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_akinyemi_agbede",
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_naomi_bar_lev"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Police training requirements",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Shoplifting enforcement",
+      "positions": [
+        "ca_gov_primary_randeep_s_dhillon.5"
+      ],
+      "candidates": [
+        "ca_gov_primary_randeep_s_dhillon"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Assault weapons and background checks",
+      "positions": [
+        "ca_gov_primary_raji_rab.9",
+        "ca_gov_primary_eric_swalwell.1",
+        "ca_gov_primary_tony_k_thurmond.11"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell",
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Gun crime penalties",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Castle Law and self-defense",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Death penalty",
+      "positions": [
+        "ca_gov_primary_raji_rab.10"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Task force on child sex trafficking cases",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.12"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Public safety",
+      "question": "Expanding the California State Guard",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.10"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Local law enforcement cooperation with ICE",
+      "positions": [
+        "ca_gov_primary_chad_bianco.4",
+        "ca_gov_primary_serge_fiankan.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_chad_bianco",
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Abolishing ICE",
+      "positions": [
+        "ca_gov_primary_tom_steyer.7",
+        "ca_gov_primary_ramsey_robinson.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_ramsey_robinson",
+        "ca_gov_primary_tom_steyer"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "ICE operations in California",
+      "positions": [
+        "ca_gov_primary_derek_grasty.1",
+        "ca_gov_primary_erin_zez_zezulak.1",
+        "ca_gov_primary_livingforgod_andcountry_demott.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_derek_grasty",
+        "ca_gov_primary_erin_zez_zezulak",
+        "ca_gov_primary_livingforgod_andcountry_demott"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "ICE agent masks",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Tax on ICE detention operators",
+      "positions": [
+        "ca_gov_primary_tony_k_thurmond.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Workplace immigration enforcement protections",
+      "positions": [
+        "ca_gov_primary_antonio_villaraigosa.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_antonio_villaraigosa"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Returning deported people",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "Pathway to citizenship or amnesty",
+      "positions": [
+        "ca_gov_primary_raji_rab.8",
+        "ca_gov_primary_tony_k_thurmond.12",
+        "ca_gov_primary_margaret_trowe.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe",
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Immigration",
+      "question": "State role in immigration law",
+      "positions": [
+        "ca_gov_primary_serge_fiankan.1",
+        "ca_gov_primary_serge_fiankan.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_serge_fiankan"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Israel anti-boycott legislation",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "US funding for Israel",
+      "positions": [
+        "ca_gov_primary_don_j_grundmann.1"
+      ],
+      "candidates": [
+        "ca_gov_primary_don_j_grundmann"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Israel's right to exist and defend itself",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Trade war with China",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Turkey and NATO membership",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Sanctions and measures against Russia",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "Airport pocketknife ban",
+      "positions": [
+        "ca_gov_primary_eric_swalwell.10"
+      ],
+      "candidates": [
+        "ca_gov_primary_eric_swalwell"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "US-Cuba blockade",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.6"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Foreign policy",
+      "question": "US foreign wars",
+      "positions": [
+        "ca_gov_primary_margaret_trowe.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_margaret_trowe"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "Reading instruction",
+      "positions": [
+        "ca_gov_primary_satish_rao.1",
+        "ca_gov_primary_satish_rao.8",
+        "ca_gov_primary_tony_k_thurmond.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_satish_rao",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "K-12 education support and standards",
+      "positions": [
+        "ca_gov_primary_derek_grasty.3",
+        "ca_gov_primary_tom_steyer.9",
+        "ca_gov_primary_gretha_solorzano.4",
+        "ca_gov_primary_elaine_culotti.8"
+      ],
+      "candidates": [
+        "ca_gov_primary_derek_grasty",
+        "ca_gov_primary_elaine_culotti",
+        "ca_gov_primary_gretha_solorzano",
+        "ca_gov_primary_tom_steyer"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "State Board of Education",
+      "positions": [
+        "ca_gov_primary_satish_rao.7"
+      ],
+      "candidates": [
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "School choice",
+      "positions": [
+        "ca_gov_primary_daniel_mercuri.9"
+      ],
+      "candidates": [
+        "ca_gov_primary_daniel_mercuri"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "Class size and homework",
+      "positions": [
+        "ca_gov_primary_frederic_c_schultz.12"
+      ],
+      "candidates": [
+        "ca_gov_primary_frederic_c_schultz"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "College tuition and student debt",
+      "positions": [
+        "ca_gov_primary_raji_rab.5",
+        "ca_gov_primary_satish_rao.2"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_satish_rao"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "Donahoe Higher Education Act",
+      "positions": [
+        "ca_gov_primary_joseph_cabrera.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_joseph_cabrera"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "Universal child care and pre-K",
+      "positions": [
+        "ca_gov_primary_raji_rab.6",
+        "ca_gov_primary_tony_k_thurmond.6",
+        "ca_gov_primary_ramsey_robinson.3"
+      ],
+      "candidates": [
+        "ca_gov_primary_raji_rab",
+        "ca_gov_primary_ramsey_robinson",
+        "ca_gov_primary_tony_k_thurmond"
+      ]
+    },
+    {
+      "area": "Education",
+      "question": "Child care provider pay",
+      "positions": [
+        "ca_gov_primary_katie_porter.4"
+      ],
+      "candidates": [
+        "ca_gov_primary_katie_porter"
+      ]
+    }
+  ],
+  "positions": {
+    "ca_gov_primary_akinyemi_agbede": [
+      {
+        "id": "ca_gov_primary_akinyemi_agbede.1",
+        "issue": "Housing",
+        "stance": "Dr. Agbede plans to expand access to affordable housing while enhancing support services for homeless individuals.",
+        "quote": "Expanding access to affordable housing while enhancing support services for homeless individuals, ensuring stable living conditions and long-term solutions.",
+        "source": "https://web.archive.org/web/20260521044411/https://thenextgovernorofcalifornia2026.net/"
+      },
+      {
+        "id": "ca_gov_primary_akinyemi_agbede.2",
+        "issue": "Economic Growth",
+        "stance": "Dr. Agbede plans to create job opportunities, support businesses, and implement tax reforms to reduce the financial burden on families.",
+        "quote": "Creating job opportunities, supporting businesses, and implementing tax reforms to reduce the financial burden on families and foster economic prosperity.",
+        "source": "https://web.archive.org/web/20260521044411/https://thenextgovernorofcalifornia2026.net/"
+      },
+      {
+        "id": "ca_gov_primary_akinyemi_agbede.3",
+        "issue": "Public Safety",
+        "stance": "Dr. Agbede plans to strengthen community policing and invest in crime prevention programs.",
+        "quote": "Strengthening community policing efforts and investing in crime prevention programs to enhance security, build trust, and create safer neighborhoods.",
+        "source": "https://web.archive.org/web/20260521044411/https://thenextgovernorofcalifornia2026.net/"
+      }
+    ],
+    "ca_gov_primary_xavier_becerra": [
+      {
+        "id": "ca_gov_primary_xavier_becerra.1",
+        "issue": "Abortion Access",
+        "stance": "He says that as Governor he will ensure California continues to lead on protecting access to abortion.",
+        "quote": "As Governor, I will ensure that California continues to lead when it comes to protecting access to abortion, to the ballot, and to live and love without restraint.",
+        "source": "https://web.archive.org/web/20260509231655/https://www.xavierbecerra2026.com/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.2",
+        "issue": "Same-Sex Marriage",
+        "stance": "He states that in 1996 he was among a small group of members of Congress who voted against the Defense of Marriage Act.",
+        "quote": "In 1996, I was among a small group of members of Congress to vote against the Defense of Marriage Act.",
+        "source": "https://web.archive.org/web/20260509231655/https://www.xavierbecerra2026.com/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.3",
+        "issue": "Medi-Cal Coverage",
+        "stance": "On his first day he would issue an executive order directing state agencies to maintain coverage continuity for Californians affected by federal cuts or Medi-Cal rollbacks.",
+        "quote": "On Day One, I will issue an executive order directing state agencies to maintain coverage continuity for every Californian affected by federal cuts or Medi-Cal rollbacks.",
+        "source": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.4",
+        "issue": "Proposition 35",
+        "stance": "He says he will fight to fully implement Proposition 35, which dedicates MCO tax revenue exclusively to Medi-Cal.",
+        "quote": "And I will fight to fully implement Proposition 35, which California voters passed in November 2024 to dedicate MCO tax revenue exclusively to Medi-Cal, ensuring those funds go to stronger provider payments and expanded access to care, not federal clawbacks.",
+        "source": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.5",
+        "issue": "Healthcare Workforce",
+        "stance": "He plans to establish a long-term dedicated fund to grow the healthcare workforce, including loan repayment, housing assistance, and targeted provider incentives.",
+        "quote": "I will establish a long-term dedicated fund to grow the healthcare workforce where it is needed most, offering loan repayment and forgiveness programs, housing assistance in high-cost areas, and targeted incentives for primary care, behavioral health, women’s care, rural medicine, and dental providers.",
+        "source": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.6",
+        "issue": "Employer Health Fee",
+        "stance": "He says he will pursue a fee on large employers who do not offer health coverage to low-wage workers who qualify for Medi-Cal.",
+        "quote": "I will pursue a fee on large employers who do not offer health coverage to their low-wage workers who qualify for Medi-Cal, so that corporations who shift their healthcare costs onto taxpayers pay their fair share.",
+        "source": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.7",
+        "issue": "Drug Prices",
+        "stance": "He claims that as HHS Secretary he negotiated drug price reductions of up to 79% on widely used medications, the first direct federal bargaining with pharmaceutical companies on behalf of patients.",
+        "quote": "As HHS Secretary, I negotiated drug price reductions of up to 79% on some of the most widely used medications in America, the first time the federal government had ever directly bargained with pharmaceutical companies on behalf of patients.",
+        "source": "https://web.archive.org/web/20260523180733/https://www.xavierbecerra2026.com/priorities/health-care/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.8",
+        "issue": "Housing Emergency",
+        "stance": "On his first day he would declare California’s housing shortage a state of emergency and make housing production and affordability the paramount priority for every state agency.",
+        "quote": "On my first day as Governor, I will issue an executive order declaring California’s housing shortage a state of emergency and directing every state agency to treat housing production and affordability as the paramount priority.",
+        "source": "https://web.archive.org/web/20260520214518/https://www.xavierbecerra2026.com/priorities/housing/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.9",
+        "issue": "Housing Affordability Plan",
+        "stance": "He plans to develop the state's first California Housing Affordability Master Plan, with a target that median-income families can afford median-priced homes.",
+        "quote": "My administration will develop the first-ever California Housing Affordability Master Plan, setting a target of median-income families being able to afford median-priced homes, and unifying the state’s response across zoning, streamlining, fees, financing, and regulatory costs.",
+        "source": "https://web.archive.org/web/20260520214518/https://www.xavierbecerra2026.com/priorities/housing/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.10",
+        "issue": "Energy Bill Affordability",
+        "stance": "He says bill affordability will be central to his energy policy, especially for low- and middle-income families.",
+        "quote": "Bill affordability will be at the center of my energy policy, especially for low- and middle-income families.",
+        "source": "https://web.archive.org/web/20260526093934/https://www.xavierbecerra2026.com/priorities/energy-utilities/"
+      },
+      {
+        "id": "ca_gov_primary_xavier_becerra.11",
+        "issue": "Tenant Protections",
+        "stance": "He pledges to fully enforce California’s Tenant Protection Act, including its rent increase cap, just cause eviction standards, and relocation assistance.",
+        "quote": "I will fully enforce California’s Tenant Protection Act, including its cap on excessive rent increases, just cause eviction standards, and relocation assistance for displaced tenants, as a critical front-line tool to prevent homelessness before it starts.",
+        "source": "https://web.archive.org/web/20260522233626/https://www.xavierbecerra2026.com/priorities/homelessness/"
+      }
+    ],
+    "ca_gov_primary_derek_grasty": [
+      {
+        "id": "ca_gov_primary_derek_grasty.1",
+        "issue": "Immigration Enforcement",
+        "stance": "Says he will keep ICE off California's streets.",
+        "quote": "Together, we will keep kidnappers (ICE) off our streets, make housing affordable for working families, first responders, teachers, firefighters, and nurses.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_derek_grasty.2",
+        "issue": "Affordable Housing",
+        "stance": "Says everyone should have affordable housing, a safe community, and a quality education.",
+        "quote": "That means affordable housing, a safe community and a quality education.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_derek_grasty.3",
+        "issue": "Education Funding",
+        "stance": "Says education will be supported with pre-school, reading specialists, and mental health counselors.",
+        "quote": "Education will be supported with pre-school, reading specialists, and mental health counselors to help our students thrive.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_gary_howard_kidgell": [
+      {
+        "id": "ca_gov_primary_gary_howard_kidgell.1",
+        "issue": "Wealth Tax",
+        "stance": "Opposes a wealth tax as a way to address California's challenges.",
+        "quote": "California is facing real challenges, and we need real solutions — but a wealth tax is not the way to go.",
+        "source": "https://web.archive.org/web/20260414031526/https://www.kidgellforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_gary_howard_kidgell.2",
+        "issue": "Budget Management",
+        "stance": "Favors managing the budget wisely and monitoring spending carefully instead of creating new, uncertain tax structures.",
+        "quote": "Instead of creating new and uncertain tax structures, we should focus on managing our budget wisely, monitoring spending carefully, and ensuring every dollar is used effectively.",
+        "source": "https://web.archive.org/web/20260414031526/https://www.kidgellforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_gary_howard_kidgell.3",
+        "issue": "Public-Private Partnerships",
+        "stance": "Supports strengthening public–private partnerships and encouraging civic investment to rebuild the state.",
+        "quote": "By strengthening public–private partnerships and encouraging civic investment, we can rebuild our state without relying on policies that risk driving away innovation, jobs, and opportunity.",
+        "source": "https://web.archive.org/web/20260414031526/https://www.kidgellforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_gary_howard_kidgell.4",
+        "issue": "Food Prices",
+        "stance": "Plans a mandatory pass-through of wholesale cost drops to lower grocery bills.",
+        "quote": "Mandatory pass‑through of wholesale cost drops",
+        "source": "https://web.archive.org/web/20260414031526/https://www.kidgellforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_gary_howard_kidgell.5",
+        "issue": "Housing Conversion",
+        "stance": "Plans to convert vacant commercial buildings as part of housing affordability.",
+        "quote": "Conversion of vacant commercial buildings",
+        "source": "https://web.archive.org/web/20260414031526/https://www.kidgellforcalifornia.com/"
+      }
+    ],
+    "ca_gov_primary_matthew_chase_levy": [
+      {
+        "id": "ca_gov_primary_matthew_chase_levy.1",
+        "issue": "Clean Energy Investment",
+        "stance": "His venture firm, AE Blue Capital, backs fusion and other advanced clean-energy technologies that the text says address California's energy costs, grid reliability, and decarbonization goals.",
+        "quote": "He is the founder of NobleAI, a Science-Based AI platform that accelerates discovery and innovation in chemistry, materials, and energy sectors, and AE Blue Capital, a venture firm that backs fusion and other advanced clean-energy technologies critical to addressing California’s rising energy costs, grid reliability issues, and long-term decarbonization goals.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_matt_mahan": [
+      {
+        "id": "ca_gov_primary_matt_mahan.1",
+        "issue": "Taxes",
+        "stance": "He says he won't ask Californians to pay more in taxes without results.",
+        "quote": "Matt won’t ask Californians to pay more in taxes without results.",
+        "source": "https://web.archive.org/web/20260511185544/https://www.mahanforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.2",
+        "issue": "Cost of Living",
+        "stance": "He will work to drive down the cost of living, build more affordable housing, make cities safe, and ensure all kids have an opportunity to succeed.",
+        "quote": "He will work to drive down the cost of living, build more affordable housing, make our cities safe, and ensure all kids have an opportunity to succeed.",
+        "source": "https://web.archive.org/web/20260511185544/https://www.mahanforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.3",
+        "issue": "Homelessness",
+        "stance": "He says he is getting people off the streets and into treatment and housing, and that he reduced San Jose's homeless population by a third.",
+        "quote": "Matt Mahan reduced San Jose's homeless population by a third. He’s getting people off the streets, into treatment, and into housing.",
+        "source": "https://web.archive.org/web/20260511185544/https://www.mahanforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.4",
+        "issue": "Housing Construction",
+        "stance": "He says he has broken ground on thousands of new housing units and retrofitted old buildings to help people off the streets.",
+        "quote": "He has broken ground on thousands of new housing units and retrofitted old buildings to get people off the streets and back on their feet.",
+        "source": "https://web.archive.org/web/20260511185544/https://www.mahanforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.5",
+        "issue": "Proposition 36",
+        "stance": "He supports California Proposition 36, as stated in his 2024 op-ed headline.",
+        "quote": "I'm a Democratic mayor. Here's the reason I support California's Prop. 36",
+        "source": "https://en.wikipedia.org/w/index.php?title=Matt_Mahan&oldid=1355892586"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.6",
+        "issue": "Automatic Raises",
+        "stance": "He pledged to end automatic raises for politicians and city department heads unless progress is shown.",
+        "quote": "He pledged to end automatic raises for politicians and city department heads unless progress is shown.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Matt_Mahan&oldid=1355892586"
+      },
+      {
+        "id": "ca_gov_primary_matt_mahan.7",
+        "issue": "Accountability Dashboard",
+        "stance": "He proposed an accountability dashboard to track progress on issues like crime and homelessness.",
+        "quote": "He proposed an accountability dashboard which would track progress on issues like crime and homelessness.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Matt_Mahan&oldid=1355892586"
+      }
+    ],
+    "ca_gov_primary_katie_porter": [
+      {
+        "id": "ca_gov_primary_katie_porter.1",
+        "issue": "Housing Costs",
+        "stance": "Her plan would speed up housing construction by nearly two years and reduce apartment housing costs by 20%.",
+        "quote": "Time is money in housing, and I have a plan to speed up building by nearly two years, putting California on par with its peer states that also have worker and environmental protections. This will bring down the costs of apartment housing by 20%.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/lowering-housing-costs/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.2",
+        "issue": "Health Care",
+        "stance": "She would fight federal Medi-Cal and health care cuts and strengthen the state's health care system and workforce.",
+        "quote": "As your Governor, I will fight these cuts with every fiber of my being and work to fortify our health care system at the state level so we can protect, expand and improve health care for all of our residents, while making sure our health care workforce has the support they need to care for Californians.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/protecting-healthcare/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.3",
+        "issue": "Homelessness",
+        "stance": "She would use homelessness prevention through emergency rental assistance and rapid re-housing, plus interim housing, strategies she says California has not adopted.",
+        "quote": "My homelessness plan focuses on two strategies that California has not adopted: homeless prevention through emergency rental assistance and rapid re-housing, and interim housing that can keep people from being unsheltered, which is itself a risk factor for mental health and substance use problems.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/ending-homelessness/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.4",
+        "issue": "Child Care",
+        "stance": "She supports paying child care providers more to build a stronger child care workforce.",
+        "quote": "The best way to expand access to care is by ensuring we have a robust workforce. This means paying providers more.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/free-child-care-for-all/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.5",
+        "issue": "Clean Energy",
+        "stance": "She aims to make California the first state to reach 100% clean energy output, 365 days a year, and invest in renewables and grid expansion.",
+        "quote": "Under my governorship, California will be positioned to become the first state to achieve 100% clean energy output, 365 days a year—which will drive down costs and make energy more affordable for Californians.",
+        "source": "https://web.archive.org/web/20260513000608/https://katieporter.com/priority/protecting-our-planet/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.6",
+        "issue": "Labor Unions",
+        "stance": "She believes every worker deserves a union and supports policies to create and enforce that right.",
+        "quote": "Every worker deserves a union. We must create – and enforce – policies that deliver that opportunity.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/standing-up-for-workers/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.7",
+        "issue": "LGBTQ Protections",
+        "stance": "In Congress she championed bills protecting LGBTQ+ students from bullying and harassment and barring child welfare providers from discriminating against LGBTQ+ kids.",
+        "quote": "In Congress, I championed bills to protect LGBTQ+ youth, including legislation to better protect LGBTQ+ students from bullying and harassment and legislation to ban child welfare program providers from discriminating against LGBTQ+ kids.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/lgbtq-protections/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.8",
+        "issue": "Firefighter Pay",
+        "stance": "In Congress she fought to improve pay and health coverage for federal firefighters.",
+        "quote": "I fought to improve pay and health coverage for federal firefighters.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/wildfires-climate-resilience/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.9",
+        "issue": "Disability Rights",
+        "stance": "She plans to reduce incarceration and violence against people with disabilities, pointing to her Mental Health Justice Act to send trained professionals instead of police to people in crisis.",
+        "quote": "Fight to reduce incarceration and violence against people with disabilities, like I did in Congress by introducing the Mental Health Justice Act to connect people in crisis with trained care professionals instead of law enforcement.",
+        "source": "https://web.archive.org/web/20260531132631/https://katieporter.com/priority/protecting-californians-with-disabilities/"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.10",
+        "issue": "Income Taxes",
+        "stance": "She would eliminate income taxes for Californians earning less than $100,000.",
+        "quote": "I will eliminate income taxes for Californians earning less than $100,000, build housing that workers can afford, stop charging tuition at our public universities, and make childcare free for all Californians.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.11",
+        "issue": "Corporate Donations",
+        "stance": "She refuses donations from corporations and lobbyists.",
+        "quote": "Unlike most other Democrats, I refuse donations from corporations and lobbyists.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_katie_porter.12",
+        "issue": "Drug Prices",
+        "stance": "She says there is no evidence that allowing government to negotiate drug prices would reduce innovation, and she supports government negotiation of drug prices.",
+        "quote": "there is simply no set of facts that supports that allowing the government to negotiate drug prices would reduce innovation",
+        "source": "https://en.wikipedia.org/w/index.php?title=Katie_Porter&oldid=1356920056"
+      }
+    ],
+    "ca_gov_primary_raji_rab": [
+      {
+        "id": "ca_gov_primary_raji_rab.1",
+        "issue": "Abortion Rights",
+        "stance": "Supports women's right to reproductive health care access and privacy, including legal protections for women traveling to California for abortion services.",
+        "quote": "I support women’s right for reproductive health care access and privacy, legally protecting women who travel from other states to access abortion services here in California, including shielding their medical records.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.2",
+        "issue": "Health Care",
+        "stance": "Believes healthcare is a human right and supports full, free healthcare for every American through Medicare for All.",
+        "quote": "I believe that healthcare rights are human rights, and every American deserves full and free healthcare with Medicare for All.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.3",
+        "issue": "Drug Prices",
+        "stance": "Plans to expedite manufacturing of medications in California to reduce costs and dependence on imported drugs.",
+        "quote": "I will expedite medication to be manufactured here in California to reduce costs, create thousands of high paying jobs, improve the economy, and ensure that we are not dependent on other countries.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.4",
+        "issue": "Insulin Costs",
+        "stance": "Supports increasing state investment to develop and manufacture low-cost biosimilar insulin products.",
+        "quote": "we must increase the exiting Invested $100.7 million to develop and manufacture low-cost biosimilar insulin products to increase the availability & affordability of insulin in California.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.5",
+        "issue": "Education Debt",
+        "stance": "Wants to reform education so students are debt-free, including increasing college savings accounts for vulnerable students.",
+        "quote": "I will increase the existing invested $1.9 billion to set up college savings accounts of up to $1,500 for every vulnerable student and increase the $170 million in ongoing funds to set up accounts for all struggling students when they enter the 1st grade.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.6",
+        "issue": "Child Care and Pre-K",
+        "stance": "Plans to double existing childcare slots and provide universal pre-K including before- and after-school care for all California kids.",
+        "quote": "I will double the existing childcare slots, universal pre-K including the before- and after-school for all California kids.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.7",
+        "issue": "Climate and Energy",
+        "stance": "Plans to set high standards for clean air and water, control carbon emissions, and expand renewable energy.",
+        "quote": "As your Governor I will set the highest standards of clean air, water, environmental protection, controlling carbon emissions and expanding advanced renewable energy.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.8",
+        "issue": "Immigration",
+        "stance": "Supports immigration amnesty with a fee and a path to citizenship for undocumented residents.",
+        "quote": "I support immigration Amnesty of all good undocumented people here on a fee which will bring billions in revenue and filter out the bad actors.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.9",
+        "issue": "Gun Policy",
+        "stance": "Supports strict background checks and stronger laws to curb gun violence, including for military-style assault weapons.",
+        "quote": "Military-style assault weapons should not be accessible without strong background checks.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.10",
+        "issue": "Death Penalty",
+        "stance": "Does not support the death penalty.",
+        "quote": "I do not support death penalty.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.11",
+        "issue": "Housing Affordability",
+        "stance": "Plans to investigate housing costs, bring regulatory reforms, and seek federal funding for down payment, mortgage, rent, and utility relief.",
+        "quote": "I will seek federal funding to ease burdensome complexities and offer real housing plans to ease down payment, mortgage, rent and utilities.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.12",
+        "issue": "Price Gouging",
+        "stance": "Will stop price gouging and investigate price hikes on housing, gas, groceries, and other goods, and seek to bring prices back to pre-COVID levels.",
+        "quote": "Upon getting elected, I will stop price gouging, investigate the price hike of all items including buying a home, renting, gas, grocery, home goods etc.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      },
+      {
+        "id": "ca_gov_primary_raji_rab.13",
+        "issue": "Taxes",
+        "stance": "Plans to lower taxes to reduce costs and balance the budget without raising taxes.",
+        "quote": "My NOW Plan will bring billions in global investments, balance budget with a surplus for you and all departments without raising taxes.",
+        "source": "https://web.archive.org/web/20260531201953/https://rajirabforgovernor.com/issues/"
+      }
+    ],
+    "ca_gov_primary_satish_rao": [
+      {
+        "id": "ca_gov_primary_satish_rao.1",
+        "issue": "K-12 Reading",
+        "stance": "Says California has failed vulnerable students at learning to read and wants funding moved from bureaucratic overhead directly to classroom teachers.",
+        "quote": "California has failed vulnerable students at the most basic task: learning to read. We must aggressively reallocate funding away from bureaucratic overhead and directly into the pockets of the teachers working with students.",
+        "source": "https://web.archive.org/web/20260517202111/https://satish4guv.org/platform"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.2",
+        "issue": "College Tuition",
+        "stance": "Supports charging tuition at Berkeley and opposes free tuition for its largely wealthy student population.",
+        "quote": "If anything, tuition could be higher, because currently, it isn’t transferring enough wealth. Simply mandating “free tuition” for the largely wealthy student population at Berkeley would amount to a massive financial handout to people who don’t need it.",
+        "source": "https://web.archive.org/web/20260517202054/https://satish4guv.org/"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.3",
+        "issue": "Homeless Housing",
+        "stance": "Believes the People's Park supportive and student housing could be built substantially cheaper in other areas.",
+        "quote": "The same housing would be substantially cheaper and perhaps more beneficial for many in other areas.",
+        "source": "https://web.archive.org/web/20260517202054/https://satish4guv.org/"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.4",
+        "issue": "Health Care",
+        "stance": "Believes the state, through Medi-Cal, can negotiate better health care deals than individuals can.",
+        "quote": "Individuals have no chance against the powerful health industry, whereas the state, through Medi-Cal, can negotiate a better deal.",
+        "source": "https://web.archive.org/web/20260517202054/https://satish4guv.org/"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.5",
+        "issue": "Regulation",
+        "stance": "Criticizes California's regulatory approach as failing to solve problems while creating new ones.",
+        "quote": "In California, there is a regulation for every problem—and too often it fails to solve it while creating new ones.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.6",
+        "issue": "Policy Evaluation",
+        "stance": "Says any potential policy solution should be measured against whether it would be better than simply giving people cash.",
+        "quote": "This may sound glib, but any potential solution should be measured against whether it would be better than just giving people cash.",
+        "source": "https://web.archive.org/web/20260517202054/https://satish4guv.org/"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.7",
+        "issue": "State Board of Education",
+        "stance": "Criticizes the State Board of Education for repeatedly advancing approaches that have failed and are expensive.",
+        "quote": "A specific problem is the State Board of Education, which is occupied by advocates who have failed repeatedly and yet continue to inject failed and expensive approaches into our schools.",
+        "source": "https://web.archive.org/web/20260517202111/https://satish4guv.org/platform"
+      },
+      {
+        "id": "ca_gov_primary_satish_rao.8",
+        "issue": "Evidence-Based Instruction",
+        "stance": "Wants to strip ideological fads from teaching methods and mandate evidence-based reading and math instruction statewide.",
+        "quote": "At the same time, we need to strip away ideological fads from our teaching methods and mandate evidence-based reading and mathematics instruction statewide",
+        "source": "https://web.archive.org/web/20260517202111/https://satish4guv.org/platform"
+      }
+    ],
+    "ca_gov_primary_scott_p_shields": [
+      {
+        "id": "ca_gov_primary_scott_p_shields.1",
+        "issue": "Economic System",
+        "stance": "Says social solutions are best achieved with capitalism and freedoms.",
+        "quote": "Social solutions are best achieved with capitalism and freedoms. Social solutions are always needed but not by way of socialism or communism or religious theocracies or dictatorships, which should all be classified as kingdom-hoods.",
+        "source": "https://web.archive.org/web/20260411203258/https://www.shields4governor.com/"
+      },
+      {
+        "id": "ca_gov_primary_scott_p_shields.2",
+        "issue": "Human Rights",
+        "stance": "Advocates for systems that support human rights, personal freedom, and economic independence.",
+        "quote": "It is imperative to recognize and challenge these notions, advocating instead for systems that truly support human rights, personal freedom, and economic independence.",
+        "source": "https://web.archive.org/web/20260411203258/https://www.shields4governor.com/"
+      },
+      {
+        "id": "ca_gov_primary_scott_p_shields.3",
+        "issue": "Church and State",
+        "stance": "States that separation of church and state is the only guard against a religious theocracy ruling in government.",
+        "quote": "Separation Of Church And State Was And Still Is The Only Guard Against A Religious Theocracy From Becoming The Rulers In Government.",
+        "source": "https://web.archive.org/web/20260411203258/https://www.shields4governor.com/"
+      },
+      {
+        "id": "ca_gov_primary_scott_p_shields.4",
+        "issue": "California Crypto",
+        "stance": "Says the California crypto coin should be launched.",
+        "quote": "With Your Retiring, It Will Be Hard To Fill That Void So We Have To Launch The California Crypto Coin And We Appreciate All You Have Done.",
+        "source": "https://web.archive.org/web/20260411203258/https://www.shields4governor.com/"
+      },
+      {
+        "id": "ca_gov_primary_scott_p_shields.5",
+        "issue": "Policymaker Petition",
+        "stance": "Asks policymakers to steer away from Marxist practices and place the petition on their websites.",
+        "quote": "Ask your policymakers and leaders to (not only) steer away from Marxist practices but place this petition on their website.",
+        "source": "https://web.archive.org/web/20260411203258/https://www.shields4governor.com/"
+      }
+    ],
+    "ca_gov_primary_tom_steyer": [
+      {
+        "id": "ca_gov_primary_tom_steyer.1",
+        "issue": "Tenant Protections",
+        "stance": "He would fully enforce California's Tenant Protection Act, including its rent increase cap, just cause eviction standards, and relocation assistance.",
+        "quote": "I will fully enforce California’s Tenant Protection Act to ensure renters are protected statewide, including its cap on excessive rent increases, just cause eviction standards, and relocation assistance for displaced tenants.",
+        "source": "https://web.archive.org/web/20260517145054/https://www.tomsteyer.com/issues/housing"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.2",
+        "issue": "Corporate Tax Loopholes",
+        "stance": "He would close the offshore \"Water's Edge Election\" and the commercial property loophole under Prop 13, and assess commercial properties at true market value.",
+        "quote": "I will close corporate tax giveaways – specifically the offshore “Water’s Edge Election” and the commercial property loophole under Prop 13 – raising over $20 billion a year in new, sustainable revenue by ensuring commercial properties are assessed at their true market value.",
+        "source": "https://web.archive.org/web/20260524052159/https://www.tomsteyer.com/issues/care"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.3",
+        "issue": "Wealth Tax",
+        "stance": "He supported a proposed one-off wealth tax in California in a January 2026 article.",
+        "quote": "In January 2026, he wrote an article supporting the proposed one-off wealth tax in California.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Tom_Steyer&oldid=1357270944"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.4",
+        "issue": "AI Tax and Fund",
+        "stance": "He would create a Golden State Sovereign Wealth Fund by taxing AI companies and use the money for human-only jobs and care programs.",
+        "quote": "I will also create the Golden State Sovereign Wealth Fund by taxing AI companies and use this money to expand jobs that fundamentally only humans can do and earmark funds specifically to scale care programs.",
+        "source": "https://web.archive.org/web/20260524052159/https://www.tomsteyer.com/issues/care"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.5",
+        "issue": "Social Media for Kids",
+        "stance": "He would ban social media for children under 16.",
+        "quote": "Tom will ban social media for kids under 16, because the link between social media use and the youth mental health crisis is clear.",
+        "source": "https://web.archive.org/web/20260516142317/https://www.tomsteyer.com/issues/ai-policy"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.6",
+        "issue": "Data Centers",
+        "stance": "He would require data centers to ensure energy prices for families go down rather than up.",
+        "quote": "Data centers should never cost California families a cent. Tom will mandate that data centers ensure energy prices for families go down – not up.",
+        "source": "https://web.archive.org/web/20260516142317/https://www.tomsteyer.com/issues/ai-policy"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.7",
+        "issue": "Abolish ICE",
+        "stance": "In an April 2026 essay, he called for abolishing ICE and proposed California criminally prosecute ICE agents and leadership.",
+        "quote": "In an April 2026 essay on his Substack, paired with a post on X (formerly Twitter), Steyer called for the abolition of U.S. Immigration and Customs Enforcement (ICE) and proposed that California criminally prosecute ICE agents and leadership, end racial profiling through state legislation, expand California's immigration legal-defence infrastructure, and conduct public education on immigrants' rights.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Tom_Steyer&oldid=1357270944"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.8",
+        "issue": "Single-Payer Health Care",
+        "stance": "He would advance single-payer healthcare and work to lower everyday costs.",
+        "quote": "Tom Steyer will fight to lower everyday costs, advance single-payer healthcare, and lead the fight against climate change with urgency and innovation.",
+        "source": "https://web.archive.org/web/20260524052159/https://www.tomsteyer.com/issues/electricity"
+      },
+      {
+        "id": "ca_gov_primary_tom_steyer.9",
+        "issue": "Education Support",
+        "stance": "He would support teachers and schools so they can provide the best education possible to students.",
+        "quote": "We need to support our teachers and our schools so that they can provide the best education possible to kids.",
+        "source": "https://web.archive.org/web/20260516144403/https://www.tomsteyer.com/issues/education"
+      }
+    ],
+    "ca_gov_primary_eric_swalwell": [
+      {
+        "id": "ca_gov_primary_eric_swalwell.1",
+        "issue": "Gun Control",
+        "stance": "Swalwell made gun control a signature issue in his 2019 presidential campaign, including a mandatory buyback of assault weapons and universal background checks.",
+        "quote": "In 2019, Swalwell made gun control a signature issue of his presidential campaign, including a ban with a mandatory buyback of all firearms deemed assault weapons, and universal background checks.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.2",
+        "issue": "Abortion",
+        "stance": "Swalwell voted against a bill that would ban abortions after 20 weeks.",
+        "quote": "During a House vote on June 18, 2013, Swalwell used his mobile phone to record a video of his vote against a bill that would ban abortions after 20 weeks",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.3",
+        "issue": "Immigration Enforcement",
+        "stance": "Swalwell said ICE would be more credible without masks and advocated tying ICE's funding to a ban on agents wearing masks while on duty.",
+        "quote": "In 2025, in response to masked ICE agents conducting increasingly violent and high-profile enforcement actions against both immigrants and citizens on behalf of the Trump administration, Swalwell said that ICE would be more credible if they did not wear masks, and advocated for legislation that would tie ICE's funding to a ban on agents wearing masks in the course of their duties.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.4",
+        "issue": "Congressional Voting",
+        "stance": "Swalwell has proposed a \"mobile Congress\" in which members would cast votes remotely while spending more time in their districts.",
+        "quote": "He has proposed the idea of a \"mobile Congress\", with members casting votes remotely while spending more time in their districts.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.5",
+        "issue": "Antitrust",
+        "stance": "Swalwell voted against the Merger Filing Fee Modernization Act of 2022, an antitrust package aimed at corporate anti-competitive behavior.",
+        "quote": "In 2022, Swalwell was one of 16 Democrats to vote against the Merger Filing Fee Modernization Act of 2022, an antitrust package that would crack down on corporations for anti-competitive behavior.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.6",
+        "issue": "Israel Boycotts",
+        "stance": "Swalwell co-sponsored the Israel Anti-Boycott Act, which would let states require contractors to pledge not to boycott Israel or Israeli-occupied territories.",
+        "quote": "In 2017, Swalwell co-sponsored the Israel Anti-Boycott Act, a House bill designed to allow U.S. states to enact laws requiring contractors to sign pledges promising not to boycott any goods from Israel and Israeli-occupied territories or their contracts would be terminated.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.7",
+        "issue": "China Trade",
+        "stance": "Swalwell criticized Trump's trade war against China.",
+        "quote": "In 2019, Swalwell criticized Trump's trade war against China.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.8",
+        "issue": "Turkey and NATO",
+        "stance": "Swalwell condemned the 2019 Turkish offensive in northeastern Syria and called for possibly suspending Turkey's NATO membership.",
+        "quote": "He condemned the 2019 Turkish offensive into northeastern Syria and called for possibly suspending Turkey 's membership in NATO.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.9",
+        "issue": "Russia Sanctions",
+        "stance": "Swalwell proposed closing the Russian embassy in the United States and expelling Russian students in response to the invasion of Ukraine.",
+        "quote": "In 2022, Swalwell proposed measures such as closing the Russian embassy in the United States and expelling Russian students as part of a broader response to the Russian invasion of Ukraine.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      },
+      {
+        "id": "ca_gov_primary_eric_swalwell.10",
+        "issue": "Airport Security",
+        "stance": "Swalwell helped lead the fight against lifting the ban on pocketknives at airport security, a decision that was later reversed.",
+        "quote": "He helped lead the fight against Transportation Security Administration administrator John S. Pistole 's decision to lift the ban on pocketknives at airport security; the decision eventually was reversed.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Eric_Swalwell&oldid=1356072972"
+      }
+    ],
+    "ca_gov_primary_tony_k_thurmond": [
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.1",
+        "issue": "Affordable Housing",
+        "stance": "Build 2 million affordable housing units using surplus property owned by school districts in each of the 58 counties.",
+        "quote": "Build 2 million affordable housing units using the surplus property owned by school districts in each of the 58 counties in our state",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.2",
+        "issue": "Billionaire Tax",
+        "stance": "Establish a new tax on billionaires and centimillionaires.",
+        "quote": "Establish a new tax on billionaires and centimillionaires",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.3",
+        "issue": "Health Care",
+        "stance": "Establish a single-payer health care system.",
+        "quote": "Establish a single-payer health care system",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.4",
+        "issue": "ICE Detention Centers",
+        "stance": "Levy a tax on companies that operate ICE detention centers.",
+        "quote": "Levy a tax on companies that operate ICE detention centers",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.5",
+        "issue": "Gas Tax",
+        "stance": "Pause California's gas tax to provide relief amid rising costs.",
+        "quote": "Pause California’s Gas tax to provide relief in the midst of Trump’s Iran War tax",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.6",
+        "issue": "Universal Childcare",
+        "stance": "Establish a universal childcare program to lower costs for working families.",
+        "quote": "Establish a universal childcare program to lower costs for working families",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.7",
+        "issue": "Third-Grade Reading",
+        "stance": "Lead a 5-year plan to ensure every California student can read by third grade.",
+        "quote": "Lead a 5-year plan to ensure every California student can read by third grade",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.8",
+        "issue": "Artificial Intelligence",
+        "stance": "Implement tough, effective guidelines on artificial intelligence companies to protect California workers and consumers.",
+        "quote": "Implement tough, effective guidelines on artificial intelligence companies to protect California workers and consumers",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.9",
+        "issue": "Data Centers",
+        "stance": "Establish comprehensive regulations on data center development to ensure environmental and occupational safety.",
+        "quote": "Establish comprehensive regulations on data center development to ensure environmental and occupational safety",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.10",
+        "issue": "Abortion Access",
+        "stance": "Supports abortion care that is legal and accessible.",
+        "quote": "That's why he's fighting for a tax on billionaires, healthcare for all, abolishing ICE, 2 million new units of housing, finally fully funding our public schools, abortion care that is legal and accessible, getting weapons of war off of our streets, and protecting democracy.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.11",
+        "issue": "Gun Violence",
+        "stance": "Supports getting weapons of war off the streets.",
+        "quote": "That's why he's fighting for a tax on billionaires, healthcare for all, abolishing ICE, 2 million new units of housing, finally fully funding our public schools, abortion care that is legal and accessible, getting weapons of war off of our streets, and protecting democracy.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_tony_k_thurmond.12",
+        "issue": "Pathway to Citizenship",
+        "stance": "Work with Congress to establish a pathway to citizenship.",
+        "quote": "Work with Congress to establish a pathway to citizenship",
+        "source": "https://web.archive.org/web/20260511082947/https://www.tonythurmond.com/priorities"
+      }
+    ],
+    "ca_gov_primary_antonio_villaraigosa": [
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.1",
+        "issue": "Immigration",
+        "stance": "The Workplace Protection legislation would strengthen AB 450 by establishing protections against warrantless workplace immigration enforcement operations.",
+        "quote": "The Workplace Protection legislation strengthens AB 450 (2017 California Immigrant Worker Protection Act ) by establishing comprehensive protections against warrantless workplace immigration enforcement operations.",
+        "source": "https://web.archive.org/web/20260507050743/https://www.antonio2026.com/ice"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.2",
+        "issue": "Gas Prices",
+        "stance": "The Governor could direct the Division of Petroleum Market Oversight to prioritize investigating the \"mystery surcharge\" and publish transparent pricing data.",
+        "quote": "The Governor can direct the Division to prioritize investigation of the persistent “mystery surcharge” and to publish transparent pricing data that holds refiners publicly accountable.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.3",
+        "issue": "Margin Cap",
+        "stance": "The state's gasoline refining margin authority should be used as a targeted backstop against price manipulation rather than as a permanent price control.",
+        "quote": "This authority should be used as a targeted backstop against price manipulation — not as a permanent price control that discourages investment.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.4",
+        "issue": "Fuel Credit Costs",
+        "stance": "The Governor could direct CARB to implement a firm credit price ceiling limiting how LCFS compliance costs pass through to consumers.",
+        "quote": "The Governor can direct CARB to implement a firm credit price ceiling that limits the pass-through of LCFS compliance costs to consumers.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.5",
+        "issue": "Cap-and-Trade",
+        "stance": "The Governor could direct CARB to ensure the Allowance Price Containment Reserve is adequately funded and that allowance prices do not spike beyond what emissions targets require.",
+        "quote": "The Governor can direct CARB to ensure the APCR is adequately funded and that allowance prices do not spike in ways that increase fuel costs beyond what is necessary to meet emissions targets.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.6",
+        "issue": "Price Gouging",
+        "stance": "The Governor could ensure that any refinery closure creating a supply emergency triggers California's anti-price gouging protections.",
+        "quote": "The Governor can ensure that any refinery closure that creates a supply emergency triggers these protections.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.7",
+        "issue": "Consumer Relief",
+        "stance": "An automatic statutory trigger for income-verified consumer payments could be codified, with the Controller certifying the trigger based on CEC pricing data.",
+        "quote": "An automatic trigger can be codified in statute, with the Controller directed to certify the trigger condition based on CEC pricing data.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.8",
+        "issue": "Refinery Closures",
+        "stance": "The Governor could direct the CEC to treat in-state refining capacity as a critical energy security asset and assess the impacts of any further refinery closure before it occurs.",
+        "quote": "The Governor can direct the CEC to treat in-state refining capacity as a critical energy security asset and to formally assess the supply and price impacts of any further refinery closure before it occurs.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      },
+      {
+        "id": "ca_gov_primary_antonio_villaraigosa.9",
+        "issue": "Refinery Permitting",
+        "stance": "The Governor could direct CalGEM to streamline permitting for operational modifications at existing refineries to reduce regulatory friction on capital investment.",
+        "quote": "The Governor, through the Director of the Department of Conservation, can direct CalGEM to streamline permitting for operational modifications at existing refineries (e.g., efficiency upgrades, emissions reduction retrofits, CCUS installations) to reduce the regulatory friction that discourages capital investment.",
+        "source": "https://web.archive.org/web/20260428172915/https://www.antonio2026.com/plan"
+      }
+    ],
+    "ca_gov_primary_betty_t_yee": [
+      {
+        "id": "ca_gov_primary_betty_t_yee.1",
+        "issue": "State Budget",
+        "stance": "Yee says fixing the state budget is necessary to address affordability.",
+        "quote": "We can't fix the affordability crisis without a Governor who can fix the state budget.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.2",
+        "issue": "Corporate Taxes",
+        "stance": "Yee says that as a Board of Equalization member she ruled against corporations and the wealthy to make sure they paid their fair share of taxes.",
+        "quote": "I ruled against corporations and the wealthy, making sure they paid their fair share of taxes.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.3",
+        "issue": "Government Spending",
+        "stance": "Yee says she uncovered $7.3 billion in misspending.",
+        "quote": "I uncovered $7.3 billion in misspending.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.4",
+        "issue": "State Borrowing",
+        "stance": "Yee says she never borrowed externally to pay the state's bills.",
+        "quote": "I never borrowed externally to pay the state's bills.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.5",
+        "issue": "Pension Protection",
+        "stance": "Yee says she protected the retirement funds for school employees.",
+        "quote": "I protected the retirement funds for school employees.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.6",
+        "issue": "Future Generations",
+        "stance": "Yee says the state must not burden the next generation with costs that would limit its ability to succeed and thrive.",
+        "quote": "And we must not saddle the next generation with costs that will curtail their ability to succeed and thrive.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.7",
+        "issue": "Jobs and Economy",
+        "stance": "Yee says she would grow the economy by investing in people and creating good-paying jobs in every part of the state.",
+        "quote": "We can, however, invest in our people, growing our economy by creating good-paying jobs in every corner of the state.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_betty_t_yee.8",
+        "issue": "Fracking",
+        "stance": "Yee opposed fracking for oil.",
+        "quote": "She opposed fracking for oil.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Betty_Yee&oldid=1350486331"
+      }
+    ],
+    "ca_gov_primary_erin_zez_zezulak": [
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.1",
+        "issue": "Immigration",
+        "stance": "Says ICE will not be permitted in California using its present tactics.",
+        "quote": "ICE will not be permitted in California using its present tactics.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.2",
+        "issue": "Health Care",
+        "stance": "Says her work in the California medical system has helped her plan for a unified, equitable healthcare system for all Californians.",
+        "quote": "Working with patients and families in the California medical system for nearly 30 years has helped me plan for a unified, equitable healthcare system for all people living in California.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.3",
+        "issue": "Housing",
+        "stance": "Says her experience with a building contractor helped her see how to maximize cities to enable affordable housing for all.",
+        "quote": "Working with my grandfather, a building contractor, helped me see how to maximize our cities, enabling affordable housing for all.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.4",
+        "issue": "Water Management",
+        "stance": "Says she has water management plans intended to eliminate the drought/flood cycle affecting California's farming, economy, and communities.",
+        "quote": "Living in agricultural communities has inspired my water management plans to eliminate the drought/flood cycle that impacts California’s farming, economy, and communities.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.5",
+        "issue": "Wildfires",
+        "stance": "Says she planned strategies for fighting wildfires from the air and for early fire detection to reduce wildfire destruction.",
+        "quote": "As a pilot in training, I planned strategies for fighting wildfires from the air and for early fire detection to mitigate wildfire destruction.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_erin_zez_zezulak.6",
+        "issue": "Discrimination",
+        "stance": "Says all people must be protected from discrimination and unconstitutional practices.",
+        "quote": "We all must be protected from discrimination and unconstitutional practices.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_chad_bianco": [
+      {
+        "id": "ca_gov_primary_chad_bianco.1",
+        "issue": "Wildfire Rebuilding",
+        "stance": "Bianco says he will cut through bureaucracy that keeps families from rebuilding after wildfires.",
+        "quote": "I will cut through bureaucracy that keeps families from rebuilding after wildfires.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_chad_bianco.2",
+        "issue": "Homelessness Spending",
+        "stance": "Bianco says he will demand real results for the billions spent on homelessness and end spending without accountability.",
+        "quote": "I will demand real results for the billions spent on homelessness, and end the cycle of spending without accountability.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_chad_bianco.3",
+        "issue": "Proposition 36",
+        "stance": "Bianco supported Proposition 36, according to the Wikipedia text.",
+        "quote": "Bianco has portrayed himself as a law and order candidate, and supported Proposition 36.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Chad_Bianco&oldid=1356917556"
+      },
+      {
+        "id": "ca_gov_primary_chad_bianco.4",
+        "issue": "Sanctuary State Law",
+        "stance": "Bianco attended a press conference promoting a bill to weaken SB 54, which limits law enforcement cooperation with ICE.",
+        "quote": "On February 21, Bianco attended a press conference in San Diego with Republican leaders to promote State Senate Republican Minority Leader Brian Jones ' proposed bill SB554 to weaken the California Senate Bill 54 of 2017 that limits law enforcement's ability to cooperate with ICE.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Chad_Bianco&oldid=1356917556"
+      },
+      {
+        "id": "ca_gov_primary_chad_bianco.5",
+        "issue": "Election Integrity",
+        "stance": "Bianco ordered the seizure of ballots from California's 2025 election, citing election integrity concerns.",
+        "quote": "In April 2026, Bianco ordered the seizure of ballots from California's 2025 election, citing concerns about election integrity, a focus of his political campaign.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Chad_Bianco&oldid=1356917556"
+      }
+    ],
+    "ca_gov_primary_randeep_s_dhillon": [
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.1",
+        "issue": "Agriculture Water",
+        "stance": "He would protect California agriculture by ensuring fair, reliable, and affordable water, including consistent pricing across water districts.",
+        "quote": "As Governor, I will protect California agriculture by ensuring fair, reliable, and affordable water, including consistent pricing across water districts so farmers can plan, invest, and produce.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.2",
+        "issue": "Oil Production",
+        "stance": "He supports responsible California crude oil production alongside renewable energy development.",
+        "quote": "I support responsible California crude oil production alongside renewable energy development to stabilize fuel costs, protect jobs, and reduce dependence on foreign energy.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.3",
+        "issue": "Technology Sovereignty",
+        "stance": "He would support California-owned operating systems, software, and hardware.",
+        "quote": "I will support California-owned operating systems, software, and hardware so innovation, jobs, and data remain here.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.4",
+        "issue": "Small Business",
+        "stance": "He would reduce regulations and expand access to capital for small businesses.",
+        "quote": "I will stand with small businesses by reducing regulations and expanding access to capital so entrepreneurs can grow and hire.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.5",
+        "issue": "Shoplifting Enforcement",
+        "stance": "He states that shoplifting of any amount is a crime and that laws must be enforced fairly.",
+        "quote": "Shoplifting of any amount is a crime, and laws must be enforced fairly.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.6",
+        "issue": "Veteran Homelessness",
+        "stance": "He supports solutions to veteran homelessness through housing and employment.",
+        "quote": "I support women's economic advancement, solutions to veteran homelessness through housing and employment, and firm action against illegal drugs.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.7",
+        "issue": "Illegal Drugs",
+        "stance": "He supports firm action against illegal drugs.",
+        "quote": "I support women's economic advancement, solutions to veteran homelessness through housing and employment, and firm action against illegal drugs.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.8",
+        "issue": "Women's Economic Advancement",
+        "stance": "He supports women's economic advancement.",
+        "quote": "I support women's economic advancement, solutions to veteran homelessness through housing and employment, and firm action against illegal drugs.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_randeep_s_dhillon.9",
+        "issue": "Government Fiscal Policy",
+        "stance": "He believes government must be fiscally responsible, transparent, and focused on results.",
+        "quote": "I believe government must be fiscally responsible, transparent, and focused on results.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_rafael_m_hernandez": [
+      {
+        "id": "ca_gov_primary_rafael_m_hernandez.1",
+        "issue": "Cost of Living",
+        "stance": "Lowering the high cost of living is one of the candidate's stated goals.",
+        "quote": "Lower the high cost of living.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_rafael_m_hernandez.2",
+        "issue": "Jobs",
+        "stance": "Creating more good-paying jobs is one of the candidate's stated goals.",
+        "quote": "Create more good pay jobs.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_rafael_m_hernandez.3",
+        "issue": "Homelessness",
+        "stance": "Fixing the homelessness crisis is one of the candidate's stated goals.",
+        "quote": "Fix the homelessness crisis.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_rafael_m_hernandez.4",
+        "issue": "Affordable Housing",
+        "stance": "Building affordable homes is one of the candidate's stated goals.",
+        "quote": "4. Build affordable homes.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_steve_hilton": [
+      {
+        "id": "ca_gov_primary_steve_hilton.1",
+        "issue": "Housing and CEQA",
+        "stance": "Hilton proposed a 2023 ballot initiative that would bar private lawsuits under the California Environmental Quality Act and cap impact fees paid by homebuilders and developers.",
+        "quote": "The measure would prohibit private lawsuits related to the California Environmental Quality Act and cap impact fees paid by homebuilders and developers.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536"
+      },
+      {
+        "id": "ca_gov_primary_steve_hilton.2",
+        "issue": "COVID Lockdowns",
+        "stance": "In 2020 Hilton recommended that President Trump end the COVID-19 social distancing measures and lockdowns.",
+        "quote": "In 2020, during the COVID-19 pandemic in the United States and soon after social distancing measures and lockdowns were implemented, Hilton recommended that President Donald Trump end the measures.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536"
+      },
+      {
+        "id": "ca_gov_primary_steve_hilton.3",
+        "issue": "Government Size",
+        "stance": "Hilton's last memo as UK strategy director advocated severe cuts to the number of civil servants and further welfare cuts.",
+        "quote": "His last memo concerned the advocacy of severe decreases in the number of civil servants in the United Kingdom and further decreases in welfare.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536"
+      },
+      {
+        "id": "ca_gov_primary_steve_hilton.4",
+        "issue": "Organization Scale",
+        "stance": "Hilton's book advocates smaller, more human-scale organizations and criticizes large government and business.",
+        "quote": "It advocates smaller, more human-scale organisations and is critical of large government and business, including factory farms and banks.",
+        "source": "https://en.wikipedia.org/w/index.php?title=Steve_Hilton&oldid=1356519536"
+      }
+    ],
+    "ca_gov_primary_gretha_solorzano": [
+      {
+        "id": "ca_gov_primary_gretha_solorzano.1",
+        "issue": "Energy Security",
+        "stance": "Redirect the $32.7 billion spent on foreign oil toward domestic production, alongside investments in advanced energy and water infrastructure.",
+        "quote": "I will strengthen our economy through strategic investments in advanced energy and water infrastructure, including redirecting the\n$32.7 billion\nwe currently spend on foreign oil toward domestic production to improve energy security and keep jobs here at home.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_gretha_solorzano.2",
+        "issue": "Utility Costs",
+        "stance": "Plans to lower utility costs while creating jobs and delivering long-term growth.",
+        "quote": "I will create jobs, lower utility costs, and deliver long-term growth for all Californians.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_gretha_solorzano.3",
+        "issue": "Housing",
+        "stance": "Plans to tackle California's housing shortage.",
+        "quote": "I will also tackle California’s housing shortage, and I will reverse the decline in our education system.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_gretha_solorzano.4",
+        "issue": "Education",
+        "stance": "Plans to reverse the decline in the state's education system.",
+        "quote": "I will also tackle California’s housing shortage, and I will reverse the decline in our education system.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_ramsey_robinson": [
+      {
+        "id": "ca_gov_primary_ramsey_robinson.1",
+        "issue": "Housing",
+        "stance": "Supports guaranteed housing with costs capped at 20% of income.",
+        "quote": "Our socialist campaign demands guaranteed housing capped at 20% of income, free healthcare, free childcare and union jobs at minimum $30/hour with a guaranteed dignified retirement.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.2",
+        "issue": "Health Care",
+        "stance": "Supports free healthcare.",
+        "quote": "Our socialist campaign demands guaranteed housing capped at 20% of income, free healthcare, free childcare and union jobs at minimum $30/hour with a guaranteed dignified retirement.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.3",
+        "issue": "Childcare",
+        "stance": "Supports free childcare.",
+        "quote": "Our socialist campaign demands guaranteed housing capped at 20% of income, free healthcare, free childcare and union jobs at minimum $30/hour with a guaranteed dignified retirement.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.4",
+        "issue": "Union Wages",
+        "stance": "Supports union jobs paying at least $30 per hour.",
+        "quote": "Our socialist campaign demands guaranteed housing capped at 20% of income, free healthcare, free childcare and union jobs at minimum $30/hour with a guaranteed dignified retirement.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.5",
+        "issue": "Retirement",
+        "stance": "Supports a guaranteed dignified retirement.",
+        "quote": "Our socialist campaign demands guaranteed housing capped at 20% of income, free healthcare, free childcare and union jobs at minimum $30/hour with a guaranteed dignified retirement.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.6",
+        "issue": "Immigration",
+        "stance": "Opposes deportations and supports abolishing ICE.",
+        "quote": "Stop deportations, abolish ICE!",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_ramsey_robinson.7",
+        "issue": "Billionaire Wealth",
+        "stance": "Aims to end billionaire rule.",
+        "quote": "Together we will end billionaire rule once and for all.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_naomi_bar_lev": [
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.1",
+        "issue": "Fusion Centers",
+        "stance": "As governor, fusion centers would be used for serious investigations of fraud, theft, and waste.",
+        "quote": "As governor, fusion centers will be for serious investigations of fraud, theft, and waste, a healthy revenue source with a leaner budget.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.2",
+        "issue": "Policing",
+        "stance": "Police would return to neighborhoods, fight crime, and take reports equally among citizens using a constitutionally compliant database.",
+        "quote": "Police will return to neighborhoods, fighting crime, taking reports equally among citizens, using a constitutionally compliant database.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.3",
+        "issue": "Device Recall",
+        "stance": "Phones and devices would be recalled and past services refunded, including phone, alarm systems, and wifi.",
+        "quote": "Phones and devices will be recalled, past services refunded, phone, alarm systems, wifi",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.4",
+        "issue": "Government Partnerships",
+        "stance": "Partnerships and non-disclosure agreements in government would be eliminated.",
+        "quote": "“Partnerships” and non-disclosure agreements in government will be eliminated.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.5",
+        "issue": "Consumer Rights Hiring",
+        "stance": "A hiring increase would stock consumer and civil rights agencies, and local and state leaders would be replaced by public servants.",
+        "quote": "A hiring spree to stock consumer and civil rights agencies, local and state leaders replaced by public servants.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.6",
+        "issue": "Taxes",
+        "stance": "Would eliminate sales, income, and property taxes.",
+        "quote": "No sales, income, or property tax.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_naomi_bar_lev.7",
+        "issue": "Parking and Permit Fees",
+        "stance": "Parking fees and permit fees would be eliminated.",
+        "quote": "Parking fees and permit fees will be eliminated.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_joseph_cabrera": [
+      {
+        "id": "ca_gov_primary_joseph_cabrera.1",
+        "issue": "Transportation Funding",
+        "stance": "Cabrera argues that the state should not raise taxes for transportation because unspent voter-approved bond money is available.",
+        "quote": "Sacramento politicians are asking for new taxes, but their own budget—Schedule 11—shows they are sitting on $30.1 billion in unspent, voter-approved bond money. We have nearly $500 million for traffic reduction sitting idle since 2006.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_joseph_cabrera.2",
+        "issue": "Mental Health",
+        "stance": "Cabrera would shift resources away from jails and into community treatment, focusing on recovery for people with mental illness.",
+        "quote": "I will shift resources away from bloat and into community treatment, focusing on recovery instead of a revolving prison door. … For too long, we have used our jails as warehouses for the mentally ill while allowing our streets to become encampments.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_joseph_cabrera.3",
+        "issue": "Higher Education",
+        "stance": "Cabrera plans to restore and revamp the Donahoe Higher Education Act to return public universities to a merit-based, accessible model.",
+        "quote": "Finally, we must restore and revamp the Donahoe Higher Education Act. I will return our public universities to the merit-based, accessible model that once made California the envy of the world.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_joseph_cabrera.4",
+        "issue": "State Spending and Taxes",
+        "stance": "Cabrera plans to audit projects labeled as ghost projects and redirect interest savings to fund schools and clinics without raising taxes.",
+        "quote": "By auditing \"ghost projects\" and redirecting interest savings, we can fund our schools and clinics without raising your taxes.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_elaine_culotti": [
+      {
+        "id": "ca_gov_primary_elaine_culotti.1",
+        "issue": "Economic Development",
+        "stance": "Supports streamlining regulation, supporting small businesses, strengthening workforce training, and expanding opportunity across every region.",
+        "quote": "Economic Development that streamlines regulation, supports small businesses, strengthens workforce training, and expands opportunity across every region.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.2",
+        "issue": "Mental Health and Housing",
+        "stance": "Supports funding proven mental health treatment and practical housing solutions.",
+        "quote": "Health and Safety that funds proven mental health treatment, practical housing solutions, and accountable public safety.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.3",
+        "issue": "Local Control",
+        "stance": "Supports restoring local control, ending unfunded mandates, and ensuring full transparency in how tax dollars are spent.",
+        "quote": "Power Back to the People by restoring local control, ending unfunded mandates, uncovering fraud, and ensuring full transparency in how tax dollars are spent.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.4",
+        "issue": "Street Encampments",
+        "stance": "Plans to end unsafe street encampments.",
+        "quote": "End unsafe street encampments, prosecute crime, and treat first responders as essential heroes.",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.5",
+        "issue": "Proposition 36",
+        "stance": "Supports Proposition 36 with stronger constraints and immediate funding.",
+        "quote": "Support Proposition 36 with stronger constraints and immediate funding",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.6",
+        "issue": "Police and First Responders",
+        "stance": "Fully supports police, fire, and EMT as state priorities.",
+        "quote": "Fully support police, fire, and EMT as state priorities",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.7",
+        "issue": "Taxes",
+        "stance": "Supports reducing anti-growth tax burdens and regulatory drag to bring jobs and investment back.",
+        "quote": "Bring jobs and investment back by reducing anti-growth tax burdens and regulatory drag.",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.8",
+        "issue": "Education",
+        "stance": "Supports practical learning, strong standards, and career-ready pathways for students.",
+        "quote": "Deliver practical learning, strong standards, and career-ready pathways for students.",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      },
+      {
+        "id": "ca_gov_primary_elaine_culotti.9",
+        "issue": "Government Transparency",
+        "stance": "Supports rebuilding trust through transparency, voter protections, and accountability over insider influence.",
+        "quote": "Rebuild trust with transparency, voter protections, and accountability over insider influence.",
+        "source": "https://web.archive.org/web/20260530081517/https://www.culottiforcalifornia.com/"
+      }
+    ],
+    "ca_gov_primary_livingforgod_andcountry_demott": [
+      {
+        "id": "ca_gov_primary_livingforgod_andcountry_demott.1",
+        "issue": "Immigration Enforcement",
+        "stance": "Has a plan to stop illegal ICE operations.",
+        "quote": "I have a plan to STOP illegal ICE operations; and a chaplain's heart to remember who the system serves.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_livingforgod_andcountry_demott.2",
+        "issue": "Miles-Driven Tax",
+        "stance": "Is 100% against the miles-driven tax.",
+        "quote": "I'm 100% against the miles-driven tax.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_serge_fiankan": [
+      {
+        "id": "ca_gov_primary_serge_fiankan.1",
+        "issue": "Immigration Law",
+        "stance": "Immigration reform must happen in Congress, and California's role is to uphold the law, protect communities, and ensure fairness and order.",
+        "quote": "Immigration reform must happen in Congress. California’s role is to uphold the law, protect communities, and ensure fairness and order.",
+        "source": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/responsible-lawful-humane-immigration"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.2",
+        "issue": "State Immigration System",
+        "stance": "California will not create its own immigration system or attempt to replace federal authority.",
+        "quote": "No. Immigration law is federal. California will not attempt to replace federal authority or build unconstitutional state-level immigration systems.",
+        "source": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/responsible-lawful-humane-immigration"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.3",
+        "issue": "Local Police Enforcement",
+        "stance": "California will not deputize state or local law enforcement as federal immigration agents.",
+        "quote": "No. California will not deputize state or local law enforcement as federal immigration agents.",
+        "source": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/responsible-lawful-humane-immigration"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.4",
+        "issue": "Housing Supply",
+        "stance": "The plan aims to deliver 200,000 units through adaptive reuse of vacant offices, hotels, and commercial properties plus modular and prefab housing.",
+        "quote": "From a mix of adaptive reuse of vacant offices, hotels, and commercial properties in major cities, plus rapid deployment of modular and prefab housing.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.5",
+        "issue": "Permitting Speed",
+        "stance": "The plan sets a 90-day approval goal for eligible projects that use standardized, pre-approved pathways while cities retain design authority.",
+        "quote": "The 90-day goal applies to projects that meet clear eligibility criteria and use standardized, pre-approved pathways. Cities retain design authority within standardized frameworks, and participation is supported through performance-based funding incentives rather than blanket mandates.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.6",
+        "issue": "Treatment Requirement",
+        "stance": "No one will be required to accept treatment to receive housing.",
+        "quote": "No. The plan explicitly states no one will be required to accept treatment to receive housing.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.7",
+        "issue": "Water Conservation",
+        "stance": "The plan prioritizes fixing leaks and modernizing infrastructure first, then uses targeted incentives for efficiency rather than blanket mandates.",
+        "quote": "It prioritizes fixing leaks and modernizing infrastructure first, then uses targeted incentives for efficiency rather than blanket mandates.",
+        "source": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/water-security"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.8",
+        "issue": "Farm Water Policy",
+        "stance": "The plan explicitly avoids forced crop switching and uncompensated pumping bans, treating farmers as partners with paid recharge and cost-shared upgrades.",
+        "quote": "No. The plan explicitly avoids forced crop switching and uncompensated pumping bans, and treats farmers as partners with paid recharge and cost-shared upgrades.",
+        "source": "https://web.archive.org/web/20260530233330/https://www.sf4gov.com/plans/water-security"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.9",
+        "issue": "High-Speed Rail",
+        "stance": "The plan opposes oversized high-speed rail projects that drain resources without delivering results.",
+        "quote": "No oversized high-speed rail projects that drain resources without delivering results.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/visionforcalifornia"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.10",
+        "issue": "Transit and Roads",
+        "stance": "Infrastructure investment is focused on safe, clean public transit, roads, bridges, and community-scale mobility, including electrified buses and regional light rail.",
+        "quote": "Infrastructure investment focused on safe, clean public transit, roads, bridges, and community-scale mobility.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/visionforcalifornia"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.11",
+        "issue": "Government Spending Oversight",
+        "stance": "Major initiatives include performance metrics, independent audits, and automatic sunset provisions for programs that miss targets.",
+        "quote": "Programs that underperform are restructured or ended, and initiatives have automatic sunset provisions if targets are not met.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness"
+      },
+      {
+        "id": "ca_gov_primary_serge_fiankan.12",
+        "issue": "Affordability Covenants",
+        "stance": "The plan prioritizes long affordability covenants and requires clear reporting of how long affordability lasts.",
+        "quote": "By prioritizing long affordability covenants, requiring clear reporting of affordability duration, and tying state support to transparent, enforceable affordability commitments.",
+        "source": "https://web.archive.org/web/20260530233411/https://www.sf4gov.com/plans/community-housing-homelessness"
+      }
+    ],
+    "ca_gov_primary_max_fomin": [
+      {
+        "id": "ca_gov_primary_max_fomin.1",
+        "issue": "Mileage Tax",
+        "stance": "Plans to veto California's mileage tax.",
+        "quote": "Will veto California’s milage tax, suffocate homelessness, assassinate unemployment, nuke crime, house the unhoused, prosecute statewide corruption, invest in profitable industries, will investigate Veil of Secrecy bill, will retire SB947 & Prop 36, like my coffee iced out.",
+        "source": "https://web.archive.org/web/20260530233744/https://newmericans.com/"
+      },
+      {
+        "id": "ca_gov_primary_max_fomin.2",
+        "issue": "Homelessness",
+        "stance": "Plans to fix the mental health system and clear encampments with humane but strong enforcement.",
+        "quote": "We will fix our mental health system, clear the encampments with humane but strong enforcement, and ensure every tax dollar is audited for results.",
+        "source": "https://web.archive.org/web/20260530233744/https://newmericans.com/"
+      },
+      {
+        "id": "ca_gov_primary_max_fomin.3",
+        "issue": "Government Spending",
+        "stance": "Opposes billion-dollar projects that do not produce results.",
+        "quote": "No more billion-dollar projects that go nowhere.",
+        "source": "https://web.archive.org/web/20260530233744/https://newmericans.com/"
+      },
+      {
+        "id": "ca_gov_primary_max_fomin.4",
+        "issue": "Utility Rates",
+        "stance": "Plans to freeze utility rate hikes and cut red tape that makes housing expensive.",
+        "quote": "I will tackle the “California Tax” on everyday life. From freezing utility rate hikes to cutting the red tape that makes housing so expensive.",
+        "source": "https://web.archive.org/web/20260530233744/https://newmericans.com/"
+      },
+      {
+        "id": "ca_gov_primary_max_fomin.5",
+        "issue": "Energy Grid",
+        "stance": "Supports building a reliable energy grid that does not black out.",
+        "quote": "We’re not just fixing today, we’re building tomorrow. That means world-class schools, a reliable energy grid that doesn’t black out, and protecting our communities from the growing threat of wildfires and droughts",
+        "source": "https://web.archive.org/web/20260530233744/https://newmericans.com/"
+      }
+    ],
+    "ca_gov_primary_don_j_grundmann": [
+      {
+        "id": "ca_gov_primary_don_j_grundmann.1",
+        "issue": "Israel Aid",
+        "stance": "Grundmann opposes further U.S. funding for Israel.",
+        "quote": "No further funding for Israel.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_don_j_grundmann.2",
+        "issue": "Federal Reserve",
+        "stance": "Grundmann supports nationalizing the Federal Reserve and printing interest-free United States Notes.",
+        "quote": "Nationalize FED. Print interest free United States Notes.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_jon_henderson": [
+      {
+        "id": "ca_gov_primary_jon_henderson.1",
+        "issue": "Conflicts of Interest",
+        "stance": "He will place his own assets in a blind trust and will push to require blind trusts for California lawmakers.",
+        "quote": "I will place my own assets in a blind trust, and I will push to require blind trusts for California lawmakers.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ],
+    "ca_gov_primary_lewis_herms": [],
+    "ca_gov_primary_anne_komarovsk": [],
+    "ca_gov_primary_duane_terrence_loynes_jr": [],
+    "ca_gov_primary_amanda_martin": [],
+    "ca_gov_primary_daniel_mercuri": [
+      {
+        "id": "ca_gov_primary_daniel_mercuri.1",
+        "issue": "Federal Income Tax",
+        "stance": "Mercuri would end the federal and payroll income tax indefinitely.",
+        "quote": "End the Federal and payroll “income” tax indefinitely.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.2",
+        "issue": "Sales Tax",
+        "stance": "Mercuri would cut the sales tax by half.",
+        "quote": "Minimize the sales tax by cutting it by half.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.3",
+        "issue": "Gun Crime Penalties",
+        "stance": "Mercuri would increase fines, community labor, and sentences for adults and juveniles who used a gun in a crime.",
+        "quote": "Increase fines, longer community laboring services, and longer sentences for both adults and juveniles who used a gun in their criminal act.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.4",
+        "issue": "Self-Defense Law",
+        "stance": "Mercuri would loosen and expand the Castle Law to tie into the Good Samaritan Law for self-defense gun actions in homes, on property, and to aid distressed neighbors, handled case by case.",
+        "quote": "Loosen and expand the ‘ Castle Law ’ to tie into the ‘ Good Samaritan Law ’ for law-abiding citizens when a self-defense gun action has taken place in their home or on various types of property, but also to a neighboring citizen that may be in distress, which should then be handled on a case by case basis.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.5",
+        "issue": "Police Training",
+        "stance": "Mercuri would require at least 12 months of extended training before officers receive a badge, gun, investigative powers, and arrest power.",
+        "quote": "We need required extended training for at least another 12 months before being granted a badge, a gun, perform investigations, and the power to arrest.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.6",
+        "issue": "Health Insurance",
+        "stance": "Mercuri would allow Californians to buy and accept health insurance across state lines.",
+        "quote": "Create a state healthcare policy that will allow Californians to buy and accept health insurances across our state line to create better competition and choice.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.7",
+        "issue": "Vaccine Bills",
+        "stance": "Mercuri would publicly nullify SB 276 and SB 277.",
+        "quote": "Publicly nullify SB 276 and SB 277 that illegally infringe upon the 1st Amendment and religious exemption which discriminate against parents and their children who choose not to vaccinate.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.8",
+        "issue": "Abortion Restrictions",
+        "stance": "Mercuri would introduce a Fetal Heartbeat Act as Governor.",
+        "quote": "as Governor I will, as other states have, introduce a ‘Fetal Heartbeat Act’ to prevent more innocent babies, fetus, which means small human, from being aborted!",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.9",
+        "issue": "School Choice",
+        "stance": "Mercuri would give parents the ability to have school choice.",
+        "quote": "Afford parents the ability to have ‘ school choice ’ which in turn puts power back into their hands.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.10",
+        "issue": "Housing and Homelessness",
+        "stance": "Mercuri would expand Section 8 housing to help banks relinquish vacant property and move homeless people off the street.",
+        "quote": "I will expand on Section 8 Housing that will help allow banks relinquish vacant property and actually get the homeless off the street were the people will have a better stake in their community.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.11",
+        "issue": "Energy and CEQA",
+        "stance": "Mercuri plans to make California energy independent and restrict CEQA.",
+        "quote": "We’ll become energy independent, restrict CEQA, and provide medical freedom.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_daniel_mercuri.12",
+        "issue": "Child Protection Task Force",
+        "stance": "Mercuri would create a task force to investigate state representatives who protected criminals over children in sex trafficking cases.",
+        "quote": "I will create a task force that will lead public investigations, to the fullest extent, that will look into ALL of our state’s representatives in EVERY branch that have turned a blind eye, passed egregious legislation like SB145 and SB384, or protected the criminal instead of the child when it comes to the sex trafficking of children and excusal of pedophiles hiding within our government institutions.",
+        "source": "https://web.archive.org/web/20260531050754/https://www.danielforcalgovernor.com/ca-policies"
+      }
+    ],
+    "ca_gov_primary_christine_r_sarmiento": [],
+    "ca_gov_primary_frederic_c_schultz": [
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.1",
+        "issue": "Drug Policy",
+        "stance": "He would re-legalize all drugs by enforcing people's rights to do as they wish with their bodies.",
+        "quote": "WE WILL ALSO NOT ONLY MAKE THEM SAFER BUT MAKE THEIR JOBS INFINITELY SAFER WHEN WE RE-LEGALIZE ALL DRUGS BY ENFORCING OUR HUMAN RIGHTS TO DO TO OUR BODIES AS WE WISH.",
+        "source": "https://web.archive.org/web/20260517085513/https://fred4ca.com/"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.2",
+        "issue": "Abortion",
+        "stance": "He would enforce bodily autonomy rights, including the right to abortion.",
+        "quote": "We’ll enforce bodily autonomy rights, to abortion, assisted suicides and guns.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.3",
+        "issue": "Vaccines and Lockdowns",
+        "stance": "He opposes lockdowns and forced vaccinations, favoring optional vaccines and real food instead.",
+        "quote": "No lockdowns or forced vaccinations: optional and real food instead!",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.4",
+        "issue": "Rent Control",
+        "stance": "He supports a rent freeze, citing rent increases that have outpaced wages.",
+        "quote": "RENT FREEZE! RENTS HAVE GONE UP ASTRONOMICALLY IN THE PAST 2 DECADES, FAR OUTPACING WAGES.",
+        "source": "https://web.archive.org/web/20260517085513/https://fred4ca.com/"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.5",
+        "issue": "Wealth Tax",
+        "stance": "He would tax 5% of wealth over $10,000,000 and income over $1,000,000.",
+        "quote": "We’ll tax 5% wealth over $10,000,000 and income over $1,000,000, yielding $1,100,000,000,000 annually, retroactively even.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.6",
+        "issue": "Sales and Income Taxes",
+        "stance": "He would eliminate sales taxes and income taxes on income under $100,000.",
+        "quote": "No sales taxes or income taxes under $100,000!",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.7",
+        "issue": "Clean Energy",
+        "stance": "He supports investing in clean energy sources, especially thorium nuclear power.",
+        "quote": "GO TO CLEAN ENERGY: WE MUST INVEST IN RECHARGEABLE BATTERIES, SOLAR, WIND, WAVE, CLEAN GARBAGE INCINERATION (IF POSSIBLE), ETC., ENERGY, BUT ESPECIALLY THORIUM NUCLEAR POWER.",
+        "source": "https://web.archive.org/web/20260517085513/https://fred4ca.com/"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.8",
+        "issue": "Pesticides",
+        "stance": "He would ban pesticides, factory farms, and \"autonomous\" vehicles.",
+        "quote": "We’ll ban pesticides, factory farms, \"autonomous\" vehicles.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.9",
+        "issue": "Immigration Deportations",
+        "stance": "He would bring back everyone deported by ICE, except those rightly convicted of serious violence, to California.",
+        "quote": "BRING BACK EVERYONE DEPORTED BY ICE (BESIDES THOSE RIGHTLY CONVICTED OF SERIOUS VIOLENCE, NOT A SLAP, FOR INSTANCE, WHICH IS STILL WRONG!) TO CALIFORNIA!!",
+        "source": "https://web.archive.org/web/20260517085513/https://fred4ca.com/"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.10",
+        "issue": "Public Safety and State Guard",
+        "stance": "He would expand the California State Guard to 2,000,000, with one member per classroom, and pardon innocent people held as slaves.",
+        "quote": "We’ll increase California State Guard from 900 to 2,000,000, one per classroom, stopping most murders, including by ICE nationwide, preventing martial law, closing slavery/death camps, pardoning innocent slaves!",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.11",
+        "issue": "Surveillance",
+        "stance": "He supports ending mass surveillance, including \"Flock\" spying cameras.",
+        "quote": "Privacy rights: No mass surveillance, \"Flock\" spying cameras.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_frederic_c_schultz.12",
+        "issue": "Public Schools",
+        "stance": "He would make public schools smaller, with 15 students per class, more recess, and as little homework as possible.",
+        "quote": "MAKE EVERY PUBLIC SCHOOL INCREDIBLE, WITH SMALLER CLASSES (15 STUDENTS/CLASS) AND RECESS, AND AS LITTLE HOMEWORK AS POSSIBLE, PREFERABLY NONE.",
+        "source": "https://web.archive.org/web/20260517085513/https://fred4ca.com/"
+      }
+    ],
+    "ca_gov_primary_margaret_trowe": [
+      {
+        "id": "ca_gov_primary_margaret_trowe.1",
+        "issue": "Immigration",
+        "stance": "Calls for a union-backed fight for amnesty for undocumented workers to build working-class unity.",
+        "quote": "Calls for union-backed fight for amnesty for undocumented workers to build working-class unity.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.2",
+        "issue": "Civil Rights",
+        "stance": "Describes herself as a longtime fighter against racism and for women's rights.",
+        "quote": "Longtime fighter against racism, for women's rights and against Washington's wars, from Vietnam to Venezuela.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.3",
+        "issue": "Foreign Wars",
+        "stance": "Opposes Washington's wars, from Vietnam to Venezuela.",
+        "quote": "Longtime fighter against racism, for women's rights and against Washington's wars, from Vietnam to Venezuela.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.4",
+        "issue": "Israel",
+        "stance": "Defends Israel's right to exist and to defend itself.",
+        "quote": "Defends Israel's right to exist and defend itself.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.5",
+        "issue": "Antisemitism",
+        "stance": "Stands against rising Jew-hatred.",
+        "quote": "Stands against rising Jew-hatred.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.6",
+        "issue": "US-Cuba Policy",
+        "stance": "Supports ending the U.S. economic blockade of Cuba.",
+        "quote": "U.S. Hands off Cuba! End U.S. Economic Blockade of Cuba!",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.7",
+        "issue": "Civil Liberties",
+        "stance": "Defends free speech, due process, and other Constitutional protections.",
+        "quote": "Defends free speech, due process, other Constitutional protections.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      },
+      {
+        "id": "ca_gov_primary_margaret_trowe.8",
+        "issue": "Workers' Political Power",
+        "stance": "Campaigns for workers to take political power as the solution to capitalist crisis and to stop the march to World War III.",
+        "quote": "Campaigns for need for workers to take political power—the only solution to world capitalist economic, political, and moral crisis and the only way to stop the capitalist rulers' march to World War III.",
+        "source": "https://vigarchive.sos.ca.gov/2026/primary/candidates/governor-candidate-statements.htm"
+      }
+    ]
+  },
+  "flags": [
+    {
+      "heuristic": 1,
+      "name": "Say only what you can point to",
+      "statement": null,
+      "candidate": "ca_gov_primary_joseph_cabrera",
+      "detail": "1 quote(s) joined sentences from different parts of a page; each sentence checked on its own and shown with …",
+      "item": [
+        {
+          "position": "ca_gov_primary_joseph_cabrera.2",
+          "as_listed": "I will shift resources away from bloat and into community treatment, focusing on recovery instead of a revolving prison door. For too long, we have used our jails as warehouses for the mentally ill while allowing our streets to become encampments."
+        }
+      ]
+    }
+  ],
+  "flag_counts": {
+    "H1": 1
+  }
+}

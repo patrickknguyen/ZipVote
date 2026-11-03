@@ -22,7 +22,7 @@ Output: `data/raw/{candidate_id}.txt`
 
 Set your API key first:
 ```bash
-export ANTHROPIC_API_KEY=...    # Claude (default: claude-sonnet-4-5)
+export ANTHROPIC_API_KEY=...    # Claude (default: claude-sonnet-5-5, claude-haiku-5-5)
 # OR
 export OPENAI_API_KEY=sk-...    # OpenAI (default: gpt-4o)
 # OR
